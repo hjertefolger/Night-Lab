@@ -25,6 +25,13 @@ Use this exact template as the source of truth:
 
 Night Lab should read that file and follow its structure exactly when generating `PUBLISH_READY.json`.
 
+The modal content is populated from these fields:
+- `whyThisExists` → core rationale
+- `whatChanged` → refinement/change list
+- `artDirection` → visual direction note
+- `nextMove` → next step
+- `promotionRead` → promotion assessment
+
 ## Local Config
 Machine-specific paths live in:
 

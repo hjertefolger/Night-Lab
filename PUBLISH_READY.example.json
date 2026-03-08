@@ -2,19 +2,19 @@
   "buildId": "003",
   "title": "Build Title",
   "date": "2026-03-08",
-  "tagline": "Short one-line description.",
+  "tagline": "Short one-line description shown in the site shell.",
   "summary": "A slightly fuller summary of what the build is and why it matters.",
   "principles": [
     "principle one",
     "principle two"
   ],
   "status": "live",
-  "whyThisExists": "Why this build exists.",
+  "whyThisExists": "This appears in the modal as the core rationale. Explain the problem or tension the build addresses.",
   "whatChanged": [
-    "Initial MVP built",
-    "v1.1 added something"
+    "This appears in the modal as the change log for v1.1 / v1.2 refinement.",
+    "Use short concrete bullets describing what improved or sharpened."
   ],
-  "artDirection": "Default Night Lab art direction used.",
-  "nextMove": "What should happen next.",
-  "promotionRead": "Not yet / Maybe / Strong candidate."
+  "artDirection": "This appears in the modal as the visual direction note. State whether default Night Lab direction was used or intentionally overridden.",
+  "nextMove": "This appears in the modal as the next step. Describe the most meaningful next refinement.",
+  "promotionRead": "This appears in the modal as the promotion assessment. Example: Not yet. / Maybe. / Strong promotion candidate."
 }
