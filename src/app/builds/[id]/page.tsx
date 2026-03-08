@@ -13,7 +13,7 @@ export default async function BuildPage({ params }: { params: Promise<{ id: stri
       <FloatingBuildBar build={build} />
       <iframe
         title={build.title}
-        src={`/builds/${build.id}/app.html`}
+        src={`/builds/${build.id}/index.html`}
         className="h-screen w-screen border-0"
       />
     </main>
