@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signal Atlas</title>
+  <style>
+    :root {
+      --bg: #0f1220;
+      --panel: rgba(255,255,255,0.06);
+      --panel-strong: rgba(255,255,255,0.1);
+      --text: #f5f7ff;
+      --muted: #a8b0d6;
+      --accent: #8b7cff;
+      --accent-2: #4fd1c5;
+      --border: rgba(255,255,255,0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      background: radial-gradient(circle at top, rgba(139,124,255,0.18), transparent 30%), var(--bg);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+    h1 { margin: 0 0 8px; font-size: 40px; }
+    .sub { color: var(--muted); max-width: 720px; line-height: 1.6; }
+    .grid {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 20px;
+      margin-top: 28px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      backdrop-filter: blur(10px);
+    }
+    .panel h2 { margin-top: 0; font-size: 18px; }
+    label { display: block; margin: 14px 0 6px; color: var(--muted); font-size: 14px; }
+    input, select, textarea, button {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 12px 14px;
+      font: inherit;
+    }
+    textarea { min-height: 88px; resize: vertical; }
+    button {
+      margin-top: 16px;
+      background: linear-gradient(135deg, var(--accent), #6d5efc);
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .stat small { color: var(--muted); display: block; margin-bottom: 6px; }
+    .stat strong { font-size: 28px; }
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 22px 0 12px;
+    }
+    .signals {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+    .signal {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .signal .meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0 10px;
+    }
+    .chip {
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      background: rgba(255,255,255,0.08);
+      color: var(--muted);
+    }
+    .signal p { color: var(--muted); line-height: 1.5; }
+    .cluster {
+      border-left: 3px solid var(--accent-2);
+      padding-left: 12px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Signal Atlas</h1>
+    <div class="sub">A tiny cognition tool for capturing weak signals before they disappear. Collect fragments, assign intensity and recurrence, then watch clusters emerge into possible directions.</div>
+
+    <div class="grid">
+      <div class="panel">
+        <h2>Capture Signal</h2>
+        <label>Title</label>
+        <input id="title" placeholder="Trust layer for visual work" />
+
+        <label>Source</label>
+        <select id="source">
+          <option>Observation</option>
+          <option>Project Pattern</option>
+          <option>Conversation</option>
+          <option>Research</option>
+          <option>Gut Feeling</option>
+        </select>
+
+        <label>Category</label>
+        <select id="category">
+          <option>Cognition</option>
+          <option>Perception</option>
+          <option>Verification</option>
+          <option>Provenance</option>
+          <option>Synthesis</option>
+          <option>Interface</option>
+        </select>
+
+        <label>Intensity (1-5)</label>
+        <input id="intensity" type="range" min="1" max="5" value="3" />
+
+        <label>Recurrence (1-5)</label>
+        <input id="recurrence" type="range" min="1" max="5" value="2" />
+
+        <label>Interpretation</label>
+        <textarea id="interpretation" placeholder="Why this might matter, what it could connect to, and what feels latent here."></textarea>
+
+        <button id="addBtn">Add Signal</button>
+      </div>
+
+      <div>
+        <div class="stats">
+          <div class="stat"><small>Total Signals</small><strong id="totalSignals">0</strong></div>
+          <div class="stat"><small>Strong Signals</small><strong id="strongSignals">0</strong></div>
+          <div class="stat"><small>Recurring</small><strong id="recurringSignals">0</strong></div>
+          <div class="stat"><small>Top Cluster</small><strong id="topCluster">-</strong></div>
+        </div>
+
+        <div class="panel">
+          <div class="section-title">
+            <h2>Emerging Clusters</h2>
+            <span class="chip">local-only prototype</span>
+          </div>
+          <div id="clusters"></div>
+        </div>
+
+        <div class="section-title">
+          <h2>Captured Signals</h2>
+        </div>
+        <div class="signals" id="signals"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const seedSignals = [
+      {
+        title: 'Provenance without punishment',
+        source: 'Project Pattern',
+        category: 'Provenance',
+        intensity: 5,
+        recurrence: 4,
+        interpretation: 'Trust systems that prove engagement rather than policing tools.'
+      },
+      {
+        title: 'Identity survives distortion',
+        source: 'Project Pattern',
+        category: 'Verification',
+        intensity: 5,
+        recurrence: 5,
+        interpretation: 'The same thing should still be recognizable after transformation.'
+      },
+      {
+        title: 'Expose hidden process state',
+        source: 'Observation',
+        category: 'Interface',
+        intensity: 4,
+        recurrence: 4,
+        interpretation: 'Interfaces become more powerful when invisible system state becomes visible.'
+      }
+    ];
+
+    const signals = [...seedSignals];
+
+    const els = {
+      title: document.getElementById('title'),
+      source: document.getElementById('source'),
+      category: document.getElementById('category'),
+      intensity: document.getElementById('intensity'),
+      recurrence: document.getElementById('recurrence'),
+      interpretation: document.getElementById('interpretation'),
+      addBtn: document.getElementById('addBtn'),
+      signals: document.getElementById('signals'),
+      clusters: document.getElementById('clusters'),
+      totalSignals: document.getElementById('totalSignals'),
+      strongSignals: document.getElementById('strongSignals'),
+      recurringSignals: document.getElementById('recurringSignals'),
+      topCluster: document.getElementById('topCluster')
+    };
+
+    function render() {
+      els.totalSignals.textContent = signals.length;
+      els.strongSignals.textContent = signals.filter(s => Number(s.intensity) >= 4).length;
+      els.recurringSignals.textContent = signals.filter(s => Number(s.recurrence) >= 4).length;
+
+      const grouped = signals.reduce((acc, signal) => {
+        acc[signal.category] = acc[signal.category] || [];
+        acc[signal.category].push(signal);
+        return acc;
+      }, {});
+
+      const top = Object.entries(grouped).sort((a,b) => b[1].length - a[1].length)[0];
+      els.topCluster.textContent = top ? top[0] : '-';
+
+      els.clusters.innerHTML = Object.entries(grouped)
+        .sort((a,b) => b[1].length - a[1].length)
+        .map(([category, items]) => {
+          const avgIntensity = (items.reduce((sum, item) => sum + Number(item.intensity), 0) / items.length).toFixed(1);
+          return `<div class="cluster"><strong>${category}</strong><div class="sub">${items.length} signal(s) · avg intensity ${avgIntensity}</div></div>`;
+        })
+        .join('');
+
+      els.signals.innerHTML = signals
+        .slice()
+        .reverse()
+        .map(signal => `
+          <div class="signal">
+            <strong>${signal.title}</strong>
+            <div class="meta">
+              <span class="chip">${signal.source}</span>
+              <span class="chip">${signal.category}</span>
+              <span class="chip">Intensity ${signal.intensity}</span>
+              <span class="chip">Recurrence ${signal.recurrence}</span>
+            </div>
+            <p>${signal.interpretation}</p>
+          </div>
+        `).join('');
+    }
+
+    els.addBtn.addEventListener('click', () => {
+      const title = els.title.value.trim();
+      const interpretation = els.interpretation.value.trim();
+      if (!title || !interpretation) return;
+      signals.push({
+        title,
+        source: els.source.value,
+        category: els.category.value,
+        intensity: els.intensity.value,
+        recurrence: els.recurrence.value,
+        interpretation
+      });
+      els.title.value = '';
+      els.interpretation.value = '';
+      els.intensity.value = 3;
+      els.recurrence.value = 2;
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

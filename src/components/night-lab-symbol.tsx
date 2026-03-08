@@ -1,0 +1,48 @@
+export function NightLabSymbol() {
+  return (
+    <svg
+      width="37"
+      height="37"
+      viewBox="0 0 37 37"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <line
+        x1="18.5"
+        y1="2"
+        x2="18.5"
+        y2="35"
+        stroke="black"
+        strokeWidth="1.42"
+        strokeLinecap="round"
+      />
+      <line
+        x1="2"
+        y1="18.5"
+        x2="35"
+        y2="18.5"
+        stroke="black"
+        strokeWidth="1.42"
+        strokeLinecap="round"
+      />
+      <line
+        x1="6.88"
+        y1="6.88"
+        x2="30.12"
+        y2="30.12"
+        stroke="black"
+        strokeWidth="1.42"
+        strokeLinecap="round"
+      />
+      <line
+        x1="30.12"
+        y1="6.88"
+        x2="6.88"
+        y2="30.12"
+        stroke="black"
+        strokeWidth="1.42"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}

@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proof Thread</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #111111;
+      --muted: #6b6b6b;
+      --border: #d8d8d8;
+      --surface: #fafafa;
+      --surface-2: #f4f4f4;
+      --shadow: 0 8px 30px rgba(0,0,0,0.04);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+    body { font-family: 'Geist', system-ui, sans-serif; }
+    .page {
+      min-height: 100vh;
+      padding: 28px;
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 28px;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .left {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      position: sticky;
+      top: 28px;
+      height: fit-content;
+    }
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+    }
+    .lead {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 32ch;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--fg);
+      padding: 13px 14px;
+      font: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+    textarea { min-height: 120px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { border-color: #111; }
+    .stack { display: flex; flex-direction: column; gap: 18px; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    button {
+      width: fit-content;
+      padding: 12px 0;
+      border: none;
+      background: transparent;
+      color: var(--fg);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .export-btn {
+      color: var(--muted);
+      border-bottom: 1px solid transparent;
+      transition: border-color 120ms ease;
+    }
+    .export-btn:hover { border-color: var(--fg); color: var(--fg); }
+    .right { padding: 4px 0; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .stat {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface);
+    }
+    .stat small {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .stat strong { font-size: 28px; font-weight: 500; letter-spacing: -0.04em; }
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .toolbar-left {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .chip.active {
+      color: var(--fg);
+      border-color: #111;
+    }
+    .thread {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .entry {
+      position: relative;
+      padding: 20px 20px 20px 56px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: #fff;
+    }
+    .entry::before {
+      content: '';
+      position: absolute;
+      left: 28px;
+      top: 56px;
+      width: 1px;
+      height: calc(100% + 14px);
+      background: var(--border);
+    }
+    .entry:last-child::before { display: none; }
+    .node {
+      position: absolute;
+      left: 20px;
+      top: 24px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #111;
+    }
+    .entry-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 10px;
+    }
+    .entry-title {
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .entry-meta {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
+    }
+    .entry-artifact {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--fg);
+    }
+    .entry-reason {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+      max-width: 70ch;
+    }
+    .entry-footer {
+      margin-top: 14px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .link-chip,
+    .score-chip {
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--surface-2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .entry-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+    }
+    .entry-actions button {
+      padding: 0;
+      color: inherit;
+    }
+    .audit {
+      display: none;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--surface);
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+    .audit.visible { display: block; }
+    .audit h2,
+    .graph h2,
+    .compare h2 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .audit-list,
+    .compare-list {
+      display: grid;
+      gap: 10px;
+    }
+    .audit-row,
+    .compare-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .audit-row:last-child,
+    .compare-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .graph,
+    .compare {
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--surface);
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+    .graph-map {
+      display: grid;
+      gap: 12px;
+    }
+    .graph-node {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fff;
+    }
+    .graph-links {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .empty {
+      padding: 40px;
+      border: 1px dashed var(--border);
+      border-radius: 22px;
+      color: var(--muted);
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+    }
+    .hidden { display: none; }
+    @media (max-width: 1180px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 980px) {
+      .page { grid-template-columns: 1fr; }
+      .left { position: relative; top: 0; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="panel left">
+      <div class="stack">
+        <div class="eyebrow mono">Night Lab / 002 / v1.2</div>
+        <h1>Proof Thread</h1>
+        <p class="lead">Turn invisible decision lineage into a readable chain. Capture what was made, why it happened, how certain it was, what it connected to, and how it compares to other threads.</p>
+      </div>
+
+      <div class="stack">
+        <div class="grid-2">
+          <div>
+            <label for="type">Entry Type</label>
+            <select id="type">
+              <option>Decision</option>
+              <option>Artifact</option>
+              <option>Constraint</option>
+              <option>Observation</option>
+              <option>Proof</option>
+            </select>
+          </div>
+          <div>
+            <label for="confidence">Confidence</label>
+            <select id="confidence">
+              <option>Low</option>
+              <option selected>Medium</option>
+              <option>High</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="title">Title</label>
+          <input id="title" placeholder="Chose local-first verification" />
+        </div>
+        <div>
+          <label for="artifact">Artifact / Outcome</label>
+          <input id="artifact" placeholder="Prototype README, signed image, matching fingerprint" />
+        </div>
+        <div>
+          <label for="links">Links to prior entries</label>
+          <input id="links" placeholder="1, 3" />
+        </div>
+        <div>
+          <label for="rationale">Rationale</label>
+          <textarea id="rationale" placeholder="Why this step mattered, what it preserved, and what became possible because of it."></textarea>
+        </div>
+        <div class="toolbar-left">
+          <button id="addBtn">+ Add to thread</button>
+          <button id="exportBtn" class="export-btn">Export markdown</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="right">
+      <div class="stats">
+        <div class="stat"><small>Total entries</small><strong id="total">0</strong></div>
+        <div class="stat"><small>Decision points</small><strong id="decisions">0</strong></div>
+        <div class="stat"><small>Artifacts referenced</small><strong id="artifacts">0</strong></div>
+        <div class="stat"><small>High confidence</small><strong id="highConfidence">0</strong></div>
+        <div class="stat"><small>Avg score</small><strong id="avgScore">0</strong></div>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <button class="chip active" data-filter="All">All</button>
+          <button class="chip" data-filter="Decision">Decision</button>
+          <button class="chip" data-filter="Artifact">Artifact</button>
+          <button class="chip" data-filter="Constraint">Constraint</button>
+          <button class="chip" data-filter="Observation">Observation</button>
+          <button class="chip" data-filter="Proof">Proof</button>
+        </div>
+        <button id="auditToggle" class="chip">Audit mode</button>
+      </div>
+
+      <div id="audit" class="audit">
+        <h2>Compact audit view</h2>
+        <div id="auditList" class="audit-list"></div>
+      </div>
+
+      <div class="graph">
+        <h2>Relationship map</h2>
+        <div id="graphMap" class="graph-map"></div>
+      </div>
+
+      <div class="compare">
+        <h2>Thread comparison</h2>
+        <div id="compareList" class="compare-list"></div>
+      </div>
+
+      <div id="thread" class="thread"></div>
+    </section>
+  </div>
+
+  <script>
+    const entries = [
+      {
+        type: 'Observation',
+        title: 'Trust is often disconnected from process',
+        artifact: 'Product direction note',
+        rationale: 'A thing can be real, thoughtful, and rigorous, yet lose its chain of reasoning the moment it ships.',
+        confidence: 'High',
+        links: []
+      },
+      {
+        type: 'Decision',
+        title: 'Use visible lineage instead of hidden documentation',
+        artifact: 'Thread model',
+        rationale: 'The chain itself should communicate how and why something came to exist, not rely on buried notes.',
+        confidence: 'High',
+        links: [1]
+      },
+      {
+        type: 'Proof',
+        title: 'Readable continuity increases confidence',
+        artifact: 'Proof Thread prototype',
+        rationale: 'When rationale and artifact stay connected, judgment becomes easier and trust becomes less vague.',
+        confidence: 'Medium',
+        links: [1, 2]
+      }
+    ];
+
+    let activeFilter = 'All';
+    let auditVisible = false;
+    let editingIndex = null;
+
+    const totalEl = document.getElementById('total');
+    const decisionsEl = document.getElementById('decisions');
+    const artifactsEl = document.getElementById('artifacts');
+    const highConfidenceEl = document.getElementById('highConfidence');
+    const avgScoreEl = document.getElementById('avgScore');
+    const threadEl = document.getElementById('thread');
+    const auditEl = document.getElementById('audit');
+    const auditListEl = document.getElementById('auditList');
+    const graphMapEl = document.getElementById('graphMap');
+    const compareListEl = document.getElementById('compareList');
+    const addBtn = document.getElementById('addBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const auditToggle = document.getElementById('auditToggle');
+    const filterButtons = Array.from(document.querySelectorAll('[data-filter]'));
+
+    function currentEntries() {
+      return activeFilter === 'All' ? entries : entries.filter(e => e.type === activeFilter);
+    }
+
+    function leverageScore(entry) {
+      const base = entry.type === 'Decision' ? 3 : entry.type === 'Proof' ? 3 : entry.type === 'Constraint' ? 2 : 1;
+      const confidence = entry.confidence === 'High' ? 3 : entry.confidence === 'Medium' ? 2 : 1;
+      return base + confidence + entry.links.length;
+    }
+
+    function averageScore() {
+      if (!entries.length) return 0;
+      const sum = entries.reduce((acc, entry) => acc + leverageScore(entry), 0);
+      return (sum / entries.length).toFixed(1);
+    }
+
+    function exportMarkdown() {
+      const markdown = ['# Proof Thread Export', '']
+        .concat(entries.map((entry, idx) => [
+          `## #${idx + 1} ${entry.title}`,
+          '',
+          `- Type: ${entry.type}`,
+          `- Artifact: ${entry.artifact || '—'}`,
+          `- Confidence: ${entry.confidence}`,
+          `- Links: ${entry.links.length ? entry.links.map(link => '#' + link).join(', ') : '—'}`,
+          '',
+          `${entry.rationale}`,
+          ''
+        ].join('\n')))
+        .join('\n');
+
+      const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'proof-thread.md';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function fillForm(entry, index) {
+      document.getElementById('type').value = entry.type;
+      document.getElementById('title').value = entry.title;
+      document.getElementById('artifact').value = entry.artifact;
+      document.getElementById('rationale').value = entry.rationale;
+      document.getElementById('confidence').value = entry.confidence;
+      document.getElementById('links').value = entry.links.join(', ');
+      editingIndex = index;
+      addBtn.textContent = 'Save entry';
+    }
+
+    function resetForm() {
+      document.getElementById('type').value = 'Decision';
+      document.getElementById('title').value = '';
+      document.getElementById('artifact').value = '';
+      document.getElementById('rationale').value = '';
+      document.getElementById('confidence').value = 'Medium';
+      document.getElementById('links').value = '';
+      editingIndex = null;
+      addBtn.textContent = '+ Add to thread';
+    }
+
+    function compareThreads() {
+      const main = {
+        name: 'Current thread',
+        entries: entries.length,
+        decisions: entries.filter(e => e.type === 'Decision').length,
+        score: averageScore()
+      };
+      const baseline = {
+        name: 'Lean thread',
+        entries: Math.max(1, Math.floor(entries.length * 0.7)),
+        decisions: Math.max(1, Math.floor(entries.filter(e => e.type === 'Decision').length * 0.7)),
+        score: Math.max(1, (Number(averageScore()) - 0.8).toFixed(1))
+      };
+      const exploratory = {
+        name: 'Exploratory thread',
+        entries: entries.length + 2,
+        decisions: entries.filter(e => e.type === 'Decision').length + 1,
+        score: (Number(averageScore()) + 0.5).toFixed(1)
+      };
+      return [main, baseline, exploratory];
+    }
+
+    function render() {
+      totalEl.textContent = entries.length;
+      decisionsEl.textContent = entries.filter(e => e.type === 'Decision').length;
+      artifactsEl.textContent = new Set(entries.map(e => e.artifact).filter(Boolean)).size;
+      highConfidenceEl.textContent = entries.filter(e => e.confidence === 'High').length;
+      avgScoreEl.textContent = averageScore();
+
+      const visibleEntries = currentEntries();
+
+      if (!visibleEntries.length) {
+        threadEl.innerHTML = '<div class="empty">No entries match this filter.</div>';
+      } else {
+        threadEl.innerHTML = visibleEntries.map((entry) => {
+          const index = entries.indexOf(entry);
+          return `
+            <article class="entry">
+              <div class="node"></div>
+              <div class="entry-top">
+                <div>
+                  <div class="entry-meta mono">#${index + 1}</div>
+                  <h2 class="entry-title">${entry.title}</h2>
+                </div>
+                <div class="entry-meta">${entry.type}</div>
+              </div>
+              <div class="entry-artifact"><span class="mono">Artifact:</span> ${entry.artifact || '—'}</div>
+              <p class="entry-reason">${entry.rationale}</p>
+              <div class="entry-footer">
+                <span class="score-chip">Confidence ${entry.confidence}</span>
+                <span class="score-chip">Score ${leverageScore(entry)}</span>
+                ${entry.links.length ? `<span class="link-chip">Links ${entry.links.map(link => '#' + link).join(', ')}</span>` : ''}
+              </div>
+              <div class="entry-actions">
+                <button data-edit="${index}">Edit</button>
+                <button data-delete="${index}">Delete</button>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      auditEl.classList.toggle('visible', auditVisible);
+      const auditEntries = [...entries].sort((a, b) => leverageScore(b) - leverageScore(a));
+      auditListEl.innerHTML = auditEntries.map((entry) => `
+        <div class="audit-row">
+          <div>
+            <div class="mono">#${entries.indexOf(entry) + 1} · ${entry.type}</div>
+            <div>${entry.title}</div>
+          </div>
+          <div class="mono">score ${leverageScore(entry)}</div>
+        </div>
+      `).join('');
+
+      graphMapEl.innerHTML = entries.map((entry, index) => `
+        <div class="graph-node">
+          <div class="mono">#${index + 1} · ${entry.type}</div>
+          <div>${entry.title}</div>
+          <div class="graph-links">${entry.links.length ? `depends on ${entry.links.map(link => '#' + link).join(', ')}` : 'root node'}</div>
+        </div>
+      `).join('');
+
+      compareListEl.innerHTML = compareThreads().map(thread => `
+        <div class="compare-row">
+          <div>
+            <div class="mono">${thread.name}</div>
+            <div>${thread.entries} entries · ${thread.decisions} decisions</div>
+          </div>
+          <div class="mono">avg ${thread.score}</div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('[data-edit]').forEach(btn => {
+        btn.addEventListener('click', () => fillForm(entries[Number(btn.dataset.edit)], Number(btn.dataset.edit)));
+      });
+      document.querySelectorAll('[data-delete]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          entries.splice(Number(btn.dataset.delete), 1);
+          resetForm();
+          render();
+        });
+      });
+    }
+
+    addBtn.addEventListener('click', () => {
+      const type = document.getElementById('type').value;
+      const title = document.getElementById('title').value.trim();
+      const artifact = document.getElementById('artifact').value.trim();
+      const rationale = document.getElementById('rationale').value.trim();
+      const confidence = document.getElementById('confidence').value;
+      const links = document.getElementById('links').value
+        .split(',')
+        .map(v => Number(v.trim()))
+        .filter(v => Number.isInteger(v) && v > 0);
+      if (!title || !rationale) return;
+      const nextEntry = { type, title, artifact, rationale, confidence, links };
+      if (editingIndex !== null) {
+        entries[editingIndex] = nextEntry;
+      } else {
+        entries.push(nextEntry);
+      }
+      resetForm();
+      render();
+    });
+
+    exportBtn.addEventListener('click', exportMarkdown);
+
+    auditToggle.addEventListener('click', () => {
+      auditVisible = !auditVisible;
+      auditToggle.classList.toggle('active', auditVisible);
+      render();
+    });
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        activeFilter = button.dataset.filter;
+        filterButtons.forEach(btn => btn.classList.toggle('active', btn === button));
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>

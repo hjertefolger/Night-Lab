@@ -1,0 +1,20 @@
+{
+  "buildId": "003",
+  "title": "Build Title",
+  "date": "2026-03-08",
+  "tagline": "Short one-line description.",
+  "summary": "A slightly fuller summary of what the build is and why it matters.",
+  "principles": [
+    "principle one",
+    "principle two"
+  ],
+  "status": "live",
+  "whyThisExists": "Why this build exists.",
+  "whatChanged": [
+    "Initial MVP built",
+    "v1.1 added something"
+  ],
+  "artDirection": "Default Night Lab art direction used.",
+  "nextMove": "What should happen next.",
+  "promotionRead": "Not yet / Maybe / Strong candidate."
+}

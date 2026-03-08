@@ -1,0 +1,22 @@
+{
+  "buildId": "002",
+  "title": "Proof Thread",
+  "date": "2026-03-08",
+  "tagline": "Visible reasoning lineage for work that should remain inspectable.",
+  "summary": "A lightweight proof-chain interface for linking decisions, artifacts, rationale, confidence, and relationships.",
+  "principles": [
+    "prefer verification over vague trust",
+    "turn continuity into infrastructure",
+    "make invisible processes legible",
+    "compress complexity while preserving essence"
+  ],
+  "status": "candidate",
+  "whyThisExists": "Important work often loses its reasoning trail. Proof Thread keeps the chain visible without becoming heavy documentation.",
+  "whatChanged": [
+    "v1.1 added links, confidence, export, filters, and audit mode",
+    "v1.2 added editing, relationship map, and comparison surface"
+  ],
+  "artDirection": "Default Night Lab art direction used — frontend-a2n inspired editorial systems minimalism with Geist + JetBrains Mono.",
+  "nextMove": "Add persistence, multiple saved threads, and a stronger distinction between confidence and significance.",
+  "promotionRead": "Strong promotion candidate."
+}
