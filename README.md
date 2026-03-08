@@ -118,7 +118,7 @@ scripts/publish-build.sh <build-folder>
 - generates `public/builds/<id>.zip`
 - updates `src/lib/builds.ts`
 - writes `PUBLISHED.json` back into the source build folder
-- runs `npm run build`
+- runs the production build for verification
 - commits changes
 - pushes to `origin master`
 
@@ -164,14 +164,14 @@ PUBLISHING.md
 ## Running Locally
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 Production build:
 
 ```bash
-npm run build
+pnpm build
 ```
 
 ## Current Status
