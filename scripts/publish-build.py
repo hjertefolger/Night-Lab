@@ -105,7 +105,7 @@ def copy_public_files(source: Path, target: Path) -> None:
         shutil.rmtree(target)
     target.mkdir(parents=True, exist_ok=True)
     for path in source.iterdir():
-        if path.name in {"PUBLISH_READY.json", "PUBLISHED.json"}:
+        if path.name in {"PUBLISH_READY.json", "PUBLISHED.json", "README.md", "notes.md"}:
             continue
         dest = target / path.name
         if path.is_dir():

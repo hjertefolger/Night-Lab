@@ -39,7 +39,8 @@ Use:
 as the template when setting up a new environment.
 
 ## What the script does
-- copies the build folder into `public/builds/<id>/`
+- copies the build artifact into `public/builds/<id>/`
+- skips internal build notes and handoff files (`README.md`, `notes.md`, `PUBLISH_READY.json`, `PUBLISHED.json`)
 - generates `public/builds/<id>.zip`
 - updates `src/lib/builds.ts`
 - writes `PUBLISHED.json` into the source build folder
