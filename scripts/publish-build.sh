@@ -19,4 +19,11 @@ git add .
 if ! git diff --cached --quiet; then
   git commit -m "Publish build ${BUILD_ID} - ${TITLE}"
   git push origin "$BRANCH"
+
+  # Send broadcast email to subscribers
+  if [ -f "$DIR/PUBLISH_READY.json" ] && [ -f "$ROOT/.env.local" ]; then
+    set -a; source "$ROOT/.env.local"; set +a
+    echo "Sending broadcast email..."
+    npx tsx "$SCRIPT_DIR/send-broadcast.ts" "$DIR" || echo "Broadcast failed (non-fatal)"
+  fi
 fi
