@@ -71,7 +71,7 @@ export function buildEmailHtml(data: BuildEmailData): string {
 
         <!-- CTA -->
         <tr><td style="padding: 32px 0 0 0;">
-          <a href="${buildUrl}" style="font-family: ${MONO}; font-size: 14px; font-weight: 500; color: #111111; text-decoration: underline; text-underline-offset: 4px;">View build \u2192</a>
+          <a href="${buildUrl}" style="font-family: ${MONO}; font-size: 14px; font-weight: 500; color: #111111; text-decoration: underline; text-underline-offset: 4px;">View build</a>
         </td></tr>
 
         <!-- Footer -->

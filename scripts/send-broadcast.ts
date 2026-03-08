@@ -55,6 +55,7 @@ async function main() {
 
   const { data: broadcast, error: createError } =
     await resend.broadcasts.create({
+      name: subject,
       segmentId: segmentId!,
       from: fromEmail!,
       subject,
