@@ -23,3 +23,6 @@ pnpm-debug.log*
 
 # local config
 scripts/local-config.json
+
+# generated
+*.tsbuildinfo

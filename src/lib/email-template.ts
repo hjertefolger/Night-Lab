@@ -5,7 +5,6 @@ interface BuildEmailData {
   summary: string;
   whyThisExists: string;
   whatChanged?: string[];
-  email?: string; // for unsubscribe link
 }
 
 const SITE_URL = "https://nightlab.a2n.run";
@@ -19,8 +18,6 @@ export function buildEmailSubject(buildId: string): string {
 
 export function buildEmailHtml(data: BuildEmailData): string {
   const buildUrl = `${SITE_URL}/builds/${data.buildId}`;
-  const unsubscribeUrl = `${SITE_URL}/unsubscribe?email=${encodeURIComponent(data.email ?? "")}`;
-
   const whatChangedHtml = data.whatChanged?.length
     ? `
       <tr><td style="padding: 24px 0 0 0;">
@@ -80,7 +77,7 @@ export function buildEmailHtml(data: BuildEmailData): string {
             \u00a92026 Night Lab / Field work in public
           </div>
           <div style="padding-top: 8px;">
-            <a href="${unsubscribeUrl}" style="font-family: ${SANS}; font-size: 12px; color: #999999; text-decoration: underline;">Unsubscribe</a>
+            <a href="{{{RESEND_UNSUBSCRIBE_URL}}}" style="font-family: ${SANS}; font-size: 12px; color: #999999; text-decoration: underline;">Unsubscribe</a>
           </div>
         </td></tr>
 

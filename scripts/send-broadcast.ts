@@ -4,9 +4,10 @@
  *
  * Requires env vars: RESEND_API_KEY, RESEND_SEGMENT_ID, RESEND_FROM_EMAIL
  * Reads PUBLISH_READY.json from the build folder for metadata.
+ * Writes BROADCAST_SENT.json after a successful send to avoid duplicates.
  */
 
-import { readFileSync } from "fs";
+import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { Resend } from "resend";
 import { buildEmailSubject, buildEmailHtml } from "../src/lib/email-template";
@@ -29,6 +30,13 @@ if (!apiKey || !segmentId || !fromEmail) {
 }
 
 const readyPath = join(buildFolder, "PUBLISH_READY.json");
+const sentPath = join(buildFolder, "BROADCAST_SENT.json");
+
+if (existsSync(sentPath)) {
+  console.log("Broadcast already sent for this build, skipping.");
+  process.exit(0);
+}
+
 let meta: Record<string, unknown>;
 try {
   meta = JSON.parse(readFileSync(readyPath, "utf-8"));
@@ -53,14 +61,13 @@ const html = buildEmailHtml({
 async function main() {
   console.log(`Creating broadcast: ${subject}`);
 
-  const { data: broadcast, error: createError } =
-    await resend.broadcasts.create({
-      name: subject,
-      segmentId: segmentId!,
-      from: fromEmail!,
-      subject,
-      html,
-    });
+  const { data: broadcast, error: createError } = await resend.broadcasts.create({
+    name: subject,
+    segmentId: segmentId!,
+    from: fromEmail!,
+    subject,
+    html,
+  });
 
   if (createError || !broadcast) {
     console.error("Failed to create broadcast:", createError);
@@ -75,6 +82,21 @@ async function main() {
     console.error("Failed to send broadcast:", sendError);
     process.exit(1);
   }
+
+  writeFileSync(
+    sentPath,
+    JSON.stringify(
+      {
+        sent: true,
+        buildId,
+        subject,
+        broadcastId: broadcast.id,
+        sentAt: new Date().toISOString(),
+      },
+      null,
+      2,
+    ),
+  );
 
   console.log("Broadcast sent successfully.");
 }
