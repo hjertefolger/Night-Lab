@@ -19,35 +19,8 @@ function useSpinControl() {
   };
 
   const stopSpin = () => {
-    const anim = animRef.current;
-    const el = iconRef.current;
-    if (!anim || !el) return;
-
-    const matrix = getComputedStyle(el).transform;
-    anim.cancel();
-
-    let angle = 0;
-    if (matrix && matrix !== "none") {
-      const m = matrix.match(/matrix\(([^)]+)\)/);
-      if (m) {
-        const [a, b] = m[1].split(",").map(Number);
-        angle = Math.atan2(b, a) * (180 / Math.PI);
-        if (angle < 0) angle += 360;
-      }
-    }
-
-    const target = angle < 10 ? 0 : 360;
-    const remaining = target - angle;
-    const duration = Math.max(200, (remaining / 360) * 800);
-
-    animRef.current = el.animate(
-      [
-        { transform: `rotate(${angle}deg)` },
-        { transform: `rotate(${target}deg)` },
-      ],
-      { duration, easing: "ease-out", fill: "forwards" },
-    );
-    animRef.current.onfinish = () => animRef.current?.cancel();
+    animRef.current?.cancel();
+    animRef.current = null;
   };
 
   return { iconRef, startSpin, stopSpin };
@@ -87,7 +60,7 @@ export function NotifyInline() {
       ? "Subscribing"
       : state === "subscribed"
         ? "Subscribed"
-        : "Notify me on new builds";
+        : "Ask the assistant to notify me";
 
   return (
     <div className="flex flex-col gap-4">
@@ -128,7 +101,7 @@ export function NotifyInline() {
         className="text-[14px] text-[#666666]"
         style={{ fontFamily: "'Geist', sans-serif", letterSpacing: "-0.24px" }}
       >
-        No spam, just signal.
+        No spam. Just new builds. Pure signal.
       </p>
     </div>
   );
