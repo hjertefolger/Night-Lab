@@ -1,13 +1,15 @@
 "use client";
 
-import { Plus } from "lucide-react";
-import { useRef } from "react";
+import { Check, Plus } from "lucide-react";
+import { useRef, useState } from "react";
 
-function useSpinOnHover() {
+type NotifyState = "idle" | "subscribing" | "subscribed";
+
+function useSpinControl() {
   const iconRef = useRef<HTMLSpanElement>(null);
   const animRef = useRef<Animation | null>(null);
 
-  const onMouseEnter = () => {
+  const startSpin = () => {
     if (!iconRef.current) return;
     animRef.current?.cancel();
     animRef.current = iconRef.current.animate(
@@ -16,7 +18,7 @@ function useSpinOnHover() {
     );
   };
 
-  const onMouseLeave = () => {
+  const stopSpin = () => {
     const anim = animRef.current;
     const el = iconRef.current;
     if (!anim || !el) return;
@@ -48,34 +50,78 @@ function useSpinOnHover() {
     animRef.current.onfinish = () => animRef.current?.cancel();
   };
 
-  return { iconRef, onMouseEnter, onMouseLeave };
+  return { iconRef, startSpin, stopSpin };
 }
 
 export function NotifyInline() {
-  const spin = useSpinOnHover();
+  const spin = useSpinControl();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [email, setEmail] = useState("");
+  const [state, setState] = useState<NotifyState>("idle");
+
+  const disabled = state !== "idle";
+
+  const handleMouseEnter = () => {
+    if (state === "idle") spin.startSpin();
+  };
+
+  const handleMouseLeave = () => {
+    if (state === "idle") spin.stopSpin();
+  };
+
+  const handleSubscribe = async () => {
+    if (disabled) return;
+    if (!inputRef.current?.reportValidity()) return;
+
+    setState("subscribing");
+    spin.startSpin();
+
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+
+    spin.stopSpin();
+    setState("subscribed");
+  };
+
+  const label =
+    state === "subscribing"
+      ? "Subscribing"
+      : state === "subscribed"
+        ? "Subscribed"
+        : "Notify me on new builds";
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center h-10 border-b border-[#cccccc] pb-2 transition-colors duration-300 focus-within:border-[#111111]">
         <input
+          ref={inputRef}
           type="email"
           placeholder="your@email.com"
-          className="w-full bg-transparent text-[14px] text-[#0d0d0d] placeholder:text-[#666666] outline-none"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          disabled={disabled}
+          required
+          className="w-full bg-transparent text-[14px] text-[#0d0d0d] placeholder:text-[#666666] outline-none disabled:cursor-not-allowed disabled:text-[#666666]"
           style={{ fontFamily: "'Geist', sans-serif" }}
         />
       </div>
 
       <button
         type="button"
-        className="flex items-center gap-1.5 h-10 w-fit px-0 bg-transparent cursor-pointer"
+        disabled={disabled}
+        className="flex items-center gap-1.5 h-10 w-fit px-0 bg-transparent cursor-pointer disabled:cursor-default"
         style={{ fontFamily: "'JetBrains Mono', monospace" }}
-        onMouseEnter={spin.onMouseEnter}
-        onMouseLeave={spin.onMouseLeave}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleSubscribe}
       >
         <span ref={spin.iconRef} className="inline-flex">
-          <Plus size={24} strokeWidth={1.5} className="text-[#111111]" />
+          {state === "subscribed" ? (
+            <Check size={24} strokeWidth={1.5} className="text-[#111111]" />
+          ) : (
+            <Plus size={24} strokeWidth={1.5} className="text-[#111111]" />
+          )}
         </span>
-        <span className="text-[14px] font-medium text-[#111111]">Notify me on new builds</span>
+        <span className="text-[14px] font-medium text-[#111111]">{label}</span>
       </button>
 
       <p
