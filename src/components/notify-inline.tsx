@@ -75,14 +75,14 @@ export function NotifyInline() {
         <span ref={spin.iconRef} className="inline-flex">
           <Plus size={24} strokeWidth={1.5} className="text-[#111111]" />
         </span>
-        <span className="text-[14px] font-medium text-[#111111]">Get early access</span>
+        <span className="text-[14px] font-medium text-[#111111]">Notify me on new builds</span>
       </button>
 
       <p
         className="text-[14px] text-[#666666]"
         style={{ fontFamily: "'Geist', sans-serif", letterSpacing: "-0.24px" }}
       >
-        Join the waitlist. No spam, just signal.
+        No spam, just signal.
       </p>
     </div>
   );
