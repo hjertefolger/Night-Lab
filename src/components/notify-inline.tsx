@@ -49,7 +49,17 @@ export function NotifyInline() {
     setState("subscribing");
     spin.startSpin();
 
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+    const res = await fetch("/api/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!res.ok) {
+      spin.stopSpin();
+      setState("idle");
+      return;
+    }
 
     spin.stopSpin();
     setState("subscribed");
