@@ -7,13 +7,7 @@ Night Lab should stay focused on creation. Publishing happens only after a build
 The Night Lab creator invokes:
 
 ```bash
-~/Documents/Dev/52-night-lab-365/scripts/publish-build.sh <nightly-build-folder>
-```
-
-Example:
-
-```bash
-~/Documents/Dev/52-night-lab-365/scripts/publish-build.sh ~/Documents/Dev/nightly-builds/002-proof-thread
+scripts/publish-build.sh <build-folder>
 ```
 
 ## Expected Build Folder Contents
@@ -27,9 +21,22 @@ Recommended:
 ## Ready Marker Schema
 Use this exact template as the source of truth:
 
-- `~/Documents/Dev/52-night-lab-365/PUBLISH_READY.example.json`
+- `PUBLISH_READY.example.json`
 
 Night Lab should read that file and follow its structure exactly when generating `PUBLISH_READY.json`.
+
+## Local Config
+Machine-specific paths live in:
+
+- `scripts/local-config.json`
+
+This file is ignored by git.
+
+Use:
+
+- `scripts/local-config.example.json`
+
+as the template when setting up a new environment.
 
 ## What the script does
 - copies the build folder into `public/builds/<id>/`
@@ -37,7 +44,10 @@ Night Lab should read that file and follow its structure exactly when generating
 - updates `src/lib/builds.ts`
 - writes `PUBLISHED.json` into the source build folder
 - runs `npm run build` for verification
+- commits changes
+- pushes to the configured branch
 
 ## Notes
 - This is completion-triggered, not polling-based.
 - Night Lab should call it only after the build is truly done.
+- Internal handoff files are not copied into the public build output.

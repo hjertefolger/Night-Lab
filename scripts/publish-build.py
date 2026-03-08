@@ -8,15 +8,26 @@ import sys
 from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
 
-ROOT = Path.home() / "Documents/Dev/52-night-lab-365"
+CONFIG_PATH = Path(__file__).with_name("local-config.json")
+
+
+def load_config() -> dict:
+    if not CONFIG_PATH.exists():
+        raise SystemExit("Missing scripts/local-config.json")
+    return json.loads(CONFIG_PATH.read_text())
+
+
+CONFIG = load_config()
+ROOT = Path(CONFIG["repoRoot"]).expanduser().resolve()
 PUBLIC_BUILDS = ROOT / "public/builds"
 METADATA_PATH = ROOT / "src/lib/builds.ts"
+BRANCH = CONFIG.get("branch", "master")
 
 
 def zip_dir(source: Path, destination_zip: Path) -> None:
     with ZipFile(destination_zip, "w", ZIP_DEFLATED) as zf:
         for path in source.rglob("*"):
-            if path.is_file():
+            if path.is_file() and path.name not in {"PUBLISH_READY.json", "PUBLISHED.json"}:
                 zf.write(path, path.relative_to(source))
 
 
@@ -89,6 +100,20 @@ export function getAllBuildSlots() {{
     METADATA_PATH.write_text(content)
 
 
+def copy_public_files(source: Path, target: Path) -> None:
+    if target.exists():
+        shutil.rmtree(target)
+    target.mkdir(parents=True, exist_ok=True)
+    for path in source.iterdir():
+        if path.name in {"PUBLISH_READY.json", "PUBLISHED.json"}:
+            continue
+        dest = target / path.name
+        if path.is_dir():
+            shutil.copytree(path, dest)
+        else:
+            shutil.copy2(path, dest)
+
+
 def main() -> int:
     if len(sys.argv) != 2:
         print("Usage: publish-build.py <nightly-build-folder>")
@@ -101,9 +126,7 @@ def main() -> int:
 
     build_id = source.name.split("-", 1)[0]
     target_dir = PUBLIC_BUILDS / build_id
-    if target_dir.exists():
-        shutil.rmtree(target_dir)
-    shutil.copytree(source, target_dir)
+    copy_public_files(source, target_dir)
 
     zip_path = PUBLIC_BUILDS / f"{build_id}.zip"
     if zip_path.exists():
@@ -143,6 +166,7 @@ def main() -> int:
         "buildId": build_id,
         "publicDir": str(target_dir),
         "zip": str(zip_path),
+        "branch": BRANCH,
     }
     (source / "PUBLISHED.json").write_text(json.dumps(published, indent=2))
     print(f"Published {build_id} -> {target_dir}")

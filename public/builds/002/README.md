@@ -23,3 +23,6 @@ Default Night Lab art direction used.
 
 ## Promotion Candidate
 Yes. This now feels strong enough to keep exploring with intention.
+
+## Publish Metadata
+This build can be published by generating `PUBLISH_READY.json` in this folder and then invoking the Night Lab publish script.

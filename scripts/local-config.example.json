@@ -1,0 +1,5 @@
+{
+  "repoRoot": "/absolute/path/to/night-lab-repo",
+  "nightlyBuildsRoot": "/absolute/path/to/nightly-builds",
+  "branch": "master"
+}
