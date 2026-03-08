@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
       beforeFiles: [
         {
           source: "/builds/:id(\\d{3})",
-          destination: "/builds/:id",
+          destination: "/b/:id",
         },
       ],
       afterFiles: [],
