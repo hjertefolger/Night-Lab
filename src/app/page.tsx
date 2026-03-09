@@ -112,7 +112,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="min-w-0 flex-1 lg:overflow-y-auto lg:pr-1">
+        <section className="min-w-0 flex-1 pt-12 lg:overflow-y-auto lg:pt-0 lg:pr-1">
           <div className="space-y-4 pb-6 lg:pb-8">
             <div className="flex items-center justify-between gap-4">
               <div
