@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowDownToLine } from "lucide-react";
 import { BuildMeta } from "@/lib/builds";
 import { FieldNotesModal } from "@/components/field-notes-modal";
 
@@ -26,7 +27,7 @@ export function FloatingBuildBar({ build }: { build: BuildMeta }) {
         aria-label={`Download ${build.title}`}
         title="Download build"
       >
-        ↓
+        <ArrowDownToLine size={14} strokeWidth={1.6} />
       </a>
     </div>
   );

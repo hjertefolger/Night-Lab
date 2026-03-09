@@ -1,5 +1,6 @@
 "use client";
 
+import { Info } from "lucide-react";
 import { useState } from "react";
 import { BuildMeta } from "@/lib/builds";
 
@@ -20,7 +21,7 @@ export function FieldNotesModal({
         aria-label={`Open field notes for ${build.title}`}
         title="Field Notes"
       >
-        i
+        <Info size={14} strokeWidth={1.6} />
       </button>
 
       {open && (
