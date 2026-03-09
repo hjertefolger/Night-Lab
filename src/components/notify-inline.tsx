@@ -5,9 +5,14 @@ import { useRef, useState } from "react";
 
 type NotifyState = "idle" | "subscribing" | "subscribed";
 
-function useSpinControl() {
+export function NotifyInline() {
   const iconRef = useRef<HTMLSpanElement>(null);
   const animRef = useRef<Animation | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [email, setEmail] = useState("");
+  const [state, setState] = useState<NotifyState>("idle");
+
+  const disabled = state !== "idle";
 
   const startSpin = () => {
     if (!iconRef.current) return;
@@ -23,23 +28,12 @@ function useSpinControl() {
     animRef.current = null;
   };
 
-  return { iconRef, startSpin, stopSpin };
-}
-
-export function NotifyInline() {
-  const spin = useSpinControl();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [email, setEmail] = useState("");
-  const [state, setState] = useState<NotifyState>("idle");
-
-  const disabled = state !== "idle";
-
   const handleMouseEnter = () => {
-    if (state === "idle") spin.startSpin();
+    if (state === "idle") startSpin();
   };
 
   const handleMouseLeave = () => {
-    if (state === "idle") spin.stopSpin();
+    if (state === "idle") stopSpin();
   };
 
   const handleSubscribe = async () => {
@@ -47,7 +41,7 @@ export function NotifyInline() {
     if (!inputRef.current?.reportValidity()) return;
 
     setState("subscribing");
-    spin.startSpin();
+    startSpin();
 
     const res = await fetch("/api/subscribe", {
       method: "POST",
@@ -56,12 +50,12 @@ export function NotifyInline() {
     });
 
     if (!res.ok) {
-      spin.stopSpin();
+      stopSpin();
       setState("idle");
       return;
     }
 
-    spin.stopSpin();
+    stopSpin();
     setState("subscribed");
   };
 
@@ -97,7 +91,7 @@ export function NotifyInline() {
         onMouseLeave={handleMouseLeave}
         onClick={handleSubscribe}
       >
-        <span ref={spin.iconRef} className="inline-flex">
+        <span ref={iconRef} className="inline-flex">
           {state === "subscribed" ? (
             <Check size={24} strokeWidth={1.5} className="text-[#111111]" />
           ) : (
