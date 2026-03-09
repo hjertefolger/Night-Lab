@@ -25,8 +25,8 @@ export function FieldNotesModal({
       </button>
 
       {open && (
-        <div className="absolute right-0 top-9 z-[60] flex w-[min(360px,calc(100vw-2rem))] max-h-[min(72vh,540px)] flex-col rounded-[20px] border border-zinc-200 bg-white/98 p-4 shadow-2xl">
-          <div className="mb-3 flex items-start justify-between gap-3 border-b border-zinc-100 pb-3">
+        <div className="absolute left-1/2 top-9 z-[60] flex w-[min(360px,calc(100vw-2rem))] max-h-[min(72vh,540px)] -translate-x-1/2 flex-col rounded-[20px] border border-zinc-200 bg-white/98 p-4 shadow-2xl sm:left-auto sm:right-0 sm:translate-x-0">
+          <div className="mb-3 flex items-start justify-between gap-3 pb-1">
             <div>
               <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">Field Notes</div>
               <div className="mt-1.5 text-base font-medium tracking-[-0.04em] text-black">{build.id} — {build.title}</div>

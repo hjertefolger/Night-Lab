@@ -68,14 +68,9 @@ function SocialLinks({ mobile = false }: { mobile?: boolean }) {
 
 function FooterCredit() {
   return (
-    <a
-      href="https://a2n.run"
-      target="_blank"
-      rel="noreferrer"
-      className="transition hover:text-[#111111]"
-    >
-      Build by a2n
-    </a>
+    <>
+      ©2026 Night Lab / <a href="https://a2n.run" target="_blank" rel="noreferrer" className="transition hover:text-[#111111]">Build by a2n</a>
+    </>
   );
 }
 
@@ -134,7 +129,7 @@ export default function Home() {
                 className="flex items-center justify-between gap-4 text-[14px] text-[#666666]"
                 style={{ fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.22px" }}
               >
-                <FooterCredit />
+                <p><FooterCredit /></p>
                 <div className="flex items-center">
                   <SocialLinks />
                 </div>
