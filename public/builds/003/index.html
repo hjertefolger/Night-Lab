@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Threshold Atlas</title>
+  <style>
+    :root {
+      --bg: #f5f1ea;
+      --panel: rgba(255,255,255,0.62);
+      --line: rgba(17,17,17,0.14);
+      --text: #111111;
+      --muted: #666666;
+      --soft: #8a847d;
+      --accent: #8f6a36;
+      --accent-soft: rgba(143,106,54,0.16);
+      --danger: #8d4f39;
+      --danger-soft: rgba(141,79,57,0.16);
+      --ok: #51694c;
+      --ok-soft: rgba(81,105,76,0.14);
+      --shadow: 0 24px 70px rgba(40, 32, 20, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.8), transparent 38%),
+        linear-gradient(180deg, #f7f3ed 0%, var(--bg) 100%);
+      color: var(--text);
+      font-family: "Geist", "Inter", system-ui, sans-serif;
+    }
+
+    body {
+      padding: 24px;
+      letter-spacing: -0.01em;
+    }
+
+    .frame {
+      max-width: 1480px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      border: 1px solid var(--line);
+      min-height: calc(100vh - 48px);
+      background: rgba(255,255,255,0.4);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar,
+    .main {
+      padding: 28px;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .eyebrow,
+    .meta-label,
+    .event-time,
+    .metric-label,
+    .ledger-head,
+    .toggle,
+    .mini-note {
+      font-family: "JetBrains Mono", "SFMono-Regular", ui-monospace, monospace;
+      letter-spacing: 0.02em;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(36px, 5vw, 58px);
+      line-height: 0.95;
+      font-weight: 500;
+      max-width: 10ch;
+    }
+
+    .intro {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .intro p,
+    .meta-list,
+    .legend p,
+    .ledger-entry p {
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 12px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    .meta-item {
+      display: grid;
+      gap: 4px;
+    }
+
+    .meta-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--soft);
+    }
+
+    .idea-strip {
+      display: grid;
+      gap: 10px;
+      padding: 18px 0 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .idea-card {
+      padding: 16px 0;
+      border-top: 1px solid rgba(17,17,17,0.08);
+      display: grid;
+      gap: 6px;
+    }
+
+    .idea-card:first-child { border-top: 0; padding-top: 0; }
+
+    .idea-card strong {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .legend {
+      margin-top: auto;
+      display: grid;
+      gap: 10px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .swatch {
+      width: 24px;
+      height: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(17,17,17,0.08);
+    }
+
+    .main {
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      gap: 26px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 18px;
+    }
+
+    .topbar h2 {
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 6px;
+    }
+
+    .control-stack {
+      display: grid;
+      gap: 10px;
+      justify-items: end;
+    }
+
+    .toggle-row,
+    .scrubber {
+      display: inline-flex;
+      gap: 6px;
+      border: 1px solid var(--line);
+      padding: 4px;
+      background: rgba(255,255,255,0.56);
+    }
+
+    .toggle {
+      border: 0;
+      background: transparent;
+      padding: 8px 12px;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .toggle.active {
+      color: var(--text);
+      background: rgba(17,17,17,0.06);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      padding: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.45);
+      display: grid;
+      gap: 12px;
+    }
+
+    .metric-value {
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 500;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--soft);
+      text-transform: uppercase;
+    }
+
+    .metric-note {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .atlas {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) 360px;
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .map-panel,
+    .ledger-panel {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.48);
+      min-height: 0;
+    }
+
+    .map-panel {
+      padding: 18px 18px 22px;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .map-header,
+    .ledger-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .map-header h3,
+    .ledger-header h3 {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .mini-note {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--soft);
+    }
+
+    .map-wrap {
+      min-height: 0;
+      overflow: hidden;
+      border-top: 1px solid rgba(17,17,17,0.08);
+      padding-top: 18px;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      min-height: 460px;
+      overflow: visible;
+    }
+
+    .grid-line {
+      stroke: rgba(17,17,17,0.08);
+      stroke-width: 1;
+      shape-rendering: crispEdges;
+    }
+
+    .axis-label {
+      fill: var(--soft);
+      font-size: 11px;
+      font-family: "JetBrains Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .band {
+      fill: rgba(17,17,17,0.028);
+    }
+
+    .node {
+      cursor: pointer;
+      transition: transform 180ms ease;
+    }
+
+    .node:hover {
+      transform: translateY(-2px);
+    }
+
+    .node circle.core {
+      fill: rgba(255,255,255,0.92);
+      stroke-width: 1.4;
+    }
+
+    .node text {
+      fill: var(--text);
+      font-size: 12px;
+    }
+
+    .node .sub {
+      fill: var(--muted);
+      font-size: 11px;
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    .link {
+      fill: none;
+      stroke: rgba(17,17,17,0.14);
+      stroke-width: 1.2;
+    }
+
+    .threshold-line {
+      stroke: rgba(17,17,17,0.22);
+      stroke-width: 1;
+      stroke-dasharray: 5 7;
+    }
+
+    .active-node circle.core,
+    .node:hover circle.core {
+      stroke-width: 2;
+    }
+
+    .ledger-panel {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .ledger-header {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid rgba(17,17,17,0.08);
+    }
+
+    .ledger {
+      overflow: auto;
+    }
+
+    .ledger-entry {
+      padding: 18px;
+      border-top: 1px solid rgba(17,17,17,0.08);
+      display: grid;
+      gap: 10px;
+      cursor: pointer;
+      transition: background 180ms ease;
+    }
+
+    .ledger-entry:first-child { border-top: 0; }
+    .ledger-entry:hover,
+    .ledger-entry.active {
+      background: rgba(17,17,17,0.035);
+    }
+
+    .ledger-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      font-size: 11px;
+      color: var(--soft);
+      text-transform: uppercase;
+    }
+
+    .ledger-entry strong {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      border: 1px solid rgba(17,17,17,0.08);
+      padding: 4px 7px;
+      font-size: 11px;
+      font-family: "JetBrains Mono", monospace;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .detail {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding-top: 6px;
+    }
+
+    .detail-card {
+      border-top: 1px solid rgba(17,17,17,0.08);
+      padding-top: 8px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .detail-card span {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--soft);
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    .detail-card strong {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .footnote {
+      font-size: 12px;
+      color: var(--soft);
+      line-height: 1.5;
+      border-top: 1px solid rgba(17,17,17,0.08);
+      padding-top: 12px;
+    }
+
+    @media (max-width: 1120px) {
+      .frame {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .atlas {
+        grid-template-columns: 1fr;
+      }
+      .metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      body { padding: 12px; }
+      .sidebar, .main { padding: 20px; }
+      .metrics,
+      .detail { grid-template-columns: 1fr; }
+      .topbar { flex-direction: column; }
+      .toggle-row { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <aside class="sidebar">
+      <div class="intro">
+        <span class="eyebrow">Night Lab 003</span>
+        <h1>Threshold Atlas</h1>
+        <p>An instrument for watching uncertain signals approach the moment they become real enough to act on.</p>
+      </div>
+
+      <div class="meta-list">
+        <div class="meta-item">
+          <span class="meta-label">What it is</span>
+          <p>A temporal map of emerging signals, threshold crossings, and fragile recurrences.</p>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Why it matters</span>
+          <p>Important decisions often happen too early or too late. This prototype tries to make the in-between visible.</p>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Mechanism</span>
+          <p>Each signal is placed by confidence and recurrence, then traced as it accumulates toward a commitment threshold.</p>
+        </div>
+      </div>
+
+      <div class="idea-strip">
+        <div class="idea-card">
+          <strong>Temporal visualization, not dashboarding</strong>
+          <p>Designed as an atlas: part map, part ledger, part sensing surface.</p>
+        </div>
+        <div class="idea-card">
+          <strong>Color as signal, not decoration</strong>
+          <p>Muted earth tones mark threshold pressure, uncertainty, and stabilization.</p>
+        </div>
+        <div class="idea-card">
+          <strong>Single strong interaction</strong>
+          <p>Select a signal to inspect how it changes shape before it becomes actionable.</p>
+        </div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-row"><span class="swatch" style="background: var(--accent-soft); border-color: rgba(143,106,54,0.28);"></span><p>approaching commitment</p></div>
+        <div class="legend-row"><span class="swatch" style="background: var(--danger-soft); border-color: rgba(141,79,57,0.28);"></span><p>volatile / noisy</p></div>
+        <div class="legend-row"><span class="swatch" style="background: var(--ok-soft); border-color: rgba(81,105,76,0.28);"></span><p>stable but still watchful</p></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <span class="eyebrow">Atlas mode</span>
+          <h2>Watch signals drift, recur, and cross the line where waiting becomes negligence.</h2>
+        </div>
+        <div class="control-stack">
+          <div class="toggle-row" id="viewToggle">
+            <button class="toggle active" data-view="map">map</button>
+            <button class="toggle" data-view="focus">focus</button>
+            <button class="toggle" data-view="pressure">pressure</button>
+          </div>
+          <div class="scrubber" id="timeToggle">
+            <button class="toggle" data-time="jan">jan</button>
+            <button class="toggle" data-time="feb">feb</button>
+            <button class="toggle active" data-time="mar">mar</button>
+            <button class="toggle" data-time="all">all</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="metrics" id="metrics"></section>
+
+      <section class="atlas">
+        <div class="map-panel">
+          <div class="map-header">
+            <h3 id="mapTitle">Field map</h3>
+            <span class="mini-note" id="mapNote">confidence × recurrence</span>
+          </div>
+          <div class="map-wrap">
+            <svg id="atlas" viewBox="0 0 860 520" preserveAspectRatio="xMidYMid meet"></svg>
+          </div>
+        </div>
+
+        <div class="ledger-panel">
+          <div class="ledger-header">
+            <h3>Signal ledger</h3>
+            <span class="mini-note" id="ledgerCount">6 entries</span>
+          </div>
+          <div class="ledger" id="ledger"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const signals = [
+      {
+        id: 's1',
+        title: 'Operator memory drift',
+        domain: 'cognition',
+        x: 58,
+        y: 72,
+        pressure: 81,
+        volatility: 34,
+        cadence: 'recurring',
+        summary: 'Context compounds across sessions, but retrieval still depends on explicit structure and review habits.',
+        threshold: 'archive into operational memory before decisions start repeating.',
+        notes: 'High recurrence, medium clarity, strong downstream leverage.',
+        state: 'approaching',
+        trace: [
+          { month: 'jan', x: 40, y: 38 },
+          { month: 'feb', x: 49, y: 51 },
+          { month: 'mar', x: 58, y: 72 }
+        ]
+      },
+      {
+        id: 's2',
+        title: 'Trust needs visible lineage',
+        domain: 'verification',
+        x: 76,
+        y: 78,
+        pressure: 88,
+        volatility: 18,
+        cadence: 'persistent',
+        summary: 'Reasoning trails, evidence links, and proof surfaces keep returning as product gravity rather than incidental detail.',
+        threshold: 'promote when the lineage surface becomes portable and reusable.',
+        notes: 'Strong candidate thread; low volatility because it already has form.',
+        state: 'stable',
+        trace: [
+          { month: 'jan', x: 56, y: 40 },
+          { month: 'feb', x: 69, y: 61 },
+          { month: 'mar', x: 76, y: 78 }
+        ]
+      },
+      {
+        id: 's3',
+        title: 'Thresholds before certainty',
+        domain: 'time',
+        x: 69,
+        y: 57,
+        pressure: 74,
+        volatility: 42,
+        cadence: 'emerging',
+        summary: 'Action often happens under uncertainty, but most tools hide that pre-commitment state instead of shaping it.',
+        threshold: 'clarify the language of pressure, recurrence, and partial evidence.',
+        notes: 'This build explores the signal directly.',
+        state: 'approaching',
+        trace: [
+          { month: 'jan', x: 33, y: 28 },
+          { month: 'feb', x: 55, y: 44 },
+          { month: 'mar', x: 69, y: 57 }
+        ]
+      },
+      {
+        id: 's4',
+        title: 'Calm interfaces with rare color',
+        domain: 'art direction',
+        x: 63,
+        y: 48,
+        pressure: 61,
+        volatility: 24,
+        cadence: 'recurring',
+        summary: 'Monochrome restraint remains primary, but selective color can clarify temperature and conceptual difference without breaking tone.',
+        threshold: 'establish when color is structural instead of ornamental.',
+        notes: 'Useful as a systems rule, not a decorative exception.',
+        state: 'stable',
+        trace: [
+          { month: 'jan', x: 48, y: 31 },
+          { month: 'feb', x: 56, y: 39 },
+          { month: 'mar', x: 63, y: 48 }
+        ]
+      },
+      {
+        id: 's5',
+        title: 'Playful rigor',
+        domain: 'expression',
+        x: 47,
+        y: 43,
+        pressure: 45,
+        volatility: 56,
+        cadence: 'intermittent',
+        summary: 'There is room for quieter mischief and ambiguity, but it still needs a strong mechanism to avoid dissolving into mood alone.',
+        threshold: 'pair play with a rule tight enough to hold shape.',
+        notes: 'Interesting, but not yet stable.',
+        state: 'volatile',
+        trace: [
+          { month: 'jan', x: 22, y: 22 },
+          { month: 'feb', x: 54, y: 35 },
+          { month: 'mar', x: 47, y: 43 }
+        ]
+      },
+      {
+        id: 's6',
+        title: 'Topology for human sensemaking',
+        domain: 'math visualization',
+        x: 55,
+        y: 61,
+        pressure: 67,
+        volatility: 39,
+        cadence: 'emerging',
+        summary: 'Formal structures like fields, crossings, and shape could yield more surprising interfaces than standard cards and dashboards.',
+        threshold: 'find a human-use case where geometry does real conceptual work.',
+        notes: 'Strong frontier for future builds.',
+        state: 'approaching',
+        trace: [
+          { month: 'jan', x: 18, y: 26 },
+          { month: 'feb', x: 37, y: 49 },
+          { month: 'mar', x: 55, y: 61 }
+        ]
+      }
+    ];
+
+    const stateStyles = {
+      approaching: { stroke: 'var(--accent)', fill: 'var(--accent-soft)' },
+      volatile: { stroke: 'var(--danger)', fill: 'var(--danger-soft)' },
+      stable: { stroke: 'var(--ok)', fill: 'var(--ok-soft)' }
+    };
+
+    let activeId = 's3';
+    let view = 'map';
+    let timeMode = 'mar';
+
+    const metricsEl = document.getElementById('metrics');
+    const ledgerEl = document.getElementById('ledger');
+    const atlasEl = document.getElementById('atlas');
+    const mapTitleEl = document.getElementById('mapTitle');
+    const mapNoteEl = document.getElementById('mapNote');
+    const ledgerCountEl = document.getElementById('ledgerCount');
+    const toggleRoot = document.getElementById('viewToggle');
+    const timeRoot = document.getElementById('timeToggle');
+
+    function avg(values) {
+      return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+    }
+
+    function getMetrics() {
+      return [
+        {
+          label: 'signals tracked',
+          value: String(signals.length).padStart(2, '0'),
+          note: 'Small enough to stay legible; enough to show pattern pressure.'
+        },
+        {
+          label: 'avg threshold pressure',
+          value: avg(signals.map(signal => signal.pressure)) + '%',
+          note: 'How close the field is to demanding an actual move.'
+        },
+        {
+          label: 'volatile signals',
+          value: String(signals.filter(signal => signal.state === 'volatile').length).padStart(2, '0'),
+          note: 'Interesting but still too unstable to treat as direction.'
+        },
+        {
+          label: 'promotion pressure',
+          value: avg(signals.filter(signal => signal.pressure > 70).map(signal => signal.pressure)) + '%',
+          note: 'Signals already leaning toward real product commitment.'
+        }
+      ];
+    }
+
+    function renderMetrics() {
+      metricsEl.innerHTML = getMetrics().map(metric => `
+        <article class="metric">
+          <span class="metric-label">${metric.label}</span>
+          <strong class="metric-value">${metric.value}</strong>
+          <p class="metric-note">${metric.note}</p>
+        </article>
+      `).join('');
+    }
+
+    function renderLedger() {
+      ledgerCountEl.textContent = `${signals.length} entries`;
+      ledgerEl.innerHTML = signals.map(signal => `
+        <article class="ledger-entry ${signal.id === activeId ? 'active' : ''}" data-id="${signal.id}">
+          <div class="ledger-head">
+            <span>${signal.domain}</span>
+            <span>${signal.cadence}</span>
+          </div>
+          <div>
+            <strong>${signal.title}</strong>
+          </div>
+          <p>${signal.summary}</p>
+          <div class="chips">
+            <span class="chip">pressure ${signal.pressure}</span>
+            <span class="chip">volatility ${signal.volatility}</span>
+            <span class="chip">${signal.state}</span>
+          </div>
+          ${signal.id === activeId ? `
+            <div class="detail">
+              <div class="detail-card"><span>threshold</span><strong>${signal.threshold}</strong></div>
+              <div class="detail-card"><span>notes</span><strong>${signal.notes}</strong></div>
+              <div class="detail-card"><span>current read</span><strong>${signal.state}</strong></div>
+            </div>
+          ` : ''}
+        </article>
+      `).join('');
+
+      ledgerEl.querySelectorAll('.ledger-entry').forEach(entry => {
+        entry.addEventListener('click', () => {
+          activeId = entry.dataset.id;
+          renderLedger();
+          renderAtlas();
+        });
+      });
+    }
+
+    function point(signal) {
+      return {
+        px: 70 + signal.x * 6.6,
+        py: 430 - signal.y * 3.6
+      };
+    }
+
+    function tracePath(signal, mode) {
+      const steps = mode === 'all'
+        ? signal.trace
+        : signal.trace.filter(step => step.month === mode);
+
+      return steps
+        .map((step, index) => {
+          const px = 70 + step.x * 6.6;
+          const py = 430 - step.y * 3.6;
+          return `${index === 0 ? 'M' : 'L'} ${px} ${py}`;
+        })
+        .join(' ');
+    }
+
+    function getCurrentStep(signal) {
+      if (timeMode === 'all') return signal.trace[signal.trace.length - 1];
+      return signal.trace.find(step => step.month === timeMode) || signal.trace[signal.trace.length - 1];
+    }
+
+    function renderAtlas() {
+      const active = signals.find(signal => signal.id === activeId);
+      const timeLabel = timeMode === 'all' ? 'full trace' : `${timeMode} snapshot`;
+      const titleMap = {
+        map: ['Field map', `confidence × recurrence · ${timeLabel}`],
+        focus: [`Focus: ${active.title}`, `selected signal enlarged · ${timeLabel}`],
+        pressure: ['Pressure map', `threshold line emphasized · ${timeLabel}`]
+      };
+      mapTitleEl.textContent = titleMap[view][0];
+      mapNoteEl.textContent = titleMap[view][1];
+
+      const thresholdY = 430 - 65 * 3.6;
+      const thresholdStroke = view === 'pressure' ? 'rgba(17,17,17,0.36)' : 'rgba(17,17,17,0.22)';
+      const visibleSignals = view === 'focus'
+        ? [active, ...signals.filter(signal => signal.id !== activeId).slice(0, 3)]
+        : signals;
+
+      atlasEl.innerHTML = `
+        <rect class="band" x="70" y="80" width="660" height="110"></rect>
+        <rect class="band" x="70" y="190" width="660" height="110" style="fill: rgba(17,17,17,0.018)"></rect>
+        <rect class="band" x="70" y="300" width="660" height="130" style="fill: rgba(17,17,17,0.028)"></rect>
+
+        ${[0,1,2,3,4,5].map(i => `<line class="grid-line" x1="${70 + i*132}" y1="80" x2="${70 + i*132}" y2="430"></line>`).join('')}
+        ${[0,1,2,3].map(i => `<line class="grid-line" x1="70" y1="${80 + i*116.6}" x2="730" y2="${80 + i*116.6}"></line>`).join('')}
+
+        <line class="threshold-line" x1="70" y1="${thresholdY}" x2="730" y2="${thresholdY}" style="stroke:${thresholdStroke}"></line>
+        <text class="axis-label" x="76" y="${thresholdY - 10}">commitment threshold</text>
+        <text class="axis-label" x="74" y="458">low confidence</text>
+        <text class="axis-label" x="648" y="458">high confidence</text>
+        <text class="axis-label" x="6" y="426" transform="rotate(-90 20 426)">low recurrence</text>
+        <text class="axis-label" x="6" y="130" transform="rotate(-90 20 130)">high recurrence</text>
+
+        ${visibleSignals.map(signal => {
+          const currentStep = getCurrentStep(signal);
+          const current = point({ ...signal, x: currentStep.x, y: currentStep.y });
+          const style = stateStyles[signal.state];
+          const isActive = signal.id === activeId;
+          const path = tracePath(signal, timeMode);
+          const historicalDots = timeMode === 'all'
+            ? signal.trace.slice(0, -1).map(step => {
+                const px = 70 + step.x * 6.6;
+                const py = 430 - step.y * 3.6;
+                return `<circle cx="${px}" cy="${py}" r="${isActive ? 4.2 : 3.4}" fill="${style.stroke}" opacity="${isActive ? 0.42 : 0.18}"></circle>`;
+              }).join('')
+            : '';
+          return `
+            ${path ? `<path class="link" d="${path}" style="stroke:${style.stroke}; opacity:${isActive || view !== 'focus' ? 0.55 : 0.18}; stroke-width:${isActive ? 2.2 : 1.2}"></path>` : ''}
+            ${historicalDots}
+            <g class="node ${isActive ? 'active-node' : ''}" data-id="${signal.id}" style="opacity:${view === 'focus' && !isActive ? 0.34 : 1}">
+              <circle class="core" cx="${current.px}" cy="${current.py}" r="${isActive ? 13 : 10}" stroke="${style.stroke}" fill="${style.fill}"></circle>
+              <text x="${current.px + 18}" y="${current.py - 2}" font-weight="500">${signal.title}</text>
+              <text class="sub" x="${current.px + 18}" y="${current.py + 15}">${signal.domain} · ${timeMode === 'all' ? `pressure ${signal.pressure}` : currentStep.month}</text>
+            </g>
+          `;
+        }).join('')}
+      `;
+
+      atlasEl.querySelectorAll('.node').forEach(node => {
+        node.addEventListener('click', () => {
+          activeId = node.dataset.id;
+          renderLedger();
+          renderAtlas();
+        });
+      });
+    }
+
+    toggleRoot.querySelectorAll('.toggle').forEach(button => {
+      button.addEventListener('click', () => {
+        view = button.dataset.view;
+        toggleRoot.querySelectorAll('.toggle').forEach(btn => btn.classList.toggle('active', btn === button));
+        renderAtlas();
+      });
+    });
+
+    timeRoot.querySelectorAll('.toggle').forEach(button => {
+      button.addEventListener('click', () => {
+        timeMode = button.dataset.time;
+        timeRoot.querySelectorAll('.toggle').forEach(btn => btn.classList.toggle('active', btn === button));
+        renderAtlas();
+      });
+    });
+
+    renderMetrics();
+    renderLedger();
+    renderAtlas();
+  </script>
+</body>
+</html>

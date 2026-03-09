@@ -66,6 +66,32 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add persistence, multiple saved threads, and a stronger distinction between confidence and significance.",
       "promotionRead": "Strong promotion candidate."
     }
+  },
+  {
+    "id": "003",
+    "number": 3,
+    "title": "Threshold Atlas",
+    "date": "2026-03-09",
+    "tagline": "A temporal instrument for watching uncertain signals approach commitment.",
+    "summary": "Threshold Atlas maps recurrence, confidence, and threshold pressure before an idea becomes a full project. It treats emerging direction as something to inspect, not just feel.",
+    "principles": [
+      "Make invisible processes legible",
+      "Extend human cognition without obscuring agency",
+      "Compress complexity while preserving essence",
+      "Turn continuity into infrastructure"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Important decisions are often made in the pre-commitment zone, when signals keep returning but have not yet become stable enough to justify a full move. This build makes that in-between state visible.",
+      "whatChanged": [
+        "Built an atlas view that positions signals by confidence and recurrence instead of defaulting to cards or dashboards.",
+        "Added restrained state color to show threshold pressure, volatility, and stabilization without breaking the Night Lab visual language.",
+        "Added a month scrubber so the map can be read as a temporal object across snapshots or as a full trace."
+      ],
+      "artDirection": "Default Night Lab direction used, with muted earth-toned accents to mark temperature and commitment pressure. Color stays structural rather than decorative.",
+      "nextMove": "Make signals editable, allow threshold movement, and test a stronger mathematical field treatment so the atlas becomes a real decision instrument rather than only a beautiful read surface.",
+      "promotionRead": "Maybe. The concept feels novel and has a strong formal identity, but it needs editable state and deeper interaction before promotion is justified."
+    }
   }
 ];
 
