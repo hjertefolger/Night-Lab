@@ -8,13 +8,16 @@ const statusClass: Record<string, string> = {
   future: "border-[#e5e5e5] bg-white text-[#c4c4c4] cursor-default",
 };
 
+const latestClass = "border-[#111111] bg-[#111111] text-white hover:bg-white hover:text-[#111111]";
+
 export function BuildGrid() {
   const slots = getAllBuildSlots();
 
   return (
     <div className="grid grid-cols-5 gap-3 sm:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8">
       {slots.map((slot) => {
-        const cls = `flex aspect-square items-center justify-center border text-[13px] transition ${statusClass[slot.status]}`;
+        const appearance = slot.latest ? latestClass : statusClass[slot.status];
+        const cls = `flex aspect-square items-center justify-center border text-[13px] transition ${appearance}`;
         const style = { fontFamily: "'JetBrains Mono', monospace" };
         if (!slot.live) {
           return (
