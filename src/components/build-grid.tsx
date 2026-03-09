@@ -4,7 +4,7 @@ import { getAllBuildSlots } from "@/lib/builds";
 const statusClass: Record<string, string> = {
   live: "border-[#cccccc] bg-white text-[#111111] hover:border-[#111111]",
   iterated: "border-[#cccccc] bg-white text-[#111111] hover:border-[#111111]",
-  candidate: "border-[#111111] bg-white text-[#111111] hover:bg-[#111111] hover:text-white",
+  candidate: "border-[#cccccc] bg-white text-[#111111] hover:border-[#111111]",
   future: "border-[#e5e5e5] bg-white text-[#c4c4c4] cursor-default",
 };
 
