@@ -25,8 +25,8 @@ export function FieldNotesModal({
       </button>
 
       {open && (
-        <div className="absolute right-0 top-9 z-[60] w-[min(360px,calc(100vw-2rem))] rounded-[20px] border border-zinc-200 bg-white/98 p-4 shadow-2xl">
-          <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="absolute right-0 top-9 z-[60] flex w-[min(360px,calc(100vw-2rem))] max-h-[min(72vh,540px)] flex-col rounded-[20px] border border-zinc-200 bg-white/98 p-4 shadow-2xl">
+          <div className="mb-3 flex items-start justify-between gap-3 border-b border-zinc-100 pb-3">
             <div>
               <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">Field Notes</div>
               <div className="mt-1.5 text-base font-medium tracking-[-0.04em] text-black">{build.id} — {build.title}</div>
@@ -34,7 +34,7 @@ export function FieldNotesModal({
             <button onClick={() => setOpen(false)} className="font-mono text-[11px] text-zinc-500 hover:text-black">Close</button>
           </div>
 
-          <div className="space-y-3.5 text-[13px] text-zinc-700">
+          <div className="min-h-0 space-y-3.5 overflow-y-auto pr-1 text-[13px] text-zinc-700">
             <section>
               <div className="mb-1 font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">Why this exists</div>
               <p className="leading-5">{build.fieldNotes.whyThisExists}</p>

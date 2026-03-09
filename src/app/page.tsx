@@ -66,6 +66,19 @@ function SocialLinks({ mobile = false }: { mobile?: boolean }) {
   );
 }
 
+function FooterCredit() {
+  return (
+    <a
+      href="https://a2n.run"
+      target="_blank"
+      rel="noreferrer"
+      className="transition hover:text-[#111111]"
+    >
+      Build by a2n
+    </a>
+  );
+}
+
 export default function Home() {
   return (
     <main className="min-h-screen w-full bg-white px-4 py-4 text-black sm:px-6 sm:py-6 lg:h-screen lg:overflow-hidden lg:px-[25px] lg:py-[24px]">
@@ -121,7 +134,7 @@ export default function Home() {
                 className="flex items-center justify-between gap-4 text-[14px] text-[#666666]"
                 style={{ fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.22px" }}
               >
-                <p>©2026 Night Lab / Field work in public</p>
+                <FooterCredit />
                 <div className="flex items-center">
                   <SocialLinks />
                 </div>
@@ -148,12 +161,12 @@ export default function Home() {
             </div>
             <BuildGrid />
 
-            <div className="border-t border-[#e5e5e5] pt-4 lg:hidden">
+            <div className="pt-4 lg:hidden">
               <p
                 className="text-[13px] text-[#666666] sm:text-[14px]"
                 style={{ fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.22px" }}
               >
-                ©2026 Night Lab / Field work in public
+                <FooterCredit />
               </p>
             </div>
           </div>
