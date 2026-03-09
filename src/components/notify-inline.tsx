@@ -23,9 +23,39 @@ export function NotifyInline() {
     );
   };
 
-  const stopSpin = () => {
-    animRef.current?.cancel();
-    animRef.current = null;
+  const easeToHome = () => {
+    const anim = animRef.current;
+    const el = iconRef.current;
+    if (!anim || !el) return;
+
+    const matrix = getComputedStyle(el).transform;
+    anim.cancel();
+
+    let angle = 0;
+    if (matrix && matrix !== "none") {
+      const m = matrix.match(/matrix\(([^)]+)\)/);
+      if (m) {
+        const [a, b] = m[1].split(",").map(Number);
+        angle = Math.atan2(b, a) * (180 / Math.PI);
+        if (angle < 0) angle += 360;
+      }
+    }
+
+    const target = angle < 10 ? 0 : 360;
+    const remaining = target - angle;
+    const duration = Math.max(200, (remaining / 360) * 800);
+
+    animRef.current = el.animate(
+      [
+        { transform: `rotate(${angle}deg)` },
+        { transform: `rotate(${target}deg)` },
+      ],
+      { duration, easing: "ease-out", fill: "forwards" },
+    );
+    animRef.current.onfinish = () => {
+      animRef.current?.cancel();
+      animRef.current = null;
+    };
   };
 
   const handleMouseEnter = () => {
@@ -33,7 +63,7 @@ export function NotifyInline() {
   };
 
   const handleMouseLeave = () => {
-    if (state === "idle") stopSpin();
+    if (state === "idle") easeToHome();
   };
 
   const handleSubscribe = async () => {
@@ -50,13 +80,13 @@ export function NotifyInline() {
     });
 
     if (!res.ok) {
-      stopSpin();
+      easeToHome();
       setState("idle");
       return;
     }
 
-    stopSpin();
-    setState("subscribed");
+    easeToHome();
+    setTimeout(() => setState("subscribed"), 300);
   };
 
   const label =
