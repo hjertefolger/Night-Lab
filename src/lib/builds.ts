@@ -86,16 +86,26 @@ export const liveBuilds: BuildMeta[] = [
       "whatChanged": [
         "Built an atlas view that positions signals by confidence and recurrence instead of defaulting to cards or dashboards.",
         "Added restrained state color to show threshold pressure, volatility, and stabilization without breaking the Night Lab visual language.",
-        "Added a month scrubber so the map can be read as a temporal object across snapshots or as a full trace."
+        "Added a month scrubber so the map can be read as a temporal object across snapshots or as a full trace.",
+        "v1.2 removed explanatory shell copy from the build itself and expanded the map into the primary experience so the artifact reads more like a real instrument."
       ],
       "artDirection": "Default Night Lab direction used, with muted earth-toned accents to mark temperature and commitment pressure. Color stays structural rather than decorative.",
       "nextMove": "Make signals editable, allow threshold movement, and test a stronger mathematical field treatment so the atlas becomes a real decision instrument rather than only a beautiful read surface.",
-      "promotionRead": "Maybe. The concept feels novel and has a strong formal identity, but it needs editable state and deeper interaction before promotion is justified."
+      "promotionRead": "Maybe. The concept still feels too close to earlier signal territory, but the actual artifact is now cleaner and more honest than the first published pass."
     }
   }
 ];
 
 export const totalBuildSlots = 365;
+
+export interface BuildSlot {
+  number: number;
+  id: string;
+  live: boolean;
+  status: BuildStatus;
+  title: string;
+  latest: boolean;
+}
 
 export function getBuildById(id: string) {
   return liveBuilds.find((build) => build.id === id);
@@ -105,7 +115,7 @@ export function getLatestBuild() {
   return [...liveBuilds].sort((a, b) => b.number - a.number)[0];
 }
 
-export function getAllBuildSlots() {
+export function getAllBuildSlots(): BuildSlot[] {
   const liveMap = new Map(liveBuilds.map((build) => [build.number, build]));
   const latestBuildNumber = getLatestBuild()?.number;
 

@@ -78,12 +78,27 @@ export const liveBuilds: BuildMeta[] = {json.dumps(items, indent=2)};
 
 export const totalBuildSlots = 365;
 
+export interface BuildSlot {{
+  number: number;
+  id: string;
+  live: boolean;
+  status: BuildStatus;
+  title: string;
+  latest: boolean;
+}}
+
 export function getBuildById(id: string) {{
   return liveBuilds.find((build) => build.id === id);
 }}
 
-export function getAllBuildSlots() {{
+export function getLatestBuild() {{
+  return [...liveBuilds].sort((a, b) => b.number - a.number)[0];
+}}
+
+export function getAllBuildSlots(): BuildSlot[] {{
   const liveMap = new Map(liveBuilds.map((build) => [build.number, build]));
+  const latestBuildNumber = getLatestBuild()?.number;
+
   return Array.from({{ length: totalBuildSlots }}, (_, index) => {{
     const number = index + 1;
     const build = liveMap.get(number);
@@ -93,6 +108,7 @@ export function getAllBuildSlots() {{
       live: Boolean(build),
       status: build?.status ?? "future",
       title: build?.title ?? "Future build",
+      latest: number === latestBuildNumber,
     }};
   }});
 }}
