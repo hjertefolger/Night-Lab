@@ -59,7 +59,7 @@ export default function Home() {
                 <div className="flex items-center justify-start">
                   <NightLabSymbol />
                 </div>
-                <div className="lg:hidden">
+                <div className="flex items-center lg:hidden">
                   <SocialLinks mobile />
                 </div>
               </div>
@@ -104,7 +104,9 @@ export default function Home() {
                 style={{ fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.22px" }}
               >
                 <p>©2026 Night Lab / Field work in public</p>
-                <SocialLinks />
+                <div className="flex items-center">
+                  <SocialLinks />
+                </div>
               </div>
             </div>
           </div>
