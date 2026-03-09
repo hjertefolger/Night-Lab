@@ -24,7 +24,7 @@ export function FieldNotesModal({
       </button>
 
       {open && (
-        <div className="absolute left-0 top-9 z-[60] w-[min(360px,calc(100vw-2rem))] rounded-[20px] border border-zinc-200 bg-white/98 p-4 shadow-2xl">
+        <div className="absolute right-0 top-9 z-[60] w-[min(360px,calc(100vw-2rem))] rounded-[20px] border border-zinc-200 bg-white/98 p-4 shadow-2xl">
           <div className="mb-4 flex items-start justify-between gap-3">
             <div>
               <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">Field Notes</div>
