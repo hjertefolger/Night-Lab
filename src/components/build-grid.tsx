@@ -14,7 +14,7 @@ export function BuildGrid() {
   const slots = getAllBuildSlots();
 
   return (
-    <div className="grid grid-cols-5 gap-3 sm:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8">
+    <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 sm:gap-3 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8">
       {slots.map((slot) => {
         const appearance = slot.latest ? latestClass : statusClass[slot.status];
         const cls = `flex aspect-square items-center justify-center border text-[13px] transition ${appearance}`;

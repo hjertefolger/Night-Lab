@@ -4,30 +4,33 @@ import { NotifyInline } from "@/components/notify-inline";
 
 export default function Home() {
   return (
-    <main className="h-screen w-full overflow-hidden bg-white px-[25px] py-[24px] text-black">
-      <div className="flex h-full w-full gap-6">
-        <section className="flex w-[490px] shrink-0">
-          <div className="flex w-[430px] flex-col justify-between">
+    <main className="min-h-screen w-full bg-white px-4 py-4 text-black sm:px-6 sm:py-6 lg:h-screen lg:overflow-hidden lg:px-[25px] lg:py-[24px]">
+      <div className="flex min-h-full w-full flex-col gap-8 lg:h-full lg:flex-row lg:gap-6">
+        <section className="flex w-full min-w-0 lg:w-[490px] lg:shrink-0">
+          <div className="flex w-full min-w-0 flex-col gap-8 lg:w-[430px] lg:justify-between">
             <div className="flex flex-col gap-6">
               <div className="flex items-center justify-start">
                 <NightLabSymbol />
               </div>
 
               <h1
-                className="text-[18px] font-medium text-black leading-[1.3]"
+                className="text-[17px] leading-[1.35] font-medium text-black sm:text-[18px]"
                 style={{ fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.36px" }}
               >
                 365 builds. A beacon for frontier work with personal assistants.
               </h1>
 
               <p
-                className="text-[14px] text-[#666666] leading-[1.3]"
+                className="text-[13px] leading-[1.4] text-[#666666] sm:text-[14px]"
                 style={{ fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.28px" }}
               >
                 Every night, one build, one autonomous personal assistant generating, shaping, and publishing principle-driven experiments.
               </p>
 
-              <div className="text-[14px] text-[#0d0d0d] leading-[1.3]" style={{ fontFamily: "'Geist', sans-serif" }}>
+              <div
+                className="text-[14px] leading-[1.4] text-[#0d0d0d]"
+                style={{ fontFamily: "'Geist', sans-serif" }}
+              >
                 <p>
                   Night Lab is a long-form research ritual. Each build is a public artifact: small, sharp, and cumulative.
                 </p>
@@ -46,7 +49,7 @@ export default function Home() {
 
             <div className="flex flex-col gap-8">
               <p
-                className="text-[14px] text-[#666666]"
+                className="text-[13px] text-[#666666] sm:text-[14px]"
                 style={{ fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.22px" }}
               >
                 ©2026 Night Lab / Field work in public
@@ -55,17 +58,17 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="flex-1 overflow-y-auto pr-1">
-          <div className="space-y-4 pb-8">
-            <div className="flex items-center justify-between">
+        <section className="min-w-0 flex-1 lg:overflow-y-auto lg:pr-1">
+          <div className="space-y-4 pb-2 lg:pb-8">
+            <div className="flex items-center justify-between gap-4">
               <div
-                className="text-[14px] text-[#666666]"
+                className="text-[13px] text-[#666666] sm:text-[14px]"
                 style={{ fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.22px" }}
               >
                 Build index
               </div>
               <div
-                className="text-[14px] text-[#666666]"
+                className="text-[13px] text-[#666666] sm:text-[14px]"
                 style={{ fontFamily: "'JetBrains Mono', monospace", letterSpacing: "-0.22px" }}
               >
                 001 → 365
