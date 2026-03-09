@@ -3,14 +3,20 @@
 import { useState } from "react";
 import { BuildMeta } from "@/lib/builds";
 
-export function FieldNotesModal({ build }: { build: BuildMeta }) {
+export function FieldNotesModal({
+  build,
+  buttonClassName,
+}: {
+  build: BuildMeta;
+  buttonClassName?: string;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
     <div className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex h-7 w-7 items-center justify-center rounded-full border border-zinc-200 bg-white/96 text-[11px] text-zinc-500 shadow-sm transition hover:border-black hover:text-black"
+        className={buttonClassName ?? "flex h-7 w-7 items-center justify-center rounded-full border border-zinc-200 bg-white/96 text-[11px] text-zinc-500 shadow-sm transition hover:border-black hover:text-black"}
         aria-label={`Open field notes for ${build.title}`}
         title="Field Notes"
       >
