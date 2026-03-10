@@ -36,10 +36,19 @@ def infer_title(folder_name: str) -> str:
     return " ".join(part.capitalize() for part in raw.split("-"))
 
 
-def ts_array_to_json(payload: str) -> str:
-    payload = re.sub(r"(\s*)([A-Za-z_][A-Za-z0-9_]*)\s*:", r'\1"\2":', payload)
-    payload = payload.replace("'", '"')
-    return payload
+def extract_ts_array(text: str, marker: str) -> str:
+    start = text.index(marker) + len(marker)
+    payload_start = text.index("[", start)
+    depth = 0
+    for idx in range(payload_start, len(text)):
+        ch = text[idx]
+        if ch == "[":
+            depth += 1
+        elif ch == "]":
+            depth -= 1
+            if depth == 0:
+                return text[payload_start:idx + 1]
+    raise ValueError("Could not extract array payload")
 
 
 def load_or_init_metadata() -> list[dict]:
@@ -47,10 +56,8 @@ def load_or_init_metadata() -> list[dict]:
         return []
     text = METADATA_PATH.read_text()
     marker = "export const liveBuilds: BuildMeta[] = "
-    start = text.index(marker) + len(marker)
-    end = text.index(";\n\nexport const totalBuildSlots")
-    payload = text[start:end]
-    return json.loads(ts_array_to_json(payload))
+    payload = extract_ts_array(text, marker)
+    return json.loads(payload)
 
 
 def save_metadata(items: list[dict]) -> None:

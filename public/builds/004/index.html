@@ -37,45 +37,56 @@
     }
 
     .frame {
-      max-width: 1480px;
+      max-width: 1520px;
       margin: 0 auto;
       min-height: calc(100vh - 36px);
       display: grid;
-      grid-template-columns: 360px minmax(0, 1fr);
+      grid-template-columns: 320px minmax(0, 1fr) 360px;
       border: 1px solid var(--line);
       background: rgba(12, 13, 16, 0.82);
       box-shadow: var(--shadow);
       backdrop-filter: blur(18px);
     }
 
-    .sidebar,
-    .main {
-      padding: 24px;
+    .rail,
+    .main,
+    .sidebar {
+      padding: 22px;
+      min-height: 0;
     }
 
-    .sidebar {
+    .rail {
       border-right: 1px solid var(--line);
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 22px;
+    }
+
+    .sidebar {
+      border-left: 1px solid var(--line);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 16px;
     }
 
     .eyebrow,
+    .tiny,
     .meta-label,
     .pill,
     .entry-head,
-    .tiny,
+    .entry-tag,
     button,
     textarea,
-    input {
+    input,
+    select {
       font-family: "JetBrains Mono", ui-monospace, monospace;
       letter-spacing: 0.02em;
     }
 
     .eyebrow {
       font-size: 11px;
-      text-transform: uppercase;
       color: var(--muted);
+      text-transform: uppercase;
     }
 
     h1, h2, h3, p {
@@ -83,7 +94,7 @@
     }
 
     h1 {
-      font-size: clamp(34px, 5vw, 56px);
+      font-size: clamp(32px, 4.4vw, 54px);
       line-height: 0.95;
       font-weight: 500;
       max-width: 9ch;
@@ -97,7 +108,8 @@
     .intro p,
     .meta-block p,
     .entry-body,
-    .empty {
+    .empty,
+    .thread-note {
       color: var(--muted);
       font-size: 14px;
       line-height: 1.55;
@@ -117,8 +129,8 @@
 
     .meta-label {
       font-size: 10px;
-      text-transform: uppercase;
       color: var(--soft);
+      text-transform: uppercase;
     }
 
     .note {
@@ -126,7 +138,7 @@
       border-top: 1px solid var(--line);
       padding-top: 16px;
       display: grid;
-      gap: 8px;
+      gap: 10px;
     }
 
     .pill-row {
@@ -155,9 +167,8 @@
 
     .main {
       display: grid;
-      grid-template-rows: auto auto minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr);
       gap: 18px;
-      min-height: 0;
     }
 
     .topbar {
@@ -176,77 +187,36 @@
       margin-top: 6px;
     }
 
-    .stack {
+    .workspace {
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 420px);
-      gap: 18px;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      gap: 14px;
       min-height: 0;
     }
 
-    .panel {
+    .action-bar,
+    .handoff-meta,
+    .editor,
+    .thread,
+    .sidebar-panel {
       border: 1px solid var(--line);
       background: var(--surface);
-      min-height: 0;
     }
 
-    .composer {
-      display: grid;
-      grid-template-rows: auto auto auto 1fr auto;
-      gap: 14px;
-      padding: 18px;
+    .action-bar,
+    .handoff-meta,
+    .editor,
+    .thread,
+    .sidebar-panel {
+      padding: 16px;
     }
 
-    .panel-head {
+    .action-bar {
       display: flex;
       justify-content: space-between;
       gap: 12px;
-      align-items: baseline;
-    }
-
-    .panel-head h3 {
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .tiny {
-      font-size: 10px;
-      text-transform: uppercase;
-      color: var(--soft);
-    }
-
-    input,
-    textarea {
-      width: 100%;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.03);
-      color: var(--text);
-      padding: 12px 14px;
-      outline: none;
-      font-size: 12px;
-      resize: none;
-    }
-
-    textarea {
-      min-height: 158px;
-      line-height: 1.55;
-      font-family: "Geist", "Inter", system-ui, sans-serif;
-      font-size: 14px;
-      letter-spacing: -0.01em;
-    }
-
-    .meta-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .actions {
-      display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      border-top: 1px solid var(--line);
-      padding-top: 14px;
+      flex-wrap: wrap;
     }
 
     .button-row {
@@ -277,18 +247,69 @@
       border-color: var(--text);
     }
 
-    .preview {
-      padding: 18px;
+    .handoff-meta {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field.wide {
+      grid-column: span 2;
+    }
+
+    .tiny {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--soft);
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      padding: 12px 14px;
+      outline: none;
+      font-size: 12px;
+    }
+
+    select {
+      appearance: none;
+    }
+
+    textarea {
+      min-height: 240px;
+      resize: none;
+      line-height: 1.55;
+      font-family: "Geist", "Inter", system-ui, sans-serif;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+    }
+
+    .editor {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
-      gap: 14px;
+      gap: 12px;
       min-height: 0;
     }
 
-    .list {
+    .thread {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .thread-list {
       min-height: 0;
       overflow: auto;
-      border-top: 1px solid var(--line);
     }
 
     .entry {
@@ -327,32 +348,84 @@
       font-size: 10px;
       text-transform: uppercase;
       color: var(--muted);
-      font-family: "JetBrains Mono", monospace;
+    }
+
+    .sidebar-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .sidebar-head h3,
+    .section-title {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .sidebar-stack {
+      min-height: 0;
+      overflow: auto;
+      display: grid;
+      gap: 14px;
+    }
+
+    .sidebar-panel {
+      display: grid;
+      gap: 10px;
+    }
+
+    .step-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .step {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .step:first-child { border-top: 0; padding-top: 0; }
+
+    .step strong {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
     }
 
     .empty {
       padding-top: 18px;
     }
 
-    @media (max-width: 1120px) {
+    @media (max-width: 1240px) {
       .frame {
         grid-template-columns: 1fr;
       }
+      .rail,
       .sidebar {
-        border-right: 0;
+        border: 0;
         border-bottom: 1px solid var(--line);
       }
-      .stack {
-        grid-template-columns: 1fr;
+      .sidebar {
+        border-bottom: 0;
       }
     }
 
-    @media (max-width: 720px) {
+    @media (max-width: 900px) {
       body { padding: 12px; }
-      .sidebar, .main { padding: 18px; }
-      .meta-grid { grid-template-columns: 1fr; }
+      .rail, .main, .sidebar { padding: 18px; }
+      .handoff-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 640px) {
+      .handoff-meta { grid-template-columns: 1fr; }
+      .field.wide { grid-column: span 1; }
       .topbar,
-      .actions { flex-direction: column; align-items: stretch; }
+      .action-bar { flex-direction: column; align-items: stretch; }
       .button-row { width: 100%; }
       button { flex: 1 1 auto; }
     }
@@ -360,34 +433,34 @@
 </head>
 <body>
   <div class="frame">
-    <aside class="sidebar">
+    <aside class="rail">
       <div class="intro">
         <span class="eyebrow">Night Lab 004</span>
         <h1>Handoff Note</h1>
-        <p>A tiny instrument for one of the most fragile moments in work: handing context from one person or session to the next without losing what actually matters.</p>
+        <p>Capture the state another mind actually needs before you leave the work.</p>
       </div>
 
       <div class="meta-list">
         <div class="meta-block">
-          <span class="meta-label">Moment</span>
-          <p>You stop, leave, switch devices, or ask another person to continue — and the real state of the work risks collapsing into vague summary.</p>
+          <span class="meta-label">Works for</span>
+          <p>another person, your future self, a second device, or an agent continuing after interruption.</p>
         </div>
         <div class="meta-block">
-          <span class="meta-label">Mechanism</span>
-          <p>Capture a handoff as a compact note with status, watch-outs, confidence, next move, and a witness-style trail of what changed.</p>
+          <span class="meta-label">Good handoff</span>
+          <p>clear state, one watch-out, one next move, enough context to continue without a call.</p>
         </div>
         <div class="meta-block">
-          <span class="meta-label">Why it feels different</span>
-          <p>It is not a task app or a decision log. It is a transition artifact for continuity under interruption.</p>
+          <span class="meta-label">Bad handoff</span>
+          <p>summary without stakes, context without action, or action without current reality.</p>
         </div>
       </div>
 
       <div class="note">
-        <span class="eyebrow">Reading</span>
+        <span class="eyebrow">Signal</span>
         <div class="pill-row">
-          <span class="pill"><span class="dot"></span> context at risk</span>
-          <span class="pill"><span class="dot" style="background: var(--ok)"></span> small but real use</span>
-          <span class="pill"><span class="dot" style="background: var(--accent)"></span> dark mode justified</span>
+          <span class="pill"><span class="dot"></span> continuity at risk</span>
+          <span class="pill"><span class="dot" style="background: var(--ok)"></span> handoff ready</span>
+          <span class="pill"><span class="dot" style="background: var(--accent)"></span> receiving side visible</span>
         </div>
       </div>
     </aside>
@@ -395,53 +468,85 @@
     <main class="main">
       <div class="topbar">
         <div>
-          <span class="eyebrow">handoff surface</span>
-          <h2>Write the note you wish the next mind would receive.</h2>
+          <span class="eyebrow">handoff workspace</span>
+          <h2>Write, mark ready, pass onward, acknowledge receipt.</h2>
         </div>
       </div>
 
-      <section class="stack">
-        <div class="panel composer">
-          <div class="panel-head">
-            <h3>Compose handoff</h3>
-            <span class="tiny">compact / human-readable</span>
+      <section class="workspace">
+        <div class="action-bar">
+          <div class="button-row">
+            <button id="saveDraft">save draft</button>
+            <button id="markReady">mark ready</button>
+            <button id="handoffNow" class="primary">hand off now</button>
           </div>
-
-          <input id="title" type="text" placeholder="What is being handed off?" value="Remote session pairing flow" />
-
-          <div class="meta-grid">
-            <input id="status" type="text" placeholder="Current status" value="Blocked on one approval step" />
-            <input id="confidence" type="text" placeholder="Confidence" value="72% confidence" />
-            <input id="watch" type="text" placeholder="Watch-out" value="User may confuse trust confirmation with final approval" />
-            <input id="next" type="text" placeholder="Next move" value="Clarify the second confirmation screen" />
-          </div>
-
-          <textarea id="body" placeholder="Write the handoff note...">Pairing works, but the meaning of the second trust step is still too soft. The next person should test whether the language makes it clear that approval extends terminal access, not just device recognition. Keep the verification feeling calm, not scary.</textarea>
-
-          <div class="actions">
-            <div class="button-row">
-              <button id="save" class="primary">save handoff</button>
-              <button id="seed">load another example</button>
-            </div>
-            <span class="tiny">best when written before leaving, not after forgetting</span>
-          </div>
+          <span class="tiny" id="statusRead">draft / not yet handed off</span>
         </div>
 
-        <div class="panel preview">
-          <div class="panel-head">
-            <h3>Recent handoffs</h3>
-            <span class="tiny" id="entryCount">1 entry</span>
-          </div>
-          <div class="list" id="list"></div>
+        <div class="handoff-meta">
+          <label class="field wide">
+            <span class="tiny">handoff title</span>
+            <input id="title" type="text" value="Remote session pairing flow" />
+          </label>
+          <label class="field">
+            <span class="tiny">from</span>
+            <input id="from" type="text" value="Tomas" />
+          </label>
+          <label class="field">
+            <span class="tiny">to</span>
+            <input id="to" type="text" value="Next operator" />
+          </label>
+          <label class="field">
+            <span class="tiny">current status</span>
+            <input id="status" type="text" value="Blocked on one approval step" />
+          </label>
+          <label class="field">
+            <span class="tiny">confidence</span>
+            <input id="confidence" type="text" value="72% confidence" />
+          </label>
+          <label class="field wide">
+            <span class="tiny">watch-out</span>
+            <input id="watch" type="text" value="User may confuse trust confirmation with final approval" />
+          </label>
+          <label class="field wide">
+            <span class="tiny">next move</span>
+            <input id="next" type="text" value="Clarify the second confirmation screen" />
+          </label>
+        </div>
+
+        <div class="editor">
+          <div class="section-title">Handoff body</div>
+          <textarea id="body">Pairing works, but the meaning of the second trust step is still too soft. The next person should test whether the language makes it clear that approval extends terminal access, not just device recognition. Keep the verification feeling calm, not scary.</textarea>
         </div>
       </section>
     </main>
+
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <h3>Transfer thread</h3>
+        <span class="tiny" id="entryCount">1 entry</span>
+      </div>
+
+      <div class="sidebar-stack">
+        <section class="sidebar-panel">
+          <div class="section-title">Lifecycle</div>
+          <div class="step-list" id="lifecycle"></div>
+        </section>
+
+        <section class="sidebar-panel thread">
+          <div class="section-title">Recent handoffs</div>
+          <div class="thread-list" id="list"></div>
+        </section>
+      </div>
+    </aside>
   </div>
 
   <script>
     const seeds = [
       {
         title: 'Remote session pairing flow',
+        from: 'Tomas',
+        to: 'Next operator',
         status: 'Blocked on one approval step',
         confidence: '72% confidence',
         watch: 'User may confuse trust confirmation with final approval',
@@ -450,7 +555,9 @@
       },
       {
         title: 'Homepage mobile layout',
-        status: 'Ready for review',
+        from: 'One',
+        to: 'Tomas',
+        status: 'Ready for visual review',
         confidence: '84% confidence',
         watch: 'Social icons may over-balance the top row on smaller phones',
         next: 'Check footer rhythm after the build grid',
@@ -458,46 +565,94 @@
       },
       {
         title: 'Night Lab prompt v2',
+        from: 'One',
+        to: 'Tomorrow One',
         status: 'Live for tonight',
         confidence: '67% confidence',
         watch: 'The retry logic may still let a merely coherent idea slip through on the final round',
-        next: 'Observe whether critique actually changes what gets built',
-        body: 'The prompt is stronger because it forces explicit weakness checks and comparison against recent builds. The open question is whether final-round pressure produces determination or just another rationalized pick. Read the log honestly tomorrow.'
+        next: 'Read the log honestly tomorrow',
+        body: 'The prompt is stronger because it forces explicit weakness checks and comparison against recent builds. The open question is whether final-round pressure produces determination or just another rationalized pick.'
       }
     ];
 
     const state = {
       entries: [],
       seedIndex: 0,
+      phase: 'draft',
     };
 
     const titleEl = document.getElementById('title');
+    const fromEl = document.getElementById('from');
+    const toEl = document.getElementById('to');
     const statusEl = document.getElementById('status');
     const confidenceEl = document.getElementById('confidence');
     const watchEl = document.getElementById('watch');
     const nextEl = document.getElementById('next');
     const bodyEl = document.getElementById('body');
     const listEl = document.getElementById('list');
+    const lifecycleEl = document.getElementById('lifecycle');
     const entryCountEl = document.getElementById('entryCount');
-
-    function loadSeed(seed) {
-      titleEl.value = seed.title;
-      statusEl.value = seed.status;
-      confidenceEl.value = seed.confidence;
-      watchEl.value = seed.watch;
-      nextEl.value = seed.next;
-      bodyEl.value = seed.body;
-    }
+    const statusReadEl = document.getElementById('statusRead');
 
     function nowTag() {
       const now = new Date();
       return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).replace(' ', '');
     }
 
-    function render() {
+    function loadSeed(seed) {
+      titleEl.value = seed.title;
+      fromEl.value = seed.from;
+      toEl.value = seed.to;
+      statusEl.value = seed.status;
+      confidenceEl.value = seed.confidence;
+      watchEl.value = seed.watch;
+      nextEl.value = seed.next;
+      bodyEl.value = seed.body;
+      state.phase = 'draft';
+      renderLifecycle();
+    }
+
+    function currentEntry() {
+      return {
+        when: nowTag(),
+        title: titleEl.value.trim() || 'Untitled handoff',
+        from: fromEl.value.trim() || 'Unknown',
+        to: toEl.value.trim() || 'Unknown',
+        status: statusEl.value.trim() || 'Open',
+        confidence: confidenceEl.value.trim() || 'unknown confidence',
+        watch: watchEl.value.trim() || 'none',
+        next: nextEl.value.trim() || 'none',
+        body: bodyEl.value.trim() || 'No note written.',
+        phase: state.phase,
+      };
+    }
+
+    function renderLifecycle() {
+      const phaseMap = {
+        draft: ['draft', 'ready', 'sent', 'received'],
+        ready: ['draft', 'ready', 'sent', 'received'],
+        sent: ['draft', 'ready', 'sent', 'received'],
+        received: ['draft', 'ready', 'sent', 'received'],
+      };
+      const labels = {
+        draft: 'drafting',
+        ready: 'marked ready',
+        sent: 'handed off',
+        received: 'received / resumed',
+      };
+      statusReadEl.textContent = labels[state.phase];
+      lifecycleEl.innerHTML = phaseMap[state.phase].map((step) => `
+        <div class="step">
+          <strong>${step}</strong>
+          <span class="pill"><span class="dot" style="background:${step === state.phase ? 'var(--ok)' : 'var(--soft)'}"></span>${step === state.phase ? 'active' : 'waiting'}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderEntries() {
       entryCountEl.textContent = `${state.entries.length} entr${state.entries.length === 1 ? 'y' : 'ies'}`;
       if (!state.entries.length) {
-        listEl.innerHTML = '<div class="empty">No handoffs yet. Save a compact note before context drifts.</div>';
+        listEl.innerHTML = '<div class="empty">No handoffs yet. Save a draft or pass one onward.</div>';
         return;
       }
 
@@ -505,11 +660,13 @@
         <article class="entry">
           <div class="entry-head">
             <span>${entry.when}</span>
-            <span>${entry.status}</span>
+            <span>${entry.from} → ${entry.to}</span>
           </div>
           <div class="entry-title">${entry.title}</div>
           <div class="entry-body">${entry.body}</div>
           <div class="entry-meta">
+            <span class="entry-tag">${entry.phase}</span>
+            <span class="entry-tag">${entry.status}</span>
             <span class="entry-tag">${entry.confidence}</span>
             <span class="entry-tag">watch: ${entry.watch}</span>
             <span class="entry-tag">next: ${entry.next}</span>
@@ -518,36 +675,56 @@
       `).join('');
     }
 
-    document.getElementById('save').addEventListener('click', () => {
-      const entry = {
-        when: nowTag(),
-        title: titleEl.value.trim() || 'Untitled handoff',
-        status: statusEl.value.trim() || 'Open',
-        confidence: confidenceEl.value.trim() || 'unknown confidence',
-        watch: watchEl.value.trim() || 'none',
-        next: nextEl.value.trim() || 'none',
-        body: bodyEl.value.trim() || 'No note written.'
-      };
-      state.entries.unshift(entry);
-      render();
+    function pushEntry() {
+      state.entries.unshift(currentEntry());
+      renderEntries();
+    }
+
+    document.getElementById('saveDraft').addEventListener('click', () => {
+      state.phase = 'draft';
+      renderLifecycle();
+      pushEntry();
     });
 
-    document.getElementById('seed').addEventListener('click', () => {
-      state.seedIndex = (state.seedIndex + 1) % seeds.length;
-      loadSeed(seeds[state.seedIndex]);
+    document.getElementById('markReady').addEventListener('click', () => {
+      state.phase = 'ready';
+      renderLifecycle();
+      pushEntry();
+    });
+
+    document.getElementById('handoffNow').addEventListener('click', () => {
+      state.phase = 'sent';
+      renderLifecycle();
+      pushEntry();
+    });
+
+    lifecycleEl.addEventListener('click', () => {
+      if (state.phase === 'sent') {
+        state.phase = 'received';
+        renderLifecycle();
+        pushEntry();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+        event.preventDefault();
+        state.phase = 'sent';
+        renderLifecycle();
+        pushEntry();
+      }
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        state.seedIndex = (state.seedIndex + 1) % seeds.length;
+        loadSeed(seeds[state.seedIndex]);
+      }
     });
 
     loadSeed(seeds[0]);
-    state.entries = [{
-      when: nowTag(),
-      title: seeds[0].title,
-      status: seeds[0].status,
-      confidence: seeds[0].confidence,
-      watch: seeds[0].watch,
-      next: seeds[0].next,
-      body: seeds[0].body,
-    }];
-    render();
+    state.entries = [{ ...currentEntry(), when: nowTag(), phase: 'ready' }];
+    state.phase = 'ready';
+    renderLifecycle();
+    renderEntries();
   </script>
 </body>
 </html>
