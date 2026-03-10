@@ -16,6 +16,7 @@
       --accent: #d7d1c4;
       --warn: #b08a54;
       --ok: #78916e;
+      --danger: #9c5f5f;
       --shadow: 0 24px 60px rgba(0,0,0,0.28);
     }
 
@@ -37,11 +38,11 @@
     }
 
     .frame {
-      max-width: 1520px;
+      max-width: 1540px;
       margin: 0 auto;
       min-height: calc(100vh - 36px);
       display: grid;
-      grid-template-columns: 320px minmax(0, 1fr) 360px;
+      grid-template-columns: 300px minmax(0, 1fr) 380px;
       border: 1px solid var(--line);
       background: rgba(12, 13, 16, 0.82);
       box-shadow: var(--shadow);
@@ -65,7 +66,7 @@
     .sidebar {
       border-left: 1px solid var(--line);
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-rows: auto auto minmax(0, 1fr);
       gap: 16px;
     }
 
@@ -77,8 +78,7 @@
     .entry-tag,
     button,
     textarea,
-    input,
-    select {
+    input {
       font-family: "JetBrains Mono", ui-monospace, monospace;
       letter-spacing: 0.02em;
     }
@@ -109,7 +109,9 @@
     .meta-block p,
     .entry-body,
     .empty,
-    .thread-note {
+    .helper,
+    .timeline-item p,
+    .compare-grid p {
       color: var(--muted);
       font-size: 14px;
       line-height: 1.55;
@@ -141,7 +143,10 @@
       gap: 10px;
     }
 
-    .pill-row {
+    .pill-row,
+    .button-row,
+    .entry-meta,
+    .top-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -189,26 +194,29 @@
 
     .workspace {
       display: grid;
-      grid-template-rows: auto auto minmax(0, 1fr);
+      grid-template-rows: auto auto auto minmax(0, 1fr);
       gap: 14px;
       min-height: 0;
     }
 
-    .action-bar,
-    .handoff-meta,
-    .editor,
-    .thread,
-    .sidebar-panel {
+    .panel {
       border: 1px solid var(--line);
       background: var(--surface);
+      padding: 16px;
     }
 
-    .action-bar,
-    .handoff-meta,
-    .editor,
-    .thread,
-    .sidebar-panel {
-      padding: 16px;
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 12px;
+    }
+
+    .section-title,
+    .sidebar-head h3 {
+      font-size: 14px;
+      font-weight: 500;
     }
 
     .action-bar {
@@ -216,12 +224,6 @@
       justify-content: space-between;
       gap: 12px;
       align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .button-row {
-      display: flex;
-      gap: 8px;
       flex-wrap: wrap;
     }
 
@@ -247,6 +249,16 @@
       border-color: var(--text);
     }
 
+    button.danger {
+      color: #e2b6b6;
+      border-color: rgba(156,95,95,0.55);
+    }
+
+    button.danger:hover {
+      background: rgba(156,95,95,0.15);
+      border-color: rgba(226,182,182,0.45);
+    }
+
     .handoff-meta {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -258,7 +270,8 @@
       gap: 6px;
     }
 
-    .field.wide {
+    .field.wide,
+    .compare-block {
       grid-column: span 2;
     }
 
@@ -269,8 +282,7 @@
     }
 
     input,
-    textarea,
-    select {
+    textarea {
       width: 100%;
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.03);
@@ -280,12 +292,8 @@
       font-size: 12px;
     }
 
-    select {
-      appearance: none;
-    }
-
     textarea {
-      min-height: 240px;
+      min-height: 132px;
       resize: none;
       line-height: 1.55;
       font-family: "Geist", "Inter", system-ui, sans-serif;
@@ -293,23 +301,59 @@
       letter-spacing: -0.01em;
     }
 
-    .editor {
+    .editor-grid,
+    .compare-grid {
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
-      min-height: 0;
+    }
+
+    .compare-grid {
+      margin-top: 10px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+    }
+
+    .timeline-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .timeline-item:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .timeline-item strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .timeline-status {
+      min-width: fit-content;
+    }
+
+    .sidebar-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
     }
 
     .thread {
-      display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
-      gap: 12px;
-      min-height: 0;
-    }
-
-    .thread-list {
       min-height: 0;
       overflow: auto;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      padding: 16px;
     }
 
     .entry {
@@ -317,9 +361,11 @@
       border-top: 1px solid rgba(255,255,255,0.08);
       display: grid;
       gap: 8px;
+      cursor: pointer;
     }
 
     .entry:first-child { border-top: 0; }
+    .entry.active .entry-title { color: var(--accent); }
 
     .entry-head {
       display: flex;
@@ -336,12 +382,6 @@
       color: var(--text);
     }
 
-    .entry-meta {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
     .entry-tag {
       padding: 4px 7px;
       border: 1px solid var(--line);
@@ -350,58 +390,14 @@
       color: var(--muted);
     }
 
-    .sidebar-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: baseline;
-    }
+    .status-draft { color: var(--muted); }
+    .status-ready { color: var(--accent); }
+    .status-sent { color: #d8c08d; }
+    .status-received { color: var(--ok); }
+    .status-resumed { color: #8fa6d1; }
+    .status-closed { color: #c9c5bc; }
 
-    .sidebar-head h3,
-    .section-title {
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .sidebar-stack {
-      min-height: 0;
-      overflow: auto;
-      display: grid;
-      gap: 14px;
-    }
-
-    .sidebar-panel {
-      display: grid;
-      gap: 10px;
-    }
-
-    .step-list {
-      display: grid;
-      gap: 8px;
-    }
-
-    .step {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      padding: 10px 0;
-      border-top: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .step:first-child { border-top: 0; padding-top: 0; }
-
-    .step strong {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .empty {
-      padding-top: 18px;
-    }
-
-    @media (max-width: 1240px) {
+    @media (max-width: 1280px) {
       .frame {
         grid-template-columns: 1fr;
       }
@@ -418,16 +414,23 @@
     @media (max-width: 900px) {
       body { padding: 12px; }
       .rail, .main, .sidebar { padding: 18px; }
-      .handoff-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .handoff-meta,
+      .editor-grid,
+      .compare-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 640px) {
-      .handoff-meta { grid-template-columns: 1fr; }
-      .field.wide { grid-column: span 1; }
+      .handoff-meta,
+      .editor-grid,
+      .compare-grid { grid-template-columns: 1fr; }
+      .field.wide,
+      .compare-block { grid-column: span 1; }
       .topbar,
       .action-bar { flex-direction: column; align-items: stretch; }
-      .button-row { width: 100%; }
+      .button-row,
+      .top-actions { width: 100%; }
       button { flex: 1 1 auto; }
+      .timeline-item { flex-direction: column; }
     }
   </style>
 </head>
@@ -442,16 +445,16 @@
 
       <div class="meta-list">
         <div class="meta-block">
-          <span class="meta-label">Works for</span>
-          <p>another person, your future self, a second device, or an agent continuing after interruption.</p>
+          <span class="meta-label">This handoff includes</span>
+          <p>current state, watch-out, next move, who it is for, and what really happened after continuation.</p>
         </div>
         <div class="meta-block">
-          <span class="meta-label">Good handoff</span>
-          <p>clear state, one watch-out, one next move, enough context to continue without a call.</p>
+          <span class="meta-label">You can</span>
+          <p>create, edit, replace, delete, hand off, receive, resume, and close a handoff thread.</p>
         </div>
         <div class="meta-block">
-          <span class="meta-label">Bad handoff</span>
-          <p>summary without stakes, context without action, or action without current reality.</p>
+          <span class="meta-label">Why compare</span>
+          <p>the most useful handoffs are not just sent — they are judged by what survived the transition.</p>
         </div>
       </div>
 
@@ -459,8 +462,8 @@
         <span class="eyebrow">Signal</span>
         <div class="pill-row">
           <span class="pill"><span class="dot"></span> continuity at risk</span>
-          <span class="pill"><span class="dot" style="background: var(--ok)"></span> handoff ready</span>
-          <span class="pill"><span class="dot" style="background: var(--accent)"></span> receiving side visible</span>
+          <span class="pill"><span class="dot" style="background: var(--ok)"></span> receiver visible</span>
+          <span class="pill"><span class="dot" style="background: var(--accent)"></span> outcome compared</span>
         </div>
       </div>
     </aside>
@@ -469,75 +472,106 @@
       <div class="topbar">
         <div>
           <span class="eyebrow">handoff workspace</span>
-          <h2>Write, mark ready, pass onward, acknowledge receipt.</h2>
+          <h2>Edit the handoff, pass it onward, then compare what actually survived.</h2>
+        </div>
+        <div class="top-actions">
+          <button id="newHandoff">new handoff</button>
+          <button id="loadExample">load example</button>
         </div>
       </div>
 
       <section class="workspace">
-        <div class="action-bar">
+        <div class="panel action-bar">
           <div class="button-row">
-            <button id="saveDraft">save draft</button>
-            <button id="markReady">mark ready</button>
-            <button id="handoffNow" class="primary">hand off now</button>
+            <button id="saveDraft">save</button>
+            <button id="markReady">ready</button>
+            <button id="handoffNow" class="primary">hand off</button>
+            <button id="receiveHandoff">receive</button>
+            <button id="resumeHandoff">resume</button>
+            <button id="closeHandoff">close</button>
           </div>
-          <span class="tiny" id="statusRead">draft / not yet handed off</span>
+          <button id="deleteHandoff" class="danger">delete</button>
         </div>
 
-        <div class="handoff-meta">
-          <label class="field wide">
-            <span class="tiny">handoff title</span>
-            <input id="title" type="text" value="Remote session pairing flow" />
-          </label>
-          <label class="field">
-            <span class="tiny">from</span>
-            <input id="from" type="text" value="Tomas" />
-          </label>
-          <label class="field">
-            <span class="tiny">to</span>
-            <input id="to" type="text" value="Next operator" />
-          </label>
-          <label class="field">
-            <span class="tiny">current status</span>
-            <input id="status" type="text" value="Blocked on one approval step" />
-          </label>
-          <label class="field">
-            <span class="tiny">confidence</span>
-            <input id="confidence" type="text" value="72% confidence" />
-          </label>
-          <label class="field wide">
-            <span class="tiny">watch-out</span>
-            <input id="watch" type="text" value="User may confuse trust confirmation with final approval" />
-          </label>
-          <label class="field wide">
-            <span class="tiny">next move</span>
-            <input id="next" type="text" value="Clarify the second confirmation screen" />
-          </label>
+        <div class="panel">
+          <div class="section-head">
+            <div class="section-title">Current handoff</div>
+            <span class="tiny" id="statusRead">draft / editable</span>
+          </div>
+          <div class="handoff-meta">
+            <label class="field wide">
+              <span class="tiny">handoff title</span>
+              <input id="title" type="text" />
+            </label>
+            <label class="field">
+              <span class="tiny">from</span>
+              <input id="from" type="text" />
+            </label>
+            <label class="field">
+              <span class="tiny">to</span>
+              <input id="to" type="text" />
+            </label>
+            <label class="field">
+              <span class="tiny">current status</span>
+              <input id="status" type="text" />
+            </label>
+            <label class="field">
+              <span class="tiny">confidence</span>
+              <input id="confidence" type="text" />
+            </label>
+            <label class="field wide">
+              <span class="tiny">watch-out</span>
+              <input id="watch" type="text" />
+            </label>
+            <label class="field wide">
+              <span class="tiny">next move</span>
+              <input id="next" type="text" />
+            </label>
+          </div>
         </div>
 
-        <div class="editor">
-          <div class="section-title">Handoff body</div>
-          <textarea id="body">Pairing works, but the meaning of the second trust step is still too soft. The next person should test whether the language makes it clear that approval extends terminal access, not just device recognition. Keep the verification feeling calm, not scary.</textarea>
+        <div class="panel">
+          <div class="section-head">
+            <div class="section-title">Before handoff / after continuation</div>
+            <span class="tiny">where handoffs become useful</span>
+          </div>
+          <div class="compare-grid">
+            <label class="field compare-block">
+              <span class="tiny">handoff body</span>
+              <textarea id="body"></textarea>
+            </label>
+            <label class="field compare-block">
+              <span class="tiny">what actually happened next</span>
+              <textarea id="actual"></textarea>
+            </label>
+            <label class="field compare-block">
+              <span class="tiny">what was misunderstood or missing</span>
+              <textarea id="missing"></textarea>
+            </label>
+            <label class="field compare-block">
+              <span class="tiny">continuation note</span>
+              <textarea id="continuation"></textarea>
+            </label>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="section-head">
+            <div class="section-title">Lifecycle</div>
+            <span class="tiny">simple transition states, not abstract card logic</span>
+          </div>
+          <div class="timeline" id="timeline"></div>
         </div>
       </section>
     </main>
 
     <aside class="sidebar">
       <div class="sidebar-head">
-        <h3>Transfer thread</h3>
-        <span class="tiny" id="entryCount">1 entry</span>
+        <h3>Handoff thread</h3>
+        <span class="tiny" id="entryCount">0 entries</span>
       </div>
-
-      <div class="sidebar-stack">
-        <section class="sidebar-panel">
-          <div class="section-title">Lifecycle</div>
-          <div class="step-list" id="lifecycle"></div>
-        </section>
-
-        <section class="sidebar-panel thread">
-          <div class="section-title">Recent handoffs</div>
-          <div class="thread-list" id="list"></div>
-        </section>
-      </div>
+      <p class="helper">Pick a handoff to edit it. The selected item becomes the active record in the center panel.</p>
+      <section class="thread" id="list"></section>
     </aside>
   </div>
 
@@ -551,7 +585,11 @@
         confidence: '72% confidence',
         watch: 'User may confuse trust confirmation with final approval',
         next: 'Clarify the second confirmation screen',
-        body: 'Pairing works, but the meaning of the second trust step is still too soft. The next person should test whether the language makes it clear that approval extends terminal access, not just device recognition. Keep the verification feeling calm, not scary.'
+        body: 'Pairing works, but the meaning of the second trust step is still too soft. The next person should test whether the language makes it clear that approval extends terminal access, not just device recognition. Keep the verification feeling calm, not scary.',
+        actual: 'The next operator changed the copy and tested the second screen with two users. One still misread it as passive recognition rather than permission granting.',
+        missing: 'The original note did not include the exact phrase that caused confusion or screenshots of the second screen.',
+        continuation: 'Bring the language closer to explicit capability transfer and attach the relevant screens in the next handoff.',
+        phase: 'resumed'
       },
       {
         title: 'Homepage mobile layout',
@@ -561,7 +599,11 @@
         confidence: '84% confidence',
         watch: 'Social icons may over-balance the top row on smaller phones',
         next: 'Check footer rhythm after the build grid',
-        body: 'The stacked mobile version feels much healthier than the old split layout. The main thing to watch is whether the header now feels too busy relative to the symbol. Do not reduce the build grid further — tap size is finally okay.'
+        body: 'The stacked mobile version feels much healthier than the old split layout. The main thing to watch is whether the header now feels too busy relative to the symbol. Do not reduce the build grid further — tap size is finally okay.',
+        actual: 'Review confirmed the spacing before the build grid helped, but the header still wanted a calmer icon balance.',
+        missing: 'The note should have named the exact breakpoint where the icon weight became noticeable.',
+        continuation: 'Test one quieter header pass instead of reworking the whole mobile layout.',
+        phase: 'closed'
       },
       {
         title: 'Night Lab prompt v2',
@@ -571,26 +613,47 @@
         confidence: '67% confidence',
         watch: 'The retry logic may still let a merely coherent idea slip through on the final round',
         next: 'Read the log honestly tomorrow',
-        body: 'The prompt is stronger because it forces explicit weakness checks and comparison against recent builds. The open question is whether final-round pressure produces determination or just another rationalized pick.'
+        body: 'The prompt is stronger because it forces explicit weakness checks and comparison against recent builds. The open question is whether final-round pressure produces determination or just another rationalized pick.',
+        actual: 'The prompt improved grounding, but quality still slipped and required human correction on concept leakage and missing product grammar.',
+        missing: 'The prompt did not force a clear distinction between product-surface UI and modal-facing explanation.',
+        continuation: 'Add a rule: the artifact must expose its native actions and must not explain itself on the surface.',
+        phase: 'received'
       }
     ];
 
-    const state = {
-      entries: [],
-      seedIndex: 0,
-      phase: 'draft',
+    const lifecycleCopy = {
+      draft: 'Still being written. Safe to edit freely.',
+      ready: 'Prepared for transfer. The sender thinks this is good enough to pass.',
+      sent: 'Passed onward. The receiving side should now be able to act.',
+      received: 'Acknowledged by the receiver, but continuation has not fully unfolded yet.',
+      resumed: 'Work has resumed from the handoff and real outcomes can now be compared.',
+      closed: 'The handoff loop is complete.'
     };
 
-    const titleEl = document.getElementById('title');
-    const fromEl = document.getElementById('from');
-    const toEl = document.getElementById('to');
-    const statusEl = document.getElementById('status');
-    const confidenceEl = document.getElementById('confidence');
-    const watchEl = document.getElementById('watch');
-    const nextEl = document.getElementById('next');
-    const bodyEl = document.getElementById('body');
+    const phaseOrder = ['draft', 'ready', 'sent', 'received', 'resumed', 'closed'];
+
+    const state = {
+      entries: [],
+      selectedId: null,
+      seedIndex: 0,
+    };
+
+    const fields = {
+      title: document.getElementById('title'),
+      from: document.getElementById('from'),
+      to: document.getElementById('to'),
+      status: document.getElementById('status'),
+      confidence: document.getElementById('confidence'),
+      watch: document.getElementById('watch'),
+      next: document.getElementById('next'),
+      body: document.getElementById('body'),
+      actual: document.getElementById('actual'),
+      missing: document.getElementById('missing'),
+      continuation: document.getElementById('continuation'),
+    };
+
     const listEl = document.getElementById('list');
-    const lifecycleEl = document.getElementById('lifecycle');
+    const timelineEl = document.getElementById('timeline');
     const entryCountEl = document.getElementById('entryCount');
     const statusReadEl = document.getElementById('statusRead');
 
@@ -599,52 +662,73 @@
       return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).replace(' ', '');
     }
 
-    function loadSeed(seed) {
-      titleEl.value = seed.title;
-      fromEl.value = seed.from;
-      toEl.value = seed.to;
-      statusEl.value = seed.status;
-      confidenceEl.value = seed.confidence;
-      watchEl.value = seed.watch;
-      nextEl.value = seed.next;
-      bodyEl.value = seed.body;
-      state.phase = 'draft';
-      renderLifecycle();
+    function makeId() {
+      return `handoff-${Math.random().toString(36).slice(2, 9)}`;
     }
 
-    function currentEntry() {
+    function currentEntryFromFields() {
+      const selected = getSelected();
       return {
-        when: nowTag(),
-        title: titleEl.value.trim() || 'Untitled handoff',
-        from: fromEl.value.trim() || 'Unknown',
-        to: toEl.value.trim() || 'Unknown',
-        status: statusEl.value.trim() || 'Open',
-        confidence: confidenceEl.value.trim() || 'unknown confidence',
-        watch: watchEl.value.trim() || 'none',
-        next: nextEl.value.trim() || 'none',
-        body: bodyEl.value.trim() || 'No note written.',
-        phase: state.phase,
+        id: selected?.id || makeId(),
+        when: selected?.when || nowTag(),
+        title: fields.title.value.trim() || 'Untitled handoff',
+        from: fields.from.value.trim() || 'Unknown',
+        to: fields.to.value.trim() || 'Unknown',
+        status: fields.status.value.trim() || 'Open',
+        confidence: fields.confidence.value.trim() || 'unknown confidence',
+        watch: fields.watch.value.trim() || 'none',
+        next: fields.next.value.trim() || 'none',
+        body: fields.body.value.trim() || 'No note written.',
+        actual: fields.actual.value.trim() || '',
+        missing: fields.missing.value.trim() || '',
+        continuation: fields.continuation.value.trim() || '',
+        phase: selected?.phase || 'draft',
       };
     }
 
-    function renderLifecycle() {
-      const phaseMap = {
-        draft: ['draft', 'ready', 'sent', 'received'],
-        ready: ['draft', 'ready', 'sent', 'received'],
-        sent: ['draft', 'ready', 'sent', 'received'],
-        received: ['draft', 'ready', 'sent', 'received'],
-      };
-      const labels = {
-        draft: 'drafting',
-        ready: 'marked ready',
-        sent: 'handed off',
-        received: 'received / resumed',
-      };
-      statusReadEl.textContent = labels[state.phase];
-      lifecycleEl.innerHTML = phaseMap[state.phase].map((step) => `
-        <div class="step">
-          <strong>${step}</strong>
-          <span class="pill"><span class="dot" style="background:${step === state.phase ? 'var(--ok)' : 'var(--soft)'}"></span>${step === state.phase ? 'active' : 'waiting'}</span>
+    function getSelected() {
+      return state.entries.find((entry) => entry.id === state.selectedId) || null;
+    }
+
+    function setFields(entry) {
+      Object.entries(fields).forEach(([key, el]) => {
+        el.value = entry[key] || '';
+      });
+      statusReadEl.textContent = `${entry.phase} / editable`;
+      renderTimeline(entry.phase);
+    }
+
+    function saveSelectedEntry(phaseOverride = null) {
+      const draft = currentEntryFromFields();
+      draft.phase = phaseOverride || draft.phase;
+      draft.when = nowTag();
+      const existingIndex = state.entries.findIndex((entry) => entry.id === draft.id);
+      if (existingIndex >= 0) {
+        state.entries[existingIndex] = draft;
+      } else {
+        state.entries.unshift(draft);
+      }
+      state.selectedId = draft.id;
+      setFields(draft);
+      renderEntries();
+    }
+
+    function selectEntry(id) {
+      state.selectedId = id;
+      const entry = getSelected();
+      if (entry) setFields(entry);
+      renderEntries();
+    }
+
+    function renderTimeline(activePhase) {
+      const activeIndex = phaseOrder.indexOf(activePhase);
+      timelineEl.innerHTML = phaseOrder.map((phase, index) => `
+        <div class="timeline-item">
+          <div>
+            <strong>${phase}</strong>
+            <p>${lifecycleCopy[phase]}</p>
+          </div>
+          <span class="pill timeline-status"><span class="dot" style="background:${index <= activeIndex ? (phase === activePhase ? 'var(--ok)' : 'var(--accent)') : 'var(--soft)'}"></span>${index < activeIndex ? 'done' : index === activeIndex ? 'current' : 'next'}</span>
         </div>
       `).join('');
     }
@@ -652,79 +736,107 @@
     function renderEntries() {
       entryCountEl.textContent = `${state.entries.length} entr${state.entries.length === 1 ? 'y' : 'ies'}`;
       if (!state.entries.length) {
-        listEl.innerHTML = '<div class="empty">No handoffs yet. Save a draft or pass one onward.</div>';
+        listEl.innerHTML = '<div class="empty">No handoffs yet. Create one, then select it to keep editing.</div>';
         return;
       }
 
       listEl.innerHTML = state.entries.map((entry) => `
-        <article class="entry">
+        <article class="entry ${entry.id === state.selectedId ? 'active' : ''}" data-id="${entry.id}">
           <div class="entry-head">
             <span>${entry.when}</span>
-            <span>${entry.from} → ${entry.to}</span>
+            <span class="status-${entry.phase}">${entry.phase}</span>
           </div>
           <div class="entry-title">${entry.title}</div>
-          <div class="entry-body">${entry.body}</div>
+          <div class="entry-body">${entry.from} → ${entry.to}</div>
           <div class="entry-meta">
-            <span class="entry-tag">${entry.phase}</span>
             <span class="entry-tag">${entry.status}</span>
             <span class="entry-tag">${entry.confidence}</span>
-            <span class="entry-tag">watch: ${entry.watch}</span>
             <span class="entry-tag">next: ${entry.next}</span>
           </div>
         </article>
       `).join('');
     }
 
-    function pushEntry() {
-      state.entries.unshift(currentEntry());
+    function loadSeed(seed) {
+      const entry = { ...seed, id: makeId(), when: nowTag() };
+      state.entries.unshift(entry);
+      state.selectedId = entry.id;
+      setFields(entry);
       renderEntries();
     }
 
-    document.getElementById('saveDraft').addEventListener('click', () => {
-      state.phase = 'draft';
-      renderLifecycle();
-      pushEntry();
+    function blankEntry() {
+      return {
+        id: makeId(),
+        when: nowTag(),
+        title: '',
+        from: '',
+        to: '',
+        status: '',
+        confidence: '',
+        watch: '',
+        next: '',
+        body: '',
+        actual: '',
+        missing: '',
+        continuation: '',
+        phase: 'draft',
+      };
+    }
+
+    document.getElementById('newHandoff').addEventListener('click', () => {
+      const entry = blankEntry();
+      state.entries.unshift(entry);
+      state.selectedId = entry.id;
+      setFields(entry);
+      renderEntries();
     });
 
-    document.getElementById('markReady').addEventListener('click', () => {
-      state.phase = 'ready';
-      renderLifecycle();
-      pushEntry();
+    document.getElementById('loadExample').addEventListener('click', () => {
+      const seed = seeds[state.seedIndex % seeds.length];
+      state.seedIndex += 1;
+      loadSeed(seed);
     });
 
-    document.getElementById('handoffNow').addEventListener('click', () => {
-      state.phase = 'sent';
-      renderLifecycle();
-      pushEntry();
-    });
+    document.getElementById('saveDraft').addEventListener('click', () => saveSelectedEntry('draft'));
+    document.getElementById('markReady').addEventListener('click', () => saveSelectedEntry('ready'));
+    document.getElementById('handoffNow').addEventListener('click', () => saveSelectedEntry('sent'));
+    document.getElementById('receiveHandoff').addEventListener('click', () => saveSelectedEntry('received'));
+    document.getElementById('resumeHandoff').addEventListener('click', () => saveSelectedEntry('resumed'));
+    document.getElementById('closeHandoff').addEventListener('click', () => saveSelectedEntry('closed'));
 
-    lifecycleEl.addEventListener('click', () => {
-      if (state.phase === 'sent') {
-        state.phase = 'received';
-        renderLifecycle();
-        pushEntry();
+    document.getElementById('deleteHandoff').addEventListener('click', () => {
+      const selected = getSelected();
+      if (!selected) return;
+      state.entries = state.entries.filter((entry) => entry.id !== selected.id);
+      const nextEntry = state.entries[0] || blankEntry();
+      if (!state.entries.length) {
+        state.entries = [nextEntry];
       }
+      state.selectedId = state.entries[0].id;
+      setFields(state.entries[0]);
+      renderEntries();
+    });
+
+    listEl.addEventListener('click', (event) => {
+      const target = event.target.closest('.entry');
+      if (!target) return;
+      selectEntry(target.dataset.id);
     });
 
     document.addEventListener('keydown', (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
         event.preventDefault();
-        state.phase = 'sent';
-        renderLifecycle();
-        pushEntry();
+        saveSelectedEntry('sent');
       }
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') {
         event.preventDefault();
-        state.seedIndex = (state.seedIndex + 1) % seeds.length;
-        loadSeed(seeds[state.seedIndex]);
+        saveSelectedEntry(getSelected()?.phase || 'draft');
       }
     });
 
-    loadSeed(seeds[0]);
-    state.entries = [{ ...currentEntry(), when: nowTag(), phase: 'ready' }];
-    state.phase = 'ready';
-    renderLifecycle();
-    renderEntries();
+    seeds.forEach((seed) => loadSeed(seed));
+    selectEntry(state.entries[0].id);
   </script>
 </body>
 </html>

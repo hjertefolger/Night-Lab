@@ -114,11 +114,12 @@ export const liveBuilds: BuildMeta[] = [
         "Built a compact handoff-writing surface instead of another abstract map or atlas.",
         "Focused the artifact on one concrete human moment: leaving context behind without losing what matters.",
         "Used a restrained dark theme to give the handoff surface a calm, low-light operational feel.",
-        "v1.1 removed explanatory concept copy from the product surface and added visible handoff actions and lifecycle states: draft, ready, sent, and received."
+        "v1.1 removed explanatory concept copy from the product surface and added visible handoff actions and lifecycle states.",
+        "v1.2 made handoffs editable and deletable, added receiver-side actions, simplified lifecycle understanding, and added an intention-vs-reality comparison layer."
       ],
       "artDirection": "Intentional dark theme used. It stays restrained, editorial, and high-contrast rather than drifting into glossy sci-fi styling.",
-      "nextMove": "Add persistence, compare intended handoff against actual continuation, and sharpen the distinction between this and a generic notes app.",
-      "promotionRead": "Maybe. Stronger and more believable than the first pass, but it still needs persistence and sharper edge before promotion is justified."
+      "nextMove": "Add persistence, linked artifacts, scoped handoff types, and sharper missing-context indicators so the product becomes more operational and less note-like.",
+      "promotionRead": "Maybe. Now much more believable as an actual tool, but persistence and stronger differentiation are still needed before promotion is justified."
     }
   }
 ];
