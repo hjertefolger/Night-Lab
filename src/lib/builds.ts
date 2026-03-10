@@ -93,6 +93,32 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Make signals editable, allow threshold movement, and test a stronger mathematical field treatment so the atlas becomes a real decision instrument rather than only a beautiful read surface.",
       "promotionRead": "Maybe. The concept still feels too close to earlier signal territory, but the actual artifact is now cleaner and more honest than the first published pass."
     }
+  },
+  {
+    "id": "004",
+    "number": 4,
+    "title": "Handoff Note",
+    "date": "2026-03-10",
+    "tagline": "A tiny instrument for handing context from one mind to the next.",
+    "summary": "Handoff Note captures the fragile transition moment when work passes between people, devices, or sessions. It turns continuity into a compact artifact instead of a vague memory.",
+    "principles": [
+      "Turn continuity into infrastructure",
+      "Make invisible processes legible",
+      "Extend human cognition without obscuring agency",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Important work often breaks not during the work itself, but during the handoff between one person, one session, or one device and the next. This build tries to make that transition legible and usable.",
+      "whatChanged": [
+        "Built a compact handoff-writing surface instead of another abstract map or atlas.",
+        "Focused the artifact on one concrete human moment: leaving context behind without losing what matters.",
+        "Used a restrained dark theme to give the handoff surface a calm, low-light operational feel."
+      ],
+      "artDirection": "Intentional dark theme used. It stays restrained, editorial, and high-contrast rather than drifting into glossy sci-fi styling.",
+      "nextMove": "Add persistence, compare intended handoff against actual continuation, and sharpen the distinction between this and a generic notes app.",
+      "promotionRead": "Maybe. Better grounded than the previous build and more obviously usable, but it still needs persistence and stronger conceptual edge before promotion is justified."
+    }
   }
 ];
 

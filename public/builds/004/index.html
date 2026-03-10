@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Handoff Note</title>
+  <style>
+    :root {
+      --bg: #0f1013;
+      --surface: rgba(255,255,255,0.055);
+      --surface-strong: rgba(255,255,255,0.08);
+      --line: rgba(255,255,255,0.11);
+      --text: #f4f3ef;
+      --muted: #a3a19a;
+      --soft: #7c7a74;
+      --accent: #d7d1c4;
+      --warn: #b08a54;
+      --ok: #78916e;
+      --shadow: 0 24px 60px rgba(0,0,0,0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 28%),
+        linear-gradient(180deg, #15161a 0%, var(--bg) 100%);
+      color: var(--text);
+      font-family: "Geist", "Inter", system-ui, sans-serif;
+    }
+
+    body {
+      padding: 18px;
+      letter-spacing: -0.01em;
+    }
+
+    .frame {
+      max-width: 1480px;
+      margin: 0 auto;
+      min-height: calc(100vh - 36px);
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      border: 1px solid var(--line);
+      background: rgba(12, 13, 16, 0.82);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .sidebar,
+    .main {
+      padding: 24px;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .eyebrow,
+    .meta-label,
+    .pill,
+    .entry-head,
+    .tiny,
+    button,
+    textarea,
+    input {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      letter-spacing: 0.02em;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 0.95;
+      font-weight: 500;
+      max-width: 9ch;
+    }
+
+    .intro {
+      display: grid;
+      gap: 14px;
+    }
+
+    .intro p,
+    .meta-block p,
+    .entry-body,
+    .empty {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 14px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    .meta-block {
+      display: grid;
+      gap: 4px;
+    }
+
+    .meta-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--soft);
+    }
+
+    .note {
+      margin-top: auto;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border: 1px solid var(--line);
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--warn);
+    }
+
+    .main {
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+
+    .topbar h2 {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--accent);
+      margin-top: 6px;
+    }
+
+    .stack {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 420px);
+      gap: 18px;
+      min-height: 0;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      min-height: 0;
+    }
+
+    .composer {
+      display: grid;
+      grid-template-rows: auto auto auto 1fr auto;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .panel-head h3 {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .tiny {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--soft);
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      padding: 12px 14px;
+      outline: none;
+      font-size: 12px;
+      resize: none;
+    }
+
+    textarea {
+      min-height: 158px;
+      line-height: 1.55;
+      font-family: "Geist", "Inter", system-ui, sans-serif;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 11px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+    }
+
+    button:hover {
+      background: var(--surface-strong);
+      border-color: rgba(255,255,255,0.22);
+    }
+
+    button.primary {
+      background: var(--text);
+      color: #111111;
+      border-color: var(--text);
+    }
+
+    .preview {
+      padding: 18px;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 14px;
+      min-height: 0;
+    }
+
+    .list {
+      min-height: 0;
+      overflow: auto;
+      border-top: 1px solid var(--line);
+    }
+
+    .entry {
+      padding: 16px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 8px;
+    }
+
+    .entry:first-child { border-top: 0; }
+
+    .entry-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 10px;
+      color: var(--soft);
+      text-transform: uppercase;
+    }
+
+    .entry-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .entry-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .entry-tag {
+      padding: 4px 7px;
+      border: 1px solid var(--line);
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: "JetBrains Mono", monospace;
+    }
+
+    .empty {
+      padding-top: 18px;
+    }
+
+    @media (max-width: 1120px) {
+      .frame {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .stack {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      body { padding: 12px; }
+      .sidebar, .main { padding: 18px; }
+      .meta-grid { grid-template-columns: 1fr; }
+      .topbar,
+      .actions { flex-direction: column; align-items: stretch; }
+      .button-row { width: 100%; }
+      button { flex: 1 1 auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <aside class="sidebar">
+      <div class="intro">
+        <span class="eyebrow">Night Lab 004</span>
+        <h1>Handoff Note</h1>
+        <p>A tiny instrument for one of the most fragile moments in work: handing context from one person or session to the next without losing what actually matters.</p>
+      </div>
+
+      <div class="meta-list">
+        <div class="meta-block">
+          <span class="meta-label">Moment</span>
+          <p>You stop, leave, switch devices, or ask another person to continue — and the real state of the work risks collapsing into vague summary.</p>
+        </div>
+        <div class="meta-block">
+          <span class="meta-label">Mechanism</span>
+          <p>Capture a handoff as a compact note with status, watch-outs, confidence, next move, and a witness-style trail of what changed.</p>
+        </div>
+        <div class="meta-block">
+          <span class="meta-label">Why it feels different</span>
+          <p>It is not a task app or a decision log. It is a transition artifact for continuity under interruption.</p>
+        </div>
+      </div>
+
+      <div class="note">
+        <span class="eyebrow">Reading</span>
+        <div class="pill-row">
+          <span class="pill"><span class="dot"></span> context at risk</span>
+          <span class="pill"><span class="dot" style="background: var(--ok)"></span> small but real use</span>
+          <span class="pill"><span class="dot" style="background: var(--accent)"></span> dark mode justified</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <span class="eyebrow">handoff surface</span>
+          <h2>Write the note you wish the next mind would receive.</h2>
+        </div>
+      </div>
+
+      <section class="stack">
+        <div class="panel composer">
+          <div class="panel-head">
+            <h3>Compose handoff</h3>
+            <span class="tiny">compact / human-readable</span>
+          </div>
+
+          <input id="title" type="text" placeholder="What is being handed off?" value="Remote session pairing flow" />
+
+          <div class="meta-grid">
+            <input id="status" type="text" placeholder="Current status" value="Blocked on one approval step" />
+            <input id="confidence" type="text" placeholder="Confidence" value="72% confidence" />
+            <input id="watch" type="text" placeholder="Watch-out" value="User may confuse trust confirmation with final approval" />
+            <input id="next" type="text" placeholder="Next move" value="Clarify the second confirmation screen" />
+          </div>
+
+          <textarea id="body" placeholder="Write the handoff note...">Pairing works, but the meaning of the second trust step is still too soft. The next person should test whether the language makes it clear that approval extends terminal access, not just device recognition. Keep the verification feeling calm, not scary.</textarea>
+
+          <div class="actions">
+            <div class="button-row">
+              <button id="save" class="primary">save handoff</button>
+              <button id="seed">load another example</button>
+            </div>
+            <span class="tiny">best when written before leaving, not after forgetting</span>
+          </div>
+        </div>
+
+        <div class="panel preview">
+          <div class="panel-head">
+            <h3>Recent handoffs</h3>
+            <span class="tiny" id="entryCount">1 entry</span>
+          </div>
+          <div class="list" id="list"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const seeds = [
+      {
+        title: 'Remote session pairing flow',
+        status: 'Blocked on one approval step',
+        confidence: '72% confidence',
+        watch: 'User may confuse trust confirmation with final approval',
+        next: 'Clarify the second confirmation screen',
+        body: 'Pairing works, but the meaning of the second trust step is still too soft. The next person should test whether the language makes it clear that approval extends terminal access, not just device recognition. Keep the verification feeling calm, not scary.'
+      },
+      {
+        title: 'Homepage mobile layout',
+        status: 'Ready for review',
+        confidence: '84% confidence',
+        watch: 'Social icons may over-balance the top row on smaller phones',
+        next: 'Check footer rhythm after the build grid',
+        body: 'The stacked mobile version feels much healthier than the old split layout. The main thing to watch is whether the header now feels too busy relative to the symbol. Do not reduce the build grid further — tap size is finally okay.'
+      },
+      {
+        title: 'Night Lab prompt v2',
+        status: 'Live for tonight',
+        confidence: '67% confidence',
+        watch: 'The retry logic may still let a merely coherent idea slip through on the final round',
+        next: 'Observe whether critique actually changes what gets built',
+        body: 'The prompt is stronger because it forces explicit weakness checks and comparison against recent builds. The open question is whether final-round pressure produces determination or just another rationalized pick. Read the log honestly tomorrow.'
+      }
+    ];
+
+    const state = {
+      entries: [],
+      seedIndex: 0,
+    };
+
+    const titleEl = document.getElementById('title');
+    const statusEl = document.getElementById('status');
+    const confidenceEl = document.getElementById('confidence');
+    const watchEl = document.getElementById('watch');
+    const nextEl = document.getElementById('next');
+    const bodyEl = document.getElementById('body');
+    const listEl = document.getElementById('list');
+    const entryCountEl = document.getElementById('entryCount');
+
+    function loadSeed(seed) {
+      titleEl.value = seed.title;
+      statusEl.value = seed.status;
+      confidenceEl.value = seed.confidence;
+      watchEl.value = seed.watch;
+      nextEl.value = seed.next;
+      bodyEl.value = seed.body;
+    }
+
+    function nowTag() {
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).replace(' ', '');
+    }
+
+    function render() {
+      entryCountEl.textContent = `${state.entries.length} entr${state.entries.length === 1 ? 'y' : 'ies'}`;
+      if (!state.entries.length) {
+        listEl.innerHTML = '<div class="empty">No handoffs yet. Save a compact note before context drifts.</div>';
+        return;
+      }
+
+      listEl.innerHTML = state.entries.map((entry) => `
+        <article class="entry">
+          <div class="entry-head">
+            <span>${entry.when}</span>
+            <span>${entry.status}</span>
+          </div>
+          <div class="entry-title">${entry.title}</div>
+          <div class="entry-body">${entry.body}</div>
+          <div class="entry-meta">
+            <span class="entry-tag">${entry.confidence}</span>
+            <span class="entry-tag">watch: ${entry.watch}</span>
+            <span class="entry-tag">next: ${entry.next}</span>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    document.getElementById('save').addEventListener('click', () => {
+      const entry = {
+        when: nowTag(),
+        title: titleEl.value.trim() || 'Untitled handoff',
+        status: statusEl.value.trim() || 'Open',
+        confidence: confidenceEl.value.trim() || 'unknown confidence',
+        watch: watchEl.value.trim() || 'none',
+        next: nextEl.value.trim() || 'none',
+        body: bodyEl.value.trim() || 'No note written.'
+      };
+      state.entries.unshift(entry);
+      render();
+    });
+
+    document.getElementById('seed').addEventListener('click', () => {
+      state.seedIndex = (state.seedIndex + 1) % seeds.length;
+      loadSeed(seeds[state.seedIndex]);
+    });
+
+    loadSeed(seeds[0]);
+    state.entries = [{
+      when: nowTag(),
+      title: seeds[0].title,
+      status: seeds[0].status,
+      confidence: seeds[0].confidence,
+      watch: seeds[0].watch,
+      next: seeds[0].next,
+      body: seeds[0].body,
+    }];
+    render();
+  </script>
+</body>
+</html>
