@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drift Ledger</title>
+  <style>
+    :root {
+      --bg: #f3f0e8;
+      --panel: rgba(255,255,255,0.58);
+      --panel-strong: rgba(255,255,255,0.74);
+      --line: rgba(26, 24, 20, 0.14);
+      --line-strong: rgba(26, 24, 20, 0.22);
+      --text: #151310;
+      --muted: #6d665e;
+      --soft: #92897f;
+      --warn: #8d6b45;
+      --good: #51614d;
+      --bad: #7b4e4e;
+      --accent: #2e2c28;
+      --shadow: 0 22px 60px rgba(38, 31, 20, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.85), transparent 28%),
+        linear-gradient(180deg, #f8f5ee 0%, var(--bg) 100%);
+      color: var(--text);
+      font-family: "Geist", "Inter", system-ui, sans-serif;
+    }
+
+    body { padding: 18px; letter-spacing: -0.01em; }
+
+    .frame {
+      max-width: 1520px;
+      margin: 0 auto;
+      min-height: calc(100vh - 36px);
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr) 360px;
+      border: 1px solid var(--line);
+      background: rgba(250,248,243,0.92);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .rail, .main, .sidebar { padding: 22px; min-height: 0; }
+    .rail { border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 22px; }
+    .sidebar { border-left: 1px solid var(--line); display: grid; grid-template-rows: auto auto minmax(0,1fr); gap: 16px; }
+    .eyebrow, .tiny, .meta-label, .pill, .entry-head, .entry-tag, button, input, textarea, select {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      letter-spacing: 0.02em;
+    }
+    .eyebrow { font-size: 11px; color: var(--muted); text-transform: uppercase; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: clamp(32px, 4.2vw, 54px); line-height: 0.95; font-weight: 500; max-width: 8ch; }
+    .intro, .meta-block, .note, .field { display: grid; gap: 8px; }
+    .intro p, .meta-block p, .helper, .entry-body, .empty, .compare-card p {
+      color: var(--muted); font-size: 14px; line-height: 1.55;
+    }
+    .meta-list { display: grid; gap: 14px; padding-top: 8px; border-top: 1px solid var(--line); }
+    .meta-label, .tiny { font-size: 10px; color: var(--soft); text-transform: uppercase; }
+    .note { margin-top: auto; border-top: 1px solid var(--line); padding-top: 16px; }
+    .pill-row, .button-row, .entry-meta, .compare-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill, .entry-tag {
+      display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px;
+      border: 1px solid var(--line); font-size: 10px; text-transform: uppercase; color: var(--muted);
+    }
+    .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--warn); }
+
+    .main { display: grid; grid-template-rows: auto minmax(0,1fr); gap: 18px; }
+    .topbar {
+      display: flex; justify-content: space-between; gap: 16px; align-items: flex-start;
+      border-bottom: 1px solid var(--line); padding-bottom: 16px;
+    }
+    .topbar h2 { font-size: 14px; font-weight: 500; color: var(--accent); margin-top: 6px; }
+    .workspace { display: grid; grid-template-rows: auto auto minmax(0,1fr); gap: 14px; min-height: 0; }
+    .panel {
+      border: 1px solid var(--line); background: var(--panel); padding: 16px;
+    }
+    .section-head {
+      display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin-bottom: 12px;
+    }
+    .section-title, .sidebar-head h3 { font-size: 14px; font-weight: 500; }
+    .action-bar {
+      display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap;
+    }
+    button {
+      border: 1px solid var(--line); background: transparent; color: var(--text);
+      padding: 10px 12px; font-size: 11px; text-transform: uppercase; cursor: pointer;
+      transition: background 180ms ease, border-color 180ms ease;
+    }
+    button:hover { background: var(--panel-strong); border-color: var(--line-strong); }
+    button.primary { background: var(--text); color: #f7f5ef; border-color: var(--text); }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; }
+    .field.wide { grid-column: span 2; }
+    input, textarea, select {
+      width: 100%; border: 1px solid var(--line); background: rgba(255,255,255,0.48); color: var(--text);
+      padding: 12px 14px; outline: none; font-size: 12px;
+    }
+    textarea {
+      min-height: 140px; resize: none; line-height: 1.55; font-family: "Geist", "Inter", system-ui, sans-serif;
+      font-size: 14px; letter-spacing: -0.01em;
+    }
+    .compare-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    .compare-card {
+      border: 1px solid var(--line); background: rgba(255,255,255,0.36); padding: 14px; display: grid; gap: 8px;
+    }
+    .compare-card strong { font-size: 13px; }
+    .score { font-size: 24px; font-weight: 500; letter-spacing: -0.04em; }
+    .ledger { min-height: 0; overflow: auto; border: 1px solid var(--line); background: var(--panel); padding: 16px; }
+    .entry {
+      padding: 16px 0; border-top: 1px solid rgba(26,24,20,0.08); display: grid; gap: 8px; cursor: pointer;
+    }
+    .entry:first-child { border-top: 0; }
+    .entry.active .entry-title { color: var(--accent); }
+    .entry-head { display: flex; justify-content: space-between; gap: 12px; font-size: 10px; color: var(--soft); text-transform: uppercase; }
+    .entry-title { font-size: 15px; font-weight: 500; color: var(--text); }
+    .sidebar-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+    .status-low { color: var(--good); }
+    .status-medium { color: var(--warn); }
+    .status-high { color: var(--bad); }
+
+    @media (max-width: 1260px) {
+      .frame { grid-template-columns: 1fr; }
+      .rail, .sidebar { border: 0; border-bottom: 1px solid var(--line); }
+      .sidebar { border-bottom: 0; }
+    }
+    @media (max-width: 900px) {
+      body { padding: 12px; }
+      .rail, .main, .sidebar { padding: 18px; }
+      .grid, .compare-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 640px) {
+      .grid, .compare-grid { grid-template-columns: 1fr; }
+      .field.wide { grid-column: span 1; }
+      .topbar, .action-bar { flex-direction: column; align-items: stretch; }
+      .button-row { width: 100%; }
+      button { flex: 1 1 auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <aside class="rail">
+      <div class="intro">
+        <span class="eyebrow">Night Lab 005</span>
+        <h1>Drift Ledger</h1>
+        <p>Track when a thing quietly stops matching what it said it would be.</p>
+      </div>
+
+      <div class="meta-list">
+        <div class="meta-block">
+          <span class="meta-label">Original statement</span>
+          <p>The declared truth: promise, rule, intended feeling, or operating constraint.</p>
+        </div>
+        <div class="meta-block">
+          <span class="meta-label">Present reality</span>
+          <p>What the artifact, behavior, or system is actually doing now.</p>
+        </div>
+        <div class="meta-block">
+          <span class="meta-label">Drift</span>
+          <p>The mismatch between them — not a bug list, but a loss of alignment.</p>
+        </div>
+      </div>
+
+      <div class="note">
+        <span class="eyebrow">Signal</span>
+        <div class="pill-row">
+          <span class="pill"><span class="dot" style="background: var(--good)"></span> low drift</span>
+          <span class="pill"><span class="dot"></span> medium drift</span>
+          <span class="pill"><span class="dot" style="background: var(--bad)"></span> high drift</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <span class="eyebrow">hybrid lane</span>
+          <h2>Pin the original claim beside present reality, then judge the gap.</h2>
+        </div>
+      </div>
+
+      <section class="workspace">
+        <div class="panel action-bar">
+          <div class="button-row">
+            <button id="newEntry">new entry</button>
+            <button id="saveEntry">save</button>
+            <button id="seedExample" class="primary">load example</button>
+          </div>
+          <span class="tiny" id="summaryRead">drift is measured by mismatch, not noise</span>
+        </div>
+
+        <div class="panel">
+          <div class="section-head">
+            <div class="section-title">Drift entry</div>
+            <span class="tiny">statement vs reality</span>
+          </div>
+          <div class="grid">
+            <label class="field wide">
+              <span class="tiny">what is drifting?</span>
+              <input id="title" type="text" value="Agent should ask before acting externally" />
+            </label>
+            <label class="field">
+              <span class="tiny">type</span>
+              <select id="type">
+                <option value="behavior">behavior</option>
+                <option value="promise">promise</option>
+                <option value="tone">tone</option>
+                <option value="constraint">constraint</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="tiny">drift severity</span>
+              <select id="severity">
+                <option value="low">low</option>
+                <option value="medium" selected>medium</option>
+                <option value="high">high</option>
+              </select>
+            </label>
+            <label class="field wide">
+              <span class="tiny">original statement</span>
+              <textarea id="statement">Ask before external state-changing actions unless the workflow is already explicitly approved.</textarea>
+            </label>
+            <label class="field wide">
+              <span class="tiny">present reality</span>
+              <textarea id="reality">The system mostly follows this, but edge cases around approved automation lanes and publish-related actions can blur whether an action still feels external or now belongs to an approved lane.</textarea>
+            </label>
+            <label class="field wide">
+              <span class="tiny">why the drift matters</span>
+              <textarea id="impact">When permission boundaries get fuzzy, trust degrades. The issue is not only whether the action is safe, but whether the human can still predict how the agent interprets consent.</textarea>
+            </label>
+            <label class="field wide">
+              <span class="tiny">next correction</span>
+              <textarea id="correction">Clarify the automation-lane rule and make the distinction visible in the artifact or workflow where the action happens.</textarea>
+            </label>
+          </div>
+        </div>
+
+        <div class="compare-grid">
+          <div class="compare-card">
+            <span class="tiny">alignment score</span>
+            <div class="score" id="scoreRead">72%</div>
+            <p>How closely current behavior still matches the declared statement.</p>
+          </div>
+          <div class="compare-card">
+            <span class="tiny">drift reading</span>
+            <div class="score" id="driftRead">medium</div>
+            <p>The mismatch is meaningful enough to change trust, tone, or function.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <h3>Ledger</h3>
+        <span class="tiny" id="entryCount">0 entries</span>
+      </div>
+      <p class="helper">Each entry keeps the original claim visible so drift stays legible instead of becoming normal.</p>
+      <section class="ledger" id="list"></section>
+    </aside>
+  </div>
+
+  <script>
+    const seeds = [
+      {
+        title: 'Agent should ask before acting externally',
+        type: 'behavior',
+        severity: 'medium',
+        statement: 'Ask before external state-changing actions unless the workflow is already explicitly approved.',
+        reality: 'The system mostly follows this, but edge cases around approved automation lanes and publish-related actions can blur whether an action still feels external or now belongs to an approved lane.',
+        impact: 'When permission boundaries get fuzzy, trust degrades. The issue is not only whether the action is safe, but whether the human can still predict how the agent interprets consent.',
+        correction: 'Clarify the automation-lane rule and make the distinction visible in the artifact or workflow where the action happens.'
+      },
+      {
+        title: 'Homepage should feel like a sibling of frontend-a2n',
+        type: 'promise',
+        severity: 'low',
+        statement: 'Night Lab should feel editorial, restrained, sparse, and quietly futuristic rather than SaaS-like or glossy.',
+        reality: 'The shell mostly holds this, but some prototype interiors still drift toward explanation-heavy surfaces or over-specified product grammar.',
+        impact: 'The shell and the build can start feeling authored by different minds.',
+        correction: 'Keep removing metadata leakage from product surfaces and let the mechanism carry the concept.'
+      },
+      {
+        title: 'One build nightly',
+        type: 'constraint',
+        severity: 'medium',
+        statement: 'Night Lab should ship at most one sharp build per run.',
+        reality: 'The one-build rule holds, but weak concepts can still expand through iteration until the artifact gets blurrier instead of truer.',
+        impact: 'Iteration starts looking productive while actually lowering quality.',
+        correction: 'Stop earlier when iteration adds machinery instead of clarity.'
+      }
+    ];
+
+    const state = { entries: [], selectedId: null, seedIndex: 0 };
+
+    const fields = {
+      title: document.getElementById('title'),
+      type: document.getElementById('type'),
+      severity: document.getElementById('severity'),
+      statement: document.getElementById('statement'),
+      reality: document.getElementById('reality'),
+      impact: document.getElementById('impact'),
+      correction: document.getElementById('correction')
+    };
+
+    const listEl = document.getElementById('list');
+    const entryCountEl = document.getElementById('entryCount');
+    const scoreReadEl = document.getElementById('scoreRead');
+    const driftReadEl = document.getElementById('driftRead');
+    const summaryReadEl = document.getElementById('summaryRead');
+
+    function makeId() { return `drift-${Math.random().toString(36).slice(2, 9)}`; }
+    function nowTag() {
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).replace(' ', '');
+    }
+
+    function severityToScore(severity) {
+      return severity === 'low' ? '88%' : severity === 'medium' ? '72%' : '43%';
+    }
+
+    function currentEntry() {
+      const selected = state.entries.find((entry) => entry.id === state.selectedId);
+      return {
+        id: selected?.id || makeId(),
+        when: nowTag(),
+        title: fields.title.value.trim() || 'Untitled drift',
+        type: fields.type.value,
+        severity: fields.severity.value,
+        statement: fields.statement.value.trim(),
+        reality: fields.reality.value.trim(),
+        impact: fields.impact.value.trim(),
+        correction: fields.correction.value.trim()
+      };
+    }
+
+    function setFields(entry) {
+      fields.title.value = entry.title;
+      fields.type.value = entry.type;
+      fields.severity.value = entry.severity;
+      fields.statement.value = entry.statement;
+      fields.reality.value = entry.reality;
+      fields.impact.value = entry.impact;
+      fields.correction.value = entry.correction;
+      scoreReadEl.textContent = severityToScore(entry.severity);
+      driftReadEl.textContent = entry.severity;
+      driftReadEl.className = `score status-${entry.severity}`;
+      summaryReadEl.textContent = `${entry.type} drift / ${entry.severity} severity`;
+    }
+
+    function renderEntries() {
+      entryCountEl.textContent = `${state.entries.length} entr${state.entries.length === 1 ? 'y' : 'ies'}`;
+      if (!state.entries.length) {
+        listEl.innerHTML = '<div class="empty">No drift entries yet.</div>';
+        return;
+      }
+      listEl.innerHTML = state.entries.map((entry) => `
+        <article class="entry ${entry.id === state.selectedId ? 'active' : ''}" data-id="${entry.id}">
+          <div class="entry-head">
+            <span>${entry.when}</span>
+            <span class="status-${entry.severity}">${entry.severity}</span>
+          </div>
+          <div class="entry-title">${entry.title}</div>
+          <div class="entry-body">${entry.statement}</div>
+          <div class="entry-meta">
+            <span class="entry-tag">${entry.type}</span>
+            <span class="entry-tag">score ${severityToScore(entry.severity)}</span>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function selectEntry(id) {
+      state.selectedId = id;
+      const entry = state.entries.find((item) => item.id === id);
+      if (entry) setFields(entry);
+      renderEntries();
+    }
+
+    function saveEntry() {
+      const entry = currentEntry();
+      const index = state.entries.findIndex((item) => item.id === entry.id);
+      if (index >= 0) state.entries[index] = entry;
+      else state.entries.unshift(entry);
+      state.selectedId = entry.id;
+      setFields(entry);
+      renderEntries();
+    }
+
+    function addSeed(seed) {
+      const entry = { id: makeId(), when: nowTag(), ...seed };
+      state.entries.unshift(entry);
+      state.selectedId = entry.id;
+      setFields(entry);
+      renderEntries();
+    }
+
+    document.getElementById('newEntry').addEventListener('click', () => {
+      const blank = {
+        id: makeId(), when: nowTag(), title: '', type: 'behavior', severity: 'low',
+        statement: '', reality: '', impact: '', correction: ''
+      };
+      state.entries.unshift(blank);
+      state.selectedId = blank.id;
+      setFields(blank);
+      renderEntries();
+    });
+
+    document.getElementById('saveEntry').addEventListener('click', saveEntry);
+    document.getElementById('seedExample').addEventListener('click', () => {
+      const seed = seeds[state.seedIndex % seeds.length];
+      state.seedIndex += 1;
+      addSeed(seed);
+    });
+
+    listEl.addEventListener('click', (event) => {
+      const entry = event.target.closest('.entry');
+      if (!entry) return;
+      selectEntry(entry.dataset.id);
+    });
+
+    seeds.forEach((seed) => addSeed(seed));
+    selectEntry(state.entries[0].id);
+  </script>
+</body>
+</html>

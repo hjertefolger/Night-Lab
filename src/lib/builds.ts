@@ -121,6 +121,32 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add persistence, linked artifacts, scoped handoff types, and sharper missing-context indicators so the product becomes more operational and less note-like.",
       "promotionRead": "Maybe. Now much more believable as an actual tool, but persistence and stronger differentiation are still needed before promotion is justified."
     }
+  },
+  {
+    "id": "005",
+    "number": 5,
+    "title": "Drift Ledger",
+    "date": "2026-03-11",
+    "tagline": "Track when a thing quietly stops matching what it said it would be.",
+    "summary": "Drift Ledger records mismatch between an original statement and present reality. It treats quiet divergence as something to inspect directly instead of letting it dissolve into vague discomfort.",
+    "principles": [
+      "Preserve identity under transformation",
+      "Make invisible processes legible",
+      "Turn continuity into infrastructure",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Creative systems, products, and agents rarely fail all at once. More often, they drift. This build exists to make that quiet loss of alignment visible before it becomes normal.",
+      "whatChanged": [
+        "Built a direct statement-versus-reality comparison instrument instead of another abstract map or continuity log.",
+        "Used a simple drift entry structure: original statement, present reality, why it matters, and next correction.",
+        "Chose a warmer paper-toned editorial surface to make the ledger feel inspectable and calm rather than alarmist."
+      ],
+      "artDirection": "Default Night Lab direction used, but in a warm paper-toned light theme instead of dark mode. Still restrained, editorial, sparse, and system-led.",
+      "nextMove": "Add persistence, linked artifacts, and a temporal mode that shows whether drift is stabilizing, widening, or being corrected over time.",
+      "promotionRead": "Maybe. The mechanism is clear and distinct, but it needs persistence and stronger comparison over time before it can be considered a strong promotion candidate."
+    }
   }
 ];
 
