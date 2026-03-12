@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seen State</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --panel: #111111;
+      --panel-2: #151515;
+      --line: rgba(255,255,255,.12);
+      --soft: rgba(255,255,255,.46);
+      --text: #f5f5f5;
+      --warn: #d8d1b4;
+      --alert: #f06a51;
+      --ok: #9fb29b;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) 1fr;
+      min-height: 100vh;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .sidebar {
+      border-right: 1px solid var(--line);
+      padding: 28px 22px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,.02), transparent);
+    }
+    .eyebrow, .meta, .chip, .small { font-family: 'JetBrains Mono', monospace; letter-spacing: .04em; }
+    .eyebrow, .meta, .small { font-size: 11px; color: var(--soft); text-transform: uppercase; }
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 48px);
+      line-height: .95;
+      letter-spacing: -.06em;
+      font-weight: 500;
+    }
+    .intro {
+      max-width: 32ch;
+      font-size: 14px;
+      line-height: 1.55;
+      color: rgba(255,255,255,.72);
+    }
+    .stack { display: grid; gap: 10px; }
+    .field { display: grid; gap: 8px; }
+    label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--soft);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    input, select, textarea {
+      width: 100%;
+      background: var(--panel);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 13px;
+      font: inherit;
+      outline: none;
+    }
+    textarea { min-height: 78px; resize: vertical; }
+    input:focus, select:focus, textarea:focus { border-color: rgba(255,255,255,.32); }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--text);
+      color: #0a0a0a;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font: inherit;
+      cursor: pointer;
+      font-weight: 500;
+      transition: transform .16s ease, opacity .16s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    button.secondary { background: transparent; color: var(--text); }
+    .main {
+      padding: 28px 22px 22px;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr;
+      gap: 20px;
+      min-width: 0;
+    }
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+    }
+    .legend, .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip, .toggle {
+      font-size: 11px;
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--soft);
+      text-transform: uppercase;
+      background: transparent;
+    }
+    .toggle { cursor: pointer; }
+    .toggle.active {
+      color: var(--text);
+      border-color: rgba(255,255,255,.28);
+      background: rgba(255,255,255,.05);
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 10px;
+    }
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: var(--panel);
+      min-height: 92px;
+    }
+    .summary-card strong {
+      display: block;
+      font-size: 30px;
+      letter-spacing: -.06em;
+      font-weight: 500;
+      margin-top: 10px;
+    }
+    .notice {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,.02);
+      font-size: 13px;
+      color: rgba(255,255,255,.7);
+    }
+    .notice strong { color: var(--text); font-weight: 500; }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      min-width: 0;
+    }
+    .column {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel-2);
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .column-head {
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .column-list {
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      background: #0f0f0f;
+      display: grid;
+      gap: 10px;
+    }
+    .card.stale { border-color: rgba(240,106,81,.42); }
+    .card.warning { border-color: rgba(216,209,180,.38); }
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .title {
+      font-size: 17px;
+      line-height: 1.15;
+      letter-spacing: -.03em;
+    }
+    .kind {
+      font-size: 10px;
+      color: var(--soft);
+      text-transform: uppercase;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 7px;
+      white-space: nowrap;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .note {
+      font-size: 13px;
+      line-height: 1.45;
+      color: rgba(255,255,255,.76);
+    }
+    .witness {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--soft);
+      align-items: center;
+    }
+    .status-bar {
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      overflow: hidden;
+    }
+    .status-bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--ok);
+    }
+    .status-bar.warn span { background: var(--warn); }
+    .status-bar.stale span { background: var(--alert); }
+    .foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      font-size: 11px;
+      color: var(--soft);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .action-btn {
+      font-size: 11px;
+      padding: 7px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--soft);
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .action-btn:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,.28);
+    }
+    .empty {
+      color: rgba(255,255,255,.34);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 8px 2px;
+    }
+    @media (max-width: 1100px) {
+      body { grid-template-columns: 1fr; }
+      .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
+      .summary { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .board { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .grid-2, .summary { grid-template-columns: 1fr; }
+      .topline, .notice { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="stack">
+      <div class="eyebrow">Night Lab 006</div>
+      <h1>Seen<br>State</h1>
+      <div class="intro">
+        A small shared surface for things that do not need full proof — only a legible recent seeing. It lives between trust, memory, and verification.
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="field">
+        <label for="title">What needs seeing</label>
+        <input id="title" placeholder="Back door locked" />
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="kind">Kind</label>
+          <select id="kind">
+            <option>home</option>
+            <option>care</option>
+            <option>delivery</option>
+            <option>handoff</option>
+            <option>object</option>
+            <option>environment</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="confidence">Confidence</label>
+          <select id="confidence">
+            <option value="92">high</option>
+            <option value="68">medium</option>
+            <option value="38">low</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="person">Seen by</label>
+          <input id="person" placeholder="Lucy" />
+        </div>
+        <div class="field">
+          <label for="age">How fresh</label>
+          <select id="age">
+            <option value="fresh">just now</option>
+            <option value="aging">aging</option>
+            <option value="stale">stale</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="note">Observation</label>
+        <textarea id="note" placeholder="Saw the latch fully seated after the wind picked up."></textarea>
+      </div>
+      <div class="grid-2">
+        <button id="add">Add seen state</button>
+        <button class="secondary" id="seed">Load another sample</button>
+      </div>
+    </div>
+
+    <div class="small">Not proof. Not assumption. Just visible recent seeing.</div>
+  </aside>
+
+  <main class="main">
+    <div class="topline">
+      <div>
+        <div class="meta">shared state surface</div>
+      </div>
+      <div class="legend">
+        <div class="chip">fresh = calm</div>
+        <div class="chip">aging = watch</div>
+        <div class="chip">stale = unknown again</div>
+      </div>
+    </div>
+
+    <section class="summary" id="summary"></section>
+
+    <section class="notice">
+      <div><strong id="noticeTitle">Package still at reception</strong> is the most uncertain seen state right now.</div>
+      <div class="filters" id="filters"></div>
+    </section>
+
+    <section class="board">
+      <div class="column">
+        <div class="column-head"><span>fresh</span><span class="mono" id="freshCount">0</span></div>
+        <div class="column-list" id="freshList"></div>
+      </div>
+      <div class="column">
+        <div class="column-head"><span>aging</span><span class="mono" id="agingCount">0</span></div>
+        <div class="column-list" id="agingList"></div>
+      </div>
+      <div class="column">
+        <div class="column-head"><span>stale</span><span class="mono" id="staleCount">0</span></div>
+        <div class="column-list" id="staleList"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const samples = [
+      {
+        title: 'back door locked',
+        kind: 'home',
+        confidence: 92,
+        person: 'Lucy',
+        age: 'fresh',
+        note: 'Checked the latch after bringing the bins in. Fully seated.',
+        seenAt: '22:14'
+      },
+      {
+        title: 'Johan asleep',
+        kind: 'care',
+        confidence: 81,
+        person: 'Tomas',
+        age: 'aging',
+        note: 'Light off. Book still open on the blanket. Breathing calm.',
+        seenAt: '20:48'
+      },
+      {
+        title: 'package still at reception',
+        kind: 'delivery',
+        confidence: 61,
+        person: 'Maja',
+        age: 'stale',
+        note: 'Seen there this afternoon, but nobody has confirmed since.',
+        seenAt: '15:22'
+      },
+      {
+        title: 'cat fed',
+        kind: 'care',
+        confidence: 88,
+        person: 'Lucy',
+        age: 'fresh',
+        note: 'Wet food gone. Bowl rinsed. Water topped up.',
+        seenAt: '21:03'
+      },
+      {
+        title: 'adapter missing from studio drawer',
+        kind: 'object',
+        confidence: 54,
+        person: 'Tomas',
+        age: 'aging',
+        note: 'Looked in the usual drawer and cable bag. Still not there.',
+        seenAt: '19:40'
+      }
+    ];
+
+    const state = [...samples];
+    let activeFilter = 'all';
+
+    const summary = document.getElementById('summary');
+    const filters = document.getElementById('filters');
+    const noticeTitle = document.getElementById('noticeTitle');
+    const columns = {
+      fresh: document.getElementById('freshList'),
+      aging: document.getElementById('agingList'),
+      stale: document.getElementById('staleList')
+    };
+
+    const countEls = {
+      fresh: document.getElementById('freshCount'),
+      aging: document.getElementById('agingCount'),
+      stale: document.getElementById('staleCount')
+    };
+
+    function freshnessWidth(age) {
+      if (age === 'fresh') return 92;
+      if (age === 'aging') return 56;
+      return 22;
+    }
+
+    function currentItems() {
+      return activeFilter === 'all' ? state : state.filter(item => item.kind === activeFilter);
+    }
+
+    function renderSummary() {
+      const items = currentItems();
+      const fresh = items.filter(item => item.age === 'fresh').length;
+      const aging = items.filter(item => item.age === 'aging').length;
+      const stale = items.filter(item => item.age === 'stale').length;
+      const avg = items.length ? Math.round(items.reduce((sum, item) => sum + item.confidence, 0) / items.length) : 0;
+      const weakest = [...items].sort((a, b) => a.confidence - b.confidence)[0];
+      noticeTitle.textContent = weakest ? weakest.title : 'Nothing selected';
+
+      summary.innerHTML = `
+        <div class="summary-card">
+          <div class="meta">active seen states</div>
+          <strong>${items.length}</strong>
+        </div>
+        <div class="summary-card">
+          <div class="meta">fresh enough</div>
+          <strong>${fresh}</strong>
+        </div>
+        <div class="summary-card">
+          <div class="meta">sliding toward unknown</div>
+          <strong>${aging + stale}</strong>
+        </div>
+        <div class="summary-card">
+          <div class="meta">average confidence</div>
+          <strong>${avg}%</strong>
+        </div>
+      `;
+    }
+
+    function card(item, index) {
+      const staleClass = item.age === 'stale' ? 'stale' : item.age === 'aging' ? 'warning' : '';
+      const barClass = item.age === 'stale' ? 'stale' : item.age === 'aging' ? 'warn' : '';
+      return `
+        <article class="card ${staleClass}">
+          <div class="title-row">
+            <div class="title">${item.title}</div>
+            <div class="kind">${item.kind}</div>
+          </div>
+          <div class="note">${item.note}</div>
+          <div class="witness">
+            <span>Seen by ${item.person}</span>
+            <span class="mono">${item.seenAt}</span>
+          </div>
+          <div class="status-bar ${barClass}"><span style="width:${freshnessWidth(item.age)}%"></span></div>
+          <div class="actions">
+            <button class="action-btn" data-action="renew" data-index="${index}">renew</button>
+            <button class="action-btn" data-action="age" data-index="${index}">age</button>
+            <button class="action-btn" data-action="stale" data-index="${index}">stale</button>
+          </div>
+          <div class="foot">
+            <span>${item.age}</span>
+            <span>${item.confidence}% confidence</span>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderFilters() {
+      const kinds = ['all', ...new Set(state.map(item => item.kind))];
+      filters.innerHTML = kinds.map(kind => `
+        <button class="toggle ${kind === activeFilter ? 'active' : ''}" data-filter="${kind}">${kind}</button>
+      `).join('');
+    }
+
+    function renderColumns() {
+      const items = currentItems();
+      ['fresh', 'aging', 'stale'].forEach(age => {
+        const aged = items
+          .map((item, index) => ({ item, index: state.indexOf(item) }))
+          .filter(entry => entry.item.age === age);
+        countEls[age].textContent = aged.length;
+        columns[age].innerHTML = aged.length
+          ? aged.map(({ item, index }) => card(item, index)).join('')
+          : '<div class="empty">No states here yet.</div>';
+      });
+    }
+
+    function render() {
+      renderSummary();
+      renderFilters();
+      renderColumns();
+    }
+
+    function timeNow() {
+      const d = new Date();
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+
+    function setAge(index, age) {
+      const item = state[index];
+      if (!item) return;
+      item.age = age;
+      if (age === 'fresh') {
+        item.confidence = Math.min(99, item.confidence + 12);
+        item.seenAt = timeNow();
+      } else if (age === 'aging') {
+        item.confidence = Math.max(40, item.confidence - 10);
+      } else {
+        item.confidence = Math.max(18, item.confidence - 18);
+      }
+      render();
+    }
+
+    document.getElementById('add').addEventListener('click', () => {
+      const title = document.getElementById('title').value.trim();
+      const kind = document.getElementById('kind').value;
+      const confidence = Number(document.getElementById('confidence').value);
+      const person = document.getElementById('person').value.trim();
+      const age = document.getElementById('age').value;
+      const note = document.getElementById('note').value.trim();
+
+      if (!title || !person || !note) return;
+
+      state.unshift({ title, kind, confidence, person, age, note, seenAt: timeNow() });
+      document.getElementById('title').value = '';
+      document.getElementById('person').value = '';
+      document.getElementById('note').value = '';
+      document.getElementById('age').value = 'fresh';
+      document.getElementById('confidence').value = '92';
+      activeFilter = 'all';
+      render();
+    });
+
+    document.getElementById('seed').addEventListener('click', () => {
+      const options = [
+        ['medication taken', 'care', 'Eli', 'fresh', 'Blister pack moved forward one slot. Glass still on the counter.', 84],
+        ['studio heater off', 'environment', 'Tomas', 'aging', 'Saw the switch down when leaving, but nobody has looked since.', 67],
+        ['return label printed', 'handoff', 'Lucy', 'fresh', 'Envelope addressed and left beside the front keys.', 91],
+        ['watering can empty', 'object', 'Johan', 'stale', 'Last seen by the sink yesterday. Not rechecked since.', 43]
+      ];
+      const pick = options[Math.floor(Math.random() * options.length)];
+      document.getElementById('title').value = pick[0];
+      document.getElementById('kind').value = pick[1];
+      document.getElementById('person').value = pick[2];
+      document.getElementById('age').value = pick[3];
+      document.getElementById('note').value = pick[4];
+      document.getElementById('confidence').value = String(pick[5]);
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const filter = target.dataset.filter;
+      if (filter) {
+        activeFilter = filter;
+        render();
+        return;
+      }
+      const action = target.dataset.action;
+      const index = Number(target.dataset.index);
+      if (!action || Number.isNaN(index)) return;
+      if (action === 'renew') setAge(index, 'fresh');
+      if (action === 'age') setAge(index, 'aging');
+      if (action === 'stale') setAge(index, 'stale');
+    });
+
+    render();
+  </script>
+</body>
+</html>

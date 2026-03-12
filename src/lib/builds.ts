@@ -147,6 +147,31 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add persistence, linked artifacts, and a temporal mode that shows whether drift is stabilizing, widening, or being corrected over time.",
       "promotionRead": "Maybe. The mechanism is clear and distinct, but it needs persistence and stronger comparison over time before it can be considered a strong promotion candidate."
     }
+  },
+  {
+    "id": "006",
+    "number": 6,
+    "title": "Seen State",
+    "date": "2026-03-12",
+    "tagline": "A shared surface for things that need recent seeing, not full proof.",
+    "summary": "Seen State is a small interface for the missing social state between trust and verification. It tracks what was last seen, by whom, how fresh that seeing is, and when the state starts slipping back into uncertainty.",
+    "principles": [
+      "Make invisible processes legible",
+      "Prefer verification over vague trust",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "A lot of real coordination depends on a thin status layer that most tools ignore: not proven truth, not vague trust, but recent human seeing. Doors, medicine, packages, handoffs, objects, care tasks, and household state often live in that gap.",
+      "whatChanged": [
+        "Built the concept as a three-state surface: fresh, aging, and stale.",
+        "Made witness identity, confidence, and observation note native parts of the artifact instead of hidden metadata.",
+        "Kept the first version intentionally small to test whether the primitive itself holds without extra product structure."
+      ],
+      "artDirection": "Default Night Lab editorial direction with a restrained dark theme. The darker surface helps the freshness decay read clearly while staying calm, precise, and minimal.",
+      "nextMove": "Add time decay, witness renewal, and second-person acknowledgment to test whether seen state becomes a durable collaboration primitive instead of a one-screen concept.",
+      "promotionRead": "Maybe. More distinct than several recent builds, but it still needs evidence that the primitive holds under real repeated use."
+    }
   }
 ];
 
