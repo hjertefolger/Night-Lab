@@ -172,6 +172,31 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add time decay, witness renewal, and second-person acknowledgment to test whether seen state becomes a durable collaboration primitive instead of a one-screen concept.",
       "promotionRead": "Maybe. More distinct than several recent builds, but it still needs evidence that the primitive holds under real repeated use."
     }
+  },
+  {
+    "id": "007",
+    "number": 7,
+    "title": "Interrupt Budget",
+    "date": "2026-03-13",
+    "tagline": "A small surface for deciding what is still worth breaking flow for.",
+    "summary": "Interrupt Budget is a compact interface for assigning incoming interruptions a real cost instead of treating everything as equally urgent. It keeps a visible remaining budget so focus can be defended with more clarity and less guilt.",
+    "principles": [
+      "Make invisible processes legible",
+      "Extend human cognition without obscuring agency",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Overload often makes every interruption feel equally urgent, which destroys judgment before it destroys time. This build creates a small operating surface for deciding what is truly worth breaking flow for right now and what can safely wait.",
+      "whatChanged": [
+        "Built the concept around a finite interrupt budget instead of generic prioritization.",
+        "Made interruption decisions native through three states: yes now, only if blocked, and can wait.",
+        "Kept the first version intentionally small so the budget mechanic could be judged without extra product scaffolding."
+      ],
+      "artDirection": "Default Night Lab editorial direction with a warm paper-toned surface. The lighter system helps the artifact feel practical, calm, and grounded rather than dashboard-like.",
+      "nextMove": "Add block-based reset, team negotiation, and stronger separation between interruption cost and interruption importance to test whether the budget model becomes a durable daily coordination primitive.",
+      "promotionRead": "Maybe. The mechanism feels grounded and behavior-shaping, but it needs repeated use to prove that the budget framing stays genuinely useful instead of just elegant."
+    }
   }
 ];
 

@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interrupt Budget</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3f0e8;
+      --panel: #fbfaf6;
+      --panel-alt: #f7f4ec;
+      --text: #151515;
+      --muted: rgba(21,21,21,.58);
+      --line: rgba(21,21,21,.12);
+      --strong: #151515;
+      --soft-green: #92a285;
+      --soft-amber: #c0a36b;
+      --soft-red: #b56d5d;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) 1fr;
+      min-height: 100vh;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .sidebar {
+      border-right: 1px solid var(--line);
+      padding: 26px 22px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,.12));
+    }
+    .eyebrow, .meta, .mini, .chip, label {
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 11px;
+    }
+    .eyebrow, .meta, .mini, label { color: var(--muted); }
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 4vw, 50px);
+      line-height: .92;
+      letter-spacing: -.07em;
+      font-weight: 500;
+    }
+    .intro {
+      font-size: 14px;
+      line-height: 1.55;
+      color: rgba(21,21,21,.72);
+      max-width: 34ch;
+    }
+    .stack { display: grid; gap: 10px; }
+    .field { display: grid; gap: 8px; }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 12px 13px;
+      font: inherit;
+      outline: none;
+    }
+    textarea { min-height: 88px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { border-color: rgba(21,21,21,.28); }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--strong);
+      color: #faf8f2;
+      border-radius: 999px;
+      padding: 11px 16px;
+      cursor: pointer;
+      font: inherit;
+      transition: transform .15s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    button.secondary {
+      background: transparent;
+      color: var(--text);
+    }
+    .main {
+      padding: 26px 22px 20px;
+      display: grid;
+      grid-template-rows: auto auto auto auto 1fr;
+      gap: 18px;
+      min-width: 0;
+    }
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+    }
+    .chips, .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .chip, .filter {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 9px;
+      color: var(--muted);
+      background: transparent;
+    }
+    .filter {
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .filter.active {
+      color: var(--text);
+      border-color: rgba(21,21,21,.24);
+      background: rgba(21,21,21,.04);
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .summary-card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 92px;
+    }
+    .summary-card strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 28px;
+      letter-spacing: -.06em;
+      font-weight: 500;
+    }
+    .budget {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+    .budget-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+    .budget-bar {
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(21,21,21,.06);
+      overflow: hidden;
+    }
+    .budget-bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--soft-red), var(--soft-amber), var(--soft-green));
+      transition: width .22s ease;
+    }
+    .notice {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.28);
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      font-size: 13px;
+      color: rgba(21,21,21,.7);
+    }
+    .notice strong { color: var(--text); font-weight: 500; }
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+    .entry {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel-alt);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .entry.spent { border-color: rgba(181,109,93,.35); }
+    .entry.warn { border-color: rgba(192,163,107,.35); }
+    .entry.safe { border-color: rgba(146,162,133,.3); }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .title {
+      font-size: 17px;
+      line-height: 1.16;
+      letter-spacing: -.03em;
+    }
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 7px;
+      white-space: nowrap;
+    }
+    .note {
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(21,21,21,.76);
+    }
+    .metrics, .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .metric, .tiny-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 8px;
+      background: transparent;
+    }
+    .tiny-btn { cursor: pointer; }
+    .tiny-btn:hover { color: var(--text); border-color: rgba(21,21,21,.26); }
+    .empty {
+      font-size: 13px;
+      color: rgba(21,21,21,.42);
+      line-height: 1.5;
+      padding: 4px 0;
+    }
+    @media (max-width: 1100px) {
+      body { grid-template-columns: 1fr; }
+      .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
+      .summary { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 640px) {
+      .grid-2, .summary { grid-template-columns: 1fr; }
+      .topline, .budget-header, .notice { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="stack">
+      <div class="eyebrow">Night Lab 007</div>
+      <h1>Interrupt<br>Budget</h1>
+      <div class="intro">
+        A small surface for deciding what kinds of interruption are still worth breaking flow for right now, before everything starts feeling equally urgent.
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="field">
+        <label for="title">Incoming thing</label>
+        <input id="title" placeholder="Review deck before send" />
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="kind">Type</label>
+          <select id="kind">
+            <option>team</option>
+            <option>client</option>
+            <option>family</option>
+            <option>ops</option>
+            <option>system</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="cost">Budget cost</label>
+          <select id="cost">
+            <option value="1">1 point</option>
+            <option value="2">2 points</option>
+            <option value="3">3 points</option>
+            <option value="4">4 points</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="reason">Worth breaking flow for?</label>
+          <select id="reason">
+            <option>yes now</option>
+            <option>only if blocked</option>
+            <option>can wait</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="budget">Current budget</label>
+          <select id="budget">
+            <option value="10">10 points</option>
+            <option value="8">8 points</option>
+            <option value="6">6 points</option>
+            <option value="4">4 points</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="note">Why</label>
+        <textarea id="note" placeholder="Needs immediate answer because send deadline is in 20 minutes."></textarea>
+      </div>
+      <div class="grid-2">
+        <button id="add">Add interruption</button>
+        <button class="secondary" id="sample">Load sample</button>
+      </div>
+    </div>
+
+    <div class="mini">Not all pings deserve the same price.</div>
+  </aside>
+
+  <main class="main">
+    <div class="topline">
+      <div class="meta">flow protection surface</div>
+      <div class="chips">
+        <div class="chip">yes now</div>
+        <div class="chip">only if blocked</div>
+        <div class="chip">can wait</div>
+      </div>
+    </div>
+
+    <section class="summary" id="summary"></section>
+
+    <section class="budget">
+      <div class="budget-header">
+        <div>
+          <div class="meta">remaining interrupt budget</div>
+          <div id="budgetText" style="font-size:30px; letter-spacing:-.06em; margin-top:6px;">0 / 0</div>
+        </div>
+        <div class="mini" id="budgetState">flow still protected</div>
+      </div>
+      <div class="budget-bar"><span id="budgetFill" style="width:0%"></span></div>
+    </section>
+
+    <section class="notice">
+      <div><strong id="noticeTitle">client call moved forward 30 min</strong> is currently the most expensive live interruption.</div>
+      <div class="filters" id="filters"></div>
+    </section>
+
+    <section class="list" id="list"></section>
+  </main>
+
+  <script>
+    const state = {
+      totalBudget: 10,
+      activeFilter: 'all',
+      items: [
+        {
+          title: 'client call moved forward 30 min',
+          kind: 'client',
+          cost: 4,
+          reason: 'yes now',
+          note: 'Need to realign the deck before the conversation starts.',
+          spent: false
+        },
+        {
+          title: 'team question already unblocked in thread',
+          kind: 'team',
+          cost: 1,
+          reason: 'can wait',
+          note: 'No need to break flow. Answer after the current block closes.',
+          spent: false
+        },
+        {
+          title: 'password reset link expired again',
+          kind: 'ops',
+          cost: 3,
+          reason: 'only if blocked',
+          note: 'Important, but only worth breaking flow if it blocks the next handoff.',
+          spent: false
+        }
+      ]
+    };
+
+    const summaryEl = document.getElementById('summary');
+    const listEl = document.getElementById('list');
+    const filtersEl = document.getElementById('filters');
+    const budgetText = document.getElementById('budgetText');
+    const budgetFill = document.getElementById('budgetFill');
+    const budgetState = document.getElementById('budgetState');
+    const noticeTitle = document.getElementById('noticeTitle');
+
+    function currentItems() {
+      const active = state.items.filter(item => !item.spent);
+      return state.activeFilter === 'all' ? active : active.filter(item => item.reason === state.activeFilter);
+    }
+
+    function spentBudget() {
+      return state.items.filter(item => !item.spent && item.reason === 'yes now').reduce((sum, item) => sum + item.cost, 0);
+    }
+
+    function remainingBudget() {
+      return Math.max(0, state.totalBudget - spentBudget());
+    }
+
+    function renderSummary() {
+      const active = state.items.filter(item => !item.spent);
+      const urgent = active.filter(item => item.reason === 'yes now').length;
+      const conditional = active.filter(item => item.reason === 'only if blocked').length;
+      const safe = active.filter(item => item.reason === 'can wait').length;
+      summaryEl.innerHTML = `
+        <div class="summary-card"><div class="meta">interruptions live</div><strong>${active.length}</strong></div>
+        <div class="summary-card"><div class="meta">worth breaking for</div><strong>${urgent}</strong></div>
+        <div class="summary-card"><div class="meta">conditional only</div><strong>${conditional}</strong></div>
+        <div class="summary-card"><div class="meta">safe to wait</div><strong>${safe}</strong></div>
+      `;
+    }
+
+    function renderBudget() {
+      const remaining = remainingBudget();
+      const percent = state.totalBudget > 0 ? (remaining / state.totalBudget) * 100 : 0;
+      budgetText.textContent = `${remaining} / ${state.totalBudget}`;
+      budgetFill.style.width = `${percent}%`;
+      if (remaining >= 6) budgetState.textContent = 'flow still protected';
+      else if (remaining >= 3) budgetState.textContent = 'be selective now';
+      else budgetState.textContent = 'almost no interrupt room left';
+
+      const expensive = state.items
+        .filter(item => !item.spent)
+        .slice()
+        .sort((a, b) => b.cost - a.cost)[0];
+      noticeTitle.textContent = expensive ? expensive.title : 'nothing live';
+    }
+
+    function renderFilters() {
+      const kinds = ['all', 'yes now', 'only if blocked', 'can wait'];
+      filtersEl.innerHTML = kinds.map(kind => `
+        <button class="filter ${state.activeFilter === kind ? 'active' : ''}" data-filter="${kind}">${kind}</button>
+      `).join('');
+    }
+
+    function card(item, index) {
+      const cls = item.reason === 'yes now' ? 'spent' : item.reason === 'only if blocked' ? 'warn' : 'safe';
+      return `
+        <article class="entry ${cls}">
+          <div class="row">
+            <div class="title">${item.title}</div>
+            <div class="tag">${item.kind}</div>
+          </div>
+          <div class="note">${item.note}</div>
+          <div class="metrics">
+            <div class="metric">${item.reason}</div>
+            <div class="metric">cost ${item.cost}</div>
+          </div>
+          <div class="actions">
+            <button class="tiny-btn" data-action="now" data-index="${index}">yes now</button>
+            <button class="tiny-btn" data-action="blocked" data-index="${index}">only if blocked</button>
+            <button class="tiny-btn" data-action="wait" data-index="${index}">can wait</button>
+            <button class="tiny-btn" data-action="done" data-index="${index}">clear</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderList() {
+      const active = currentItems();
+      listEl.innerHTML = active.length ? active.map((item) => card(item, state.items.indexOf(item))).join('') : '<div class="empty">No interruptions in this state right now.</div>';
+    }
+
+    function render() {
+      renderSummary();
+      renderBudget();
+      renderFilters();
+      renderList();
+    }
+
+    document.getElementById('add').addEventListener('click', () => {
+      const title = document.getElementById('title').value.trim();
+      const kind = document.getElementById('kind').value;
+      const cost = Number(document.getElementById('cost').value);
+      const reason = document.getElementById('reason').value;
+      const note = document.getElementById('note').value.trim();
+      const budget = Number(document.getElementById('budget').value);
+      if (!title || !note) return;
+      state.totalBudget = budget;
+      state.items.unshift({ title, kind, cost, reason, note, spent: false });
+      state.activeFilter = 'all';
+      document.getElementById('title').value = '';
+      document.getElementById('note').value = '';
+      document.getElementById('reason').value = 'yes now';
+      document.getElementById('cost').value = '1';
+      render();
+    });
+
+    document.getElementById('sample').addEventListener('click', () => {
+      const samples = [
+        ['finance ping from payroll', 'ops', 2, 'only if blocked', 'Needs attention today, but not in the middle of deep work unless payment is blocked.'],
+        ['family pickup confirmation', 'family', 4, 'yes now', 'Time-sensitive and directly affects someone else waiting.'],
+        ['slack thread drift', 'team', 1, 'can wait', 'No action required until the current block ends.'],
+        ['production alert acknowledged by someone else', 'system', 1, 'can wait', 'Visible, but not yours right now.']
+      ];
+      const pick = samples[Math.floor(Math.random() * samples.length)];
+      document.getElementById('title').value = pick[0];
+      document.getElementById('kind').value = pick[1];
+      document.getElementById('cost').value = String(pick[2]);
+      document.getElementById('reason').value = pick[3];
+      document.getElementById('note').value = pick[4];
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const filter = target.dataset.filter;
+      if (filter) {
+        state.activeFilter = filter;
+        render();
+        return;
+      }
+      const action = target.dataset.action;
+      const index = Number(target.dataset.index);
+      if (!action || Number.isNaN(index)) return;
+      const item = state.items[index];
+      if (!item) return;
+      if (action === 'done') item.spent = true;
+      if (action === 'now') item.reason = 'yes now';
+      if (action === 'blocked') item.reason = 'only if blocked';
+      if (action === 'wait') item.reason = 'can wait';
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
