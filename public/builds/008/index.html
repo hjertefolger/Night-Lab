@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Escalation Shape</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #111111;
+      --panel: #171717;
+      --panel-2: #1e1e1e;
+      --text: #f3f3ef;
+      --muted: rgba(243,243,239,.58);
+      --line: rgba(243,243,239,.12);
+      --soft: rgba(243,243,239,.04);
+      --red: #c47464;
+      --amber: #c6a86b;
+      --green: #8ea286;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      display: grid;
+      grid-template-columns: minmax(340px, 430px) 1fr;
+      min-height: 100vh;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .sidebar {
+      padding: 26px 22px 20px;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+    }
+    .eyebrow, .meta, .chip, label, .mini {
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 4vw, 52px);
+      line-height: .92;
+      letter-spacing: -.07em;
+      font-weight: 500;
+    }
+    .intro {
+      font-size: 14px;
+      line-height: 1.55;
+      color: rgba(243,243,239,.72);
+      max-width: 35ch;
+    }
+    .stack, .field { display: grid; gap: 10px; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 12px 13px;
+      font: inherit;
+      outline: none;
+    }
+    textarea { min-height: 82px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { border-color: rgba(243,243,239,.28); }
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--text);
+      color: var(--bg);
+      border-radius: 999px;
+      padding: 11px 16px;
+      cursor: pointer;
+      font: inherit;
+      transition: transform .15s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    button.secondary {
+      background: transparent;
+      color: var(--text);
+    }
+    .main {
+      padding: 26px 22px 20px;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr;
+      gap: 18px;
+      min-width: 0;
+    }
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+    }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 9px;
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 10px;
+    }
+    .summary-card, .queue, .entry {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+    }
+    .summary-card {
+      padding: 14px;
+      min-height: 90px;
+    }
+    .summary-card strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -.06em;
+    }
+    .queue {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.015), rgba(255,255,255,.01));
+    }
+    .queue-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+    .meter {
+      height: 14px;
+      background: var(--soft);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .meter span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--amber), var(--red));
+      border-radius: inherit;
+      transition: width .2s ease;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+      min-width: 0;
+    }
+    .column {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+    .column-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      padding: 0 2px;
+    }
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+    .entry {
+      padding: 14px;
+      background: var(--panel-2);
+      display: grid;
+      gap: 10px;
+    }
+    .entry.blocked { border-color: rgba(198,168,107,.38); }
+    .entry.urgent { border-color: rgba(196,116,100,.4); }
+    .entry.ready { border-color: rgba(142,162,134,.34); }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .title {
+      font-size: 17px;
+      line-height: 1.16;
+      letter-spacing: -.03em;
+    }
+    .tag, .metric, .tiny-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 8px;
+      background: transparent;
+    }
+    .note {
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(243,243,239,.76);
+    }
+    .metrics, .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tiny-btn { cursor: pointer; }
+    .tiny-btn:hover { color: var(--text); border-color: rgba(243,243,239,.28); }
+    .empty {
+      font-size: 13px;
+      color: rgba(243,243,239,.42);
+      line-height: 1.5;
+      padding: 2px;
+    }
+    @media (max-width: 1120px) {
+      body { grid-template-columns: 1fr; }
+      .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
+      .summary { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .board { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .grid-2, .summary { grid-template-columns: 1fr; }
+      .topline, .queue-head { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="stack">
+      <div class="eyebrow">Night Lab 008</div>
+      <h1>Escalation<br>Shape</h1>
+      <div class="intro">
+        A compact surface for improving how work is escalated — not just whether it is urgent, but what has already been tried, what is blocked, and what kind of intervention is actually needed.
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="field">
+        <label for="title">What needs help</label>
+        <input id="title" placeholder="staging deploy still failing" />
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="kind">Escalation type</label>
+          <select id="kind">
+            <option>decision</option>
+            <option>review</option>
+            <option>unblock</option>
+            <option>approval</option>
+            <option>handoff</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="urgency">Urgency</label>
+          <select id="urgency">
+            <option>watch</option>
+            <option>soon</option>
+            <option>now</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="tried">What was tried</label>
+          <input id="tried" placeholder="restarted preview + re-ran build" />
+        </div>
+        <div class="field">
+          <label for="need">What is needed</label>
+          <select id="need">
+            <option>decision</option>
+            <option>review</option>
+            <option>access</option>
+            <option>approval</option>
+            <option>take over</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="blocker">What is blocked</label>
+        <textarea id="blocker" placeholder="Launch copy cannot be finalized until preview deploy is visible."></textarea>
+      </div>
+      <div class="grid-2">
+        <button id="add">Shape escalation</button>
+        <button class="secondary" id="sample">Load sample</button>
+      </div>
+    </div>
+
+    <div class="mini">Better escalation is better collaboration.</div>
+  </aside>
+
+  <main class="main">
+    <div class="topline">
+      <div class="meta">request quality surface</div>
+      <div class="chips">
+        <div class="chip">watch</div>
+        <div class="chip">soon</div>
+        <div class="chip">now</div>
+      </div>
+    </div>
+
+    <section class="summary" id="summary"></section>
+
+    <section class="queue">
+      <div class="queue-head">
+        <div>
+          <div class="meta">escalation load</div>
+          <div id="queueText" style="font-size:30px; letter-spacing:-.06em; margin-top:6px;">0 shaped / 0 noisy</div>
+        </div>
+        <div class="mini" id="queueState">requests are mostly shaped</div>
+      </div>
+      <div class="meter"><span id="queueFill" style="width:0%"></span></div>
+    </section>
+
+    <section class="queue" style="padding:12px 14px; gap:10px;">
+      <div class="queue-head">
+        <div>
+          <div class="meta">next escalation to clean up</div>
+          <div id="focusTitle" style="font-size:20px; letter-spacing:-.04em; margin-top:6px;">nothing noisy right now</div>
+        </div>
+        <div class="mini" id="focusHint">ready requests move faster</div>
+      </div>
+    </section>
+
+    <section class="board">
+      <div class="column">
+        <div class="column-head"><div class="meta">needs shaping</div><div class="mini" id="count-raw">0</div></div>
+        <div class="list" id="rawList"></div>
+      </div>
+      <div class="column">
+        <div class="column-head"><div class="meta">ready to send</div><div class="mini" id="count-ready">0</div></div>
+        <div class="list" id="readyList"></div>
+      </div>
+      <div class="column">
+        <div class="column-head"><div class="meta">in motion</div><div class="mini" id="count-sent">0</div></div>
+        <div class="list" id="sentList"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const state = {
+      items: [
+        {
+          title: 'staging deploy still failing',
+          kind: 'unblock',
+          urgency: 'now',
+          tried: 'restarted preview + re-ran build',
+          need: 'access',
+          blocker: 'Launch copy cannot be finalized until the preview is visible again.',
+          stage: 'ready'
+        },
+        {
+          title: 'pricing pass needs founder decision',
+          kind: 'decision',
+          urgency: 'soon',
+          tried: 'reduced to two options with tradeoffs',
+          need: 'decision',
+          blocker: 'Design is done, but copy and screenshots depend on one pricing direction.',
+          stage: 'ready'
+        },
+        {
+          title: 'support ticket forwarded with no specifics',
+          kind: 'review',
+          urgency: 'watch',
+          tried: '',
+          need: 'review',
+          blocker: 'No one can tell whether the issue is real, reproducible, or already covered.',
+          stage: 'raw'
+        }
+      ]
+    };
+
+    const summaryEl = document.getElementById('summary');
+    const rawList = document.getElementById('rawList');
+    const readyList = document.getElementById('readyList');
+    const sentList = document.getElementById('sentList');
+    const queueText = document.getElementById('queueText');
+    const queueState = document.getElementById('queueState');
+    const queueFill = document.getElementById('queueFill');
+    const focusTitle = document.getElementById('focusTitle');
+    const focusHint = document.getElementById('focusHint');
+
+    function shaped(item) {
+      return Boolean(item.tried.trim() && item.blocker.trim() && item.need.trim());
+    }
+
+    function normalizeStages() {
+      state.items.forEach(item => {
+        if (item.stage === 'sent') return;
+        item.stage = shaped(item) ? 'ready' : 'raw';
+      });
+    }
+
+    function renderSummary() {
+      const raw = state.items.filter(item => item.stage === 'raw').length;
+      const ready = state.items.filter(item => item.stage === 'ready').length;
+      const sent = state.items.filter(item => item.stage === 'sent').length;
+      const urgent = state.items.filter(item => item.urgency === 'now' && item.stage !== 'sent').length;
+      summaryEl.innerHTML = `
+        <div class="summary-card"><div class="meta">needs shaping</div><strong>${raw}</strong></div>
+        <div class="summary-card"><div class="meta">ready to send</div><strong>${ready}</strong></div>
+        <div class="summary-card"><div class="meta">in motion</div><strong>${sent}</strong></div>
+        <div class="summary-card"><div class="meta">urgent live</div><strong>${urgent}</strong></div>
+      `;
+      document.getElementById('count-raw').textContent = raw;
+      document.getElementById('count-ready').textContent = ready;
+      document.getElementById('count-sent').textContent = sent;
+    }
+
+    function renderQueue() {
+      const active = state.items.filter(item => item.stage !== 'sent');
+      const ready = active.filter(item => item.stage === 'ready').length;
+      const raw = active.filter(item => item.stage === 'raw').length;
+      const percent = active.length ? (ready / active.length) * 100 : 100;
+      queueText.textContent = `${ready} shaped / ${raw} noisy`;
+      queueFill.style.width = `${percent}%`;
+      if (raw === 0) queueState.textContent = 'requests are mostly shaped';
+      else if (ready >= raw) queueState.textContent = 'better, but some escalation is still noisy';
+      else queueState.textContent = 'too many requests arrive before they are shaped';
+
+      const nextRaw = state.items.find(item => item.stage === 'raw');
+      focusTitle.textContent = nextRaw ? nextRaw.title : 'nothing noisy right now';
+      focusHint.textContent = nextRaw
+        ? `missing: ${nextRaw.tried ? '' : 'what was tried'}${!nextRaw.tried && !nextRaw.blocker ? ' + ' : ''}${nextRaw.blocker ? '' : 'real blocker'}`.replace(/missing: $/, 'needs final shaping')
+        : 'ready requests move faster';
+    }
+
+    function card(item, index) {
+      const cls = item.urgency === 'now' ? 'urgent' : item.stage === 'ready' ? 'ready' : 'blocked';
+      return `
+        <article class="entry ${cls}">
+          <div class="row">
+            <div class="title">${item.title}</div>
+            <div class="tag">${item.kind}</div>
+          </div>
+          <div class="note">${item.blocker || 'Still missing the real blocker.'}</div>
+          <div class="metrics">
+            <div class="metric">${item.urgency}</div>
+            <div class="metric">need ${item.need || 'unset'}</div>
+            <div class="metric">tried ${item.tried ? 'yes' : 'no'}</div>
+          </div>
+          <div class="actions">
+            <button class="tiny-btn" data-action="shape" data-index="${index}">shape</button>
+            <button class="tiny-btn" data-action="send" data-index="${index}">send</button>
+            <button class="tiny-btn" data-action="return" data-index="${index}">return</button>
+            <button class="tiny-btn" data-action="clear" data-index="${index}">clear</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderColumn(el, stage, emptyText) {
+      const items = state.items.filter(item => item.stage === stage);
+      el.innerHTML = items.length ? items.map(item => card(item, state.items.indexOf(item))).join('') : `<div class="empty">${emptyText}</div>`;
+    }
+
+    function render() {
+      normalizeStages();
+      renderSummary();
+      renderQueue();
+      renderColumn(rawList, 'raw', 'Nothing unshaped right now.');
+      renderColumn(readyList, 'ready', 'No escalation is ready to send.');
+      renderColumn(sentList, 'sent', 'Nothing currently in motion.');
+    }
+
+    document.getElementById('add').addEventListener('click', () => {
+      const title = document.getElementById('title').value.trim();
+      const kind = document.getElementById('kind').value;
+      const urgency = document.getElementById('urgency').value;
+      const tried = document.getElementById('tried').value.trim();
+      const need = document.getElementById('need').value;
+      const blocker = document.getElementById('blocker').value.trim();
+      if (!title) return;
+      state.items.unshift({ title, kind, urgency, tried, need, blocker, stage: shaped({ tried, blocker, need }) ? 'ready' : 'raw' });
+      document.getElementById('title').value = '';
+      document.getElementById('tried').value = '';
+      document.getElementById('blocker').value = '';
+      document.getElementById('urgency').value = 'watch';
+      document.getElementById('need').value = 'decision';
+      render();
+    });
+
+    document.getElementById('sample').addEventListener('click', () => {
+      const samples = [
+        ['client asking for same-day contract review', 'review', 'now', 'trimmed issues to top 2 clauses', 'review', 'Needs legal eyes before signature today.'],
+        ['agent finished draft but missing publish access', 'approval', 'soon', 'verified content + attached final assets', 'access', 'Cannot complete publish step without missing permission.'],
+        ['handoff came in with no next move', 'handoff', 'watch', '', 'take over', 'Another person is waiting, but the handoff still lacks a concrete next action.']
+      ];
+      const pick = samples[Math.floor(Math.random() * samples.length)];
+      document.getElementById('title').value = pick[0];
+      document.getElementById('kind').value = pick[1];
+      document.getElementById('urgency').value = pick[2];
+      document.getElementById('tried').value = pick[3];
+      document.getElementById('need').value = pick[4];
+      document.getElementById('blocker').value = pick[5];
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const action = target.dataset.action;
+      const index = Number(target.dataset.index);
+      if (!action || Number.isNaN(index)) return;
+      const item = state.items[index];
+      if (!item) return;
+      if (action === 'shape') {
+        if (!item.tried) item.tried = 'added the minimum before escalating';
+        if (!item.blocker) item.blocker = 'clarified the actual point of blockage';
+        item.stage = 'ready';
+      }
+      if (action === 'send' && shaped(item)) item.stage = 'sent';
+      if (action === 'return' && item.stage === 'sent') item.stage = shaped(item) ? 'ready' : 'raw';
+      if (action === 'clear') state.items.splice(index, 1);
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

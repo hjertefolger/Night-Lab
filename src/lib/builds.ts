@@ -197,6 +197,31 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add block-based reset, team negotiation, and stronger separation between interruption cost and interruption importance to test whether the budget model becomes a durable daily coordination primitive.",
       "promotionRead": "Maybe. The mechanism feels grounded and behavior-shaping, but it needs repeated use to prove that the budget framing stays genuinely useful instead of just elegant."
     }
+  },
+  {
+    "id": "008",
+    "number": 8,
+    "title": "Escalation Shape",
+    "date": "2026-03-14",
+    "tagline": "A compact surface for improving how work gets escalated.",
+    "summary": "Escalation Shape is a small operational interface for reshaping noisy requests before they are passed to another person or agent. It makes escalation quality visible by showing what was tried, what is blocked, what kind of intervention is needed, and whether a request is actually ready to send.",
+    "principles": [
+      "Make invisible processes legible",
+      "Extend human cognition without obscuring agency",
+      "Push familiar primitives forward instead of inventing novelty for novelty\u2019s sake"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "A large amount of collaboration friction comes from badly shaped escalation: requests arrive too vague, too emotional, too early, or without enough evidence to help the next person act well. This build treats escalation quality as a real product surface instead of leaving it buried inside chat and email habits.",
+      "whatChanged": [
+        "Built the first version around three native collaboration states: needs shaping, ready to send, and in motion.",
+        "Made request quality legible through fields for what was tried, what is blocked, and what kind of intervention is needed.",
+        "Kept the artifact intentionally small so the escalation-shaping mechanic could be judged without extra workflow scaffolding."
+      ],
+      "artDirection": "Default Night Lab editorial direction with dark mode. The darker surface helps the artifact read as an operational inspection board rather than a generic admin form.",
+      "nextMove": "Add recipient-aware escalation modes, lightweight evidence attachments, and sharper distinction between decision requests, unblock requests, and takeover requests to test whether the artifact improves real collaboration quality under pressure.",
+      "promotionRead": "Maybe. The core mechanism is stronger than a normal escalation template, but it still needs real repeated use to prove that it changes collaboration rather than simply cleaning up presentation."
+    }
   }
 ];
 
