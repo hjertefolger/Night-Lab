@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Presence Lease</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f1eee6;
+      --panel: #fbfaf5;
+      --panel-2: #f6f3eb;
+      --text: #151515;
+      --muted: rgba(21,21,21,.58);
+      --line: rgba(21,21,21,.12);
+      --green: #8ea286;
+      --amber: #c1a36b;
+      --red: #bb7564;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      display: grid;
+      grid-template-columns: minmax(330px, 430px) 1fr;
+      min-height: 100vh;
+    }
+    .eyebrow, .meta, .chip, label, .mini, .pill, .tiny-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .eyebrow, .meta, label, .mini { color: var(--muted); }
+    .sidebar {
+      padding: 26px 22px 20px;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,.12));
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 4vw, 52px);
+      line-height: .92;
+      letter-spacing: -.07em;
+      font-weight: 500;
+    }
+    .intro {
+      font-size: 14px;
+      line-height: 1.55;
+      color: rgba(21,21,21,.72);
+      max-width: 34ch;
+    }
+    .stack, .field { display: grid; gap: 10px; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 12px 13px;
+      font: inherit;
+      outline: none;
+    }
+    textarea { min-height: 78px; resize: vertical; }
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--text);
+      color: #f7f5ef;
+      border-radius: 999px;
+      padding: 11px 16px;
+      cursor: pointer;
+      font: inherit;
+      transition: transform .15s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    button.secondary { background: transparent; color: var(--text); }
+    .main {
+      padding: 26px 22px 20px;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr;
+      gap: 18px;
+      min-width: 0;
+    }
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+    }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 9px;
+      color: var(--muted);
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 10px;
+    }
+    .summary-card, .focus, .lease {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+    }
+    .summary-card {
+      padding: 14px;
+      min-height: 90px;
+    }
+    .summary-card strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -.06em;
+    }
+    .focus {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,.36), rgba(255,255,255,.16));
+    }
+    .focus-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+    .meter {
+      height: 14px;
+      background: rgba(21,21,21,.06);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .meter span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--amber), var(--red));
+      border-radius: inherit;
+      transition: width .2s ease;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+      min-width: 0;
+    }
+    .column { display: grid; gap: 10px; align-content: start; }
+    .column-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: baseline;
+      padding: 0 2px;
+    }
+    .list { display: grid; gap: 10px; }
+    .lease {
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      background: var(--panel-2);
+    }
+    .lease.fresh { border-color: rgba(142,162,134,.34); }
+    .lease.warm { border-color: rgba(193,163,107,.36); }
+    .lease.expiring { border-color: rgba(187,117,100,.38); }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .title {
+      font-size: 17px;
+      line-height: 1.16;
+      letter-spacing: -.03em;
+    }
+    .note {
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(21,21,21,.76);
+    }
+    .pill, .tiny-btn {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 8px;
+      background: transparent;
+      color: var(--muted);
+    }
+    .metrics, .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tiny-btn { cursor: pointer; }
+    .tiny-btn:hover { color: var(--text); border-color: rgba(21,21,21,.24); }
+    .empty {
+      font-size: 13px;
+      color: rgba(21,21,21,.42);
+      line-height: 1.5;
+      padding: 2px;
+    }
+    @media (max-width: 1120px) {
+      body { grid-template-columns: 1fr; }
+      .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
+      .summary { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .board { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .grid-2, .summary { grid-template-columns: 1fr; }
+      .topline, .focus-head { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="stack">
+      <div class="eyebrow">Night Lab 009</div>
+      <h1>Presence<br>Lease</h1>
+      <div class="intro">
+        A small surface for declaring that a person, agent, or session is valid for a specific kind of collaboration for a bounded span of time. Not just online — leased for something.
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="field">
+        <label for="holder">Lease holder</label>
+        <input id="holder" placeholder="web-chat on phone" />
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="scope">Valid for</label>
+          <select id="scope">
+            <option>review</option>
+            <option>urgent routing</option>
+            <option>handoff follow-up</option>
+            <option>light chat</option>
+            <option>decision check</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="duration">Lease span</label>
+          <select id="duration">
+            <option value="15">15 min</option>
+            <option value="45">45 min</option>
+            <option value="120">2 hours</option>
+            <option value="480">until sleep</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label for="quality">Confidence</label>
+          <select id="quality">
+            <option>high</option>
+            <option>medium</option>
+            <option>fragile</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="owner">Backed by</label>
+          <select id="owner">
+            <option>human</option>
+            <option>agent</option>
+            <option>shared</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="note">What this lease means</label>
+        <textarea id="note" placeholder="Good for quick replies and urgent routing while the machine stays asleep behind the tunnel."></textarea>
+      </div>
+      <div class="grid-2">
+        <button id="add">Issue lease</button>
+        <button class="secondary" id="sample">Load sample</button>
+      </div>
+    </div>
+
+    <div class="mini">A participant can be valid for a kind of work, not just present.</div>
+  </aside>
+
+  <main class="main">
+    <div class="topline">
+      <div class="meta">scoped collaboration validity</div>
+      <div class="chips">
+        <div class="chip">fresh</div>
+        <div class="chip">warming</div>
+        <div class="chip">expiring</div>
+      </div>
+    </div>
+
+    <section class="summary" id="summary"></section>
+
+    <section class="focus">
+      <div class="focus-head">
+        <div>
+          <div class="meta">lease health</div>
+          <div id="healthText" style="font-size:30px; letter-spacing:-.06em; margin-top:6px;">0 active / 0 expiring</div>
+        </div>
+        <div class="mini" id="healthState">collaboration validity is stable</div>
+      </div>
+      <div class="meter"><span id="healthFill" style="width:0%"></span></div>
+      <div class="mini" id="focusLine">No lease currently needs renewal.</div>
+      <div class="chips" id="scopeFilters"></div>
+    </section>
+
+    <section class="board">
+      <div class="column">
+        <div class="column-head"><div class="meta">fresh</div><div class="mini" id="count-fresh">0</div></div>
+        <div class="list" id="freshList"></div>
+      </div>
+      <div class="column">
+        <div class="column-head"><div class="meta">warming</div><div class="mini" id="count-warm">0</div></div>
+        <div class="list" id="warmList"></div>
+      </div>
+      <div class="column">
+        <div class="column-head"><div class="meta">expiring</div><div class="mini" id="count-expiring">0</div></div>
+        <div class="list" id="expiringList"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const state = {
+      activeScope: 'all',
+      items: [
+        {
+          holder: 'web-chat on phone',
+          scope: 'light chat',
+          duration: '480',
+          quality: 'high',
+          owner: 'shared',
+          note: 'Good for quick replies while the computer stays asleep behind the persistent tunnel.',
+          freshness: 0.18
+        },
+        {
+          holder: 'night-lab session',
+          scope: 'review',
+          duration: '45',
+          quality: 'medium',
+          owner: 'agent',
+          note: 'Valid for reading logs and preparing the next move, but not for broad speculative work.',
+          freshness: 0.56
+        },
+        {
+          holder: 'design review thread',
+          scope: 'decision check',
+          duration: '15',
+          quality: 'fragile',
+          owner: 'human',
+          note: 'Needs renewal soon or the decision context will go stale.',
+          freshness: 0.86
+        }
+      ]
+    };
+
+    const summaryEl = document.getElementById('summary');
+    const healthText = document.getElementById('healthText');
+    const healthState = document.getElementById('healthState');
+    const healthFill = document.getElementById('healthFill');
+    const focusLine = document.getElementById('focusLine');
+    const scopeFilters = document.getElementById('scopeFilters');
+
+    function bucket(item) {
+      if (item.freshness < 0.34) return 'fresh';
+      if (item.freshness < 0.7) return 'warm';
+      return 'expiring';
+    }
+
+    function renderSummary() {
+      const fresh = state.items.filter(item => bucket(item) === 'fresh').length;
+      const warm = state.items.filter(item => bucket(item) === 'warm').length;
+      const expiring = state.items.filter(item => bucket(item) === 'expiring').length;
+      const shared = state.items.filter(item => item.owner === 'shared').length;
+      summaryEl.innerHTML = `
+        <div class="summary-card"><div class="meta">fresh leases</div><strong>${fresh}</strong></div>
+        <div class="summary-card"><div class="meta">warming</div><strong>${warm}</strong></div>
+        <div class="summary-card"><div class="meta">expiring</div><strong>${expiring}</strong></div>
+        <div class="summary-card"><div class="meta">shared backing</div><strong>${shared}</strong></div>
+      `;
+      document.getElementById('count-fresh').textContent = fresh;
+      document.getElementById('count-warm').textContent = warm;
+      document.getElementById('count-expiring').textContent = expiring;
+    }
+
+    function renderHealth() {
+      const active = state.items.length;
+      const expiring = state.items.filter(item => bucket(item) === 'expiring').length;
+      const healthy = active ? ((active - expiring) / active) * 100 : 100;
+      healthText.textContent = `${active} active / ${expiring} expiring`;
+      healthFill.style.width = `${healthy}%`;
+      if (expiring === 0) healthState.textContent = 'collaboration validity is stable';
+      else if (expiring === 1) healthState.textContent = 'one lease needs renewal soon';
+      else healthState.textContent = 'several collaboration leases are fading';
+
+      const next = state.items
+        .slice()
+        .sort((a, b) => b.freshness - a.freshness)[0];
+      focusLine.textContent = next
+        ? `${next.holder} is closest to expiry for ${next.scope}.`
+        : 'No lease currently needs renewal.';
+    }
+
+    function currentItems() {
+      return state.activeScope === 'all'
+        ? state.items
+        : state.items.filter(item => item.scope === state.activeScope);
+    }
+
+    function renderFilters() {
+      const scopes = ['all', ...new Set(state.items.map(item => item.scope))];
+      scopeFilters.innerHTML = scopes.map(scope => `
+        <button class="chip" data-filter="${scope}" style="cursor:pointer; color:${state.activeScope === scope ? 'var(--text)' : 'var(--muted)'}; border-color:${state.activeScope === scope ? 'rgba(21,21,21,.24)' : 'var(--line)'}; background:${state.activeScope === scope ? 'rgba(21,21,21,.04)' : 'transparent'};">${scope}</button>
+      `).join('');
+    }
+
+    function card(item, index) {
+      const status = bucket(item);
+      return `
+        <article class="lease ${status}">
+          <div class="row">
+            <div class="title">${item.holder}</div>
+            <div class="pill">${item.scope}</div>
+          </div>
+          <div class="note">${item.note}</div>
+          <div class="metrics">
+            <div class="pill">${item.owner}</div>
+            <div class="pill">${item.quality}</div>
+            <div class="pill">${item.duration === '480' ? 'until sleep' : item.duration + ' min'}</div>
+          </div>
+          <div class="actions">
+            <button class="tiny-btn" data-action="renew" data-index="${index}">renew</button>
+            <button class="tiny-btn" data-action="age" data-index="${index}">age</button>
+            <button class="tiny-btn" data-action="fragile" data-index="${index}">mark fragile</button>
+            <button class="tiny-btn" data-action="clear" data-index="${index}">clear</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderColumn(id, name, emptyText) {
+      const el = document.getElementById(id);
+      const items = currentItems().filter(item => bucket(item) === name);
+      el.innerHTML = items.length ? items.map(item => card(item, state.items.indexOf(item))).join('') : `<div class="empty">${emptyText}</div>`;
+    }
+
+    function render() {
+      renderSummary();
+      renderHealth();
+      renderFilters();
+      renderColumn('freshList', 'fresh', 'No fresh leases right now.');
+      renderColumn('warmList', 'warm', 'No leases are warming.');
+      renderColumn('expiringList', 'expiring', 'Nothing is expiring right now.');
+    }
+
+    document.getElementById('add').addEventListener('click', () => {
+      const holder = document.getElementById('holder').value.trim();
+      const scope = document.getElementById('scope').value;
+      const duration = document.getElementById('duration').value;
+      const quality = document.getElementById('quality').value;
+      const owner = document.getElementById('owner').value;
+      const note = document.getElementById('note').value.trim();
+      if (!holder || !note) return;
+      state.items.unshift({ holder, scope, duration, quality, owner, note, freshness: 0.08 });
+      document.getElementById('holder').value = '';
+      document.getElementById('note').value = '';
+      document.getElementById('scope').value = 'review';
+      document.getElementById('duration').value = '15';
+      document.getElementById('quality').value = 'high';
+      document.getElementById('owner').value = 'human';
+      render();
+    });
+
+    document.getElementById('sample').addEventListener('click', () => {
+      const samples = [
+        ['remote terminal session', 'urgent routing', '120', 'high', 'shared', 'Safe to use for urgent command relay while the host remains unattended.'],
+        ['agent review window', 'review', '45', 'medium', 'agent', 'Good for focused critique, not for open-ended ideation.'],
+        ['handoff monitor', 'handoff follow-up', '15', 'fragile', 'human', 'Valid only until the next owner change or context drift.']
+      ];
+      const pick = samples[Math.floor(Math.random() * samples.length)];
+      document.getElementById('holder').value = pick[0];
+      document.getElementById('scope').value = pick[1];
+      document.getElementById('duration').value = pick[2];
+      document.getElementById('quality').value = pick[3];
+      document.getElementById('owner').value = pick[4];
+      document.getElementById('note').value = pick[5];
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const filter = target.dataset.filter;
+      if (filter) {
+        state.activeScope = filter;
+        render();
+        return;
+      }
+      const action = target.dataset.action;
+      const index = Number(target.dataset.index);
+      if (!action || Number.isNaN(index)) return;
+      const item = state.items[index];
+      if (!item) return;
+      if (action === 'renew') item.freshness = 0.08;
+      if (action === 'age') item.freshness = Math.min(1, item.freshness + 0.22);
+      if (action === 'fragile') item.quality = 'fragile';
+      if (action === 'clear') state.items.splice(index, 1);
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

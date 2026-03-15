@@ -222,6 +222,31 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add recipient-aware escalation modes, lightweight evidence attachments, and sharper distinction between decision requests, unblock requests, and takeover requests to test whether the artifact improves real collaboration quality under pressure.",
       "promotionRead": "Maybe. The core mechanism is stronger than a normal escalation template, but it still needs real repeated use to prove that it changes collaboration rather than simply cleaning up presentation."
     }
+  },
+  {
+    "id": "009",
+    "number": 9,
+    "title": "Presence Lease",
+    "date": "2026-03-15",
+    "tagline": "A small surface for scoped collaboration validity.",
+    "summary": "Presence Lease is a compact interface for declaring that a person, agent, or session is valid for a specific kind of work for a bounded span of time. It replaces flat online/offline presence with a more useful primitive: temporary collaboration validity.",
+    "principles": [
+      "Make invisible processes legible",
+      "Turn continuity into infrastructure",
+      "Extend human cognition without obscuring agency"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Presence is usually treated as binary or vague: online, active, away, reachable. That is too weak for real collaboration. What often matters is whether a person, agent, or session is currently valid for a specific kind of work. This build explores that missing primitive.",
+      "whatChanged": [
+        "Built the first version around scoped collaboration leases instead of generic presence status.",
+        "Made lease validity legible through scope, duration, backing, confidence, and freshness.",
+        "Kept the initial artifact intentionally small so the lease primitive could be judged on its own."
+      ],
+      "artDirection": "Default Night Lab editorial direction with a warm paper-toned surface. The lighter system helps the artifact read as a calm operational object rather than a dashboard.",
+      "nextMove": "Add automatic expiry, recipient-side acceptance, and direct collaboration actions tied to each lease so the primitive becomes something people work through, not just look at.",
+      "promotionRead": "Maybe. The concept feels fertile and more path-opening than some recent builds, but it still needs evidence that the lease model holds under real use and is not just elegant language."
+    }
   }
 ];
 
