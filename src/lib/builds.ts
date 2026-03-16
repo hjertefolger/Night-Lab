@@ -247,6 +247,31 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add automatic expiry, recipient-side acceptance, and direct collaboration actions tied to each lease so the primitive becomes something people work through, not just look at.",
       "promotionRead": "Maybe. The concept feels fertile and more path-opening than some recent builds, but it still needs evidence that the lease model holds under real use and is not just elegant language."
     }
+  },
+  {
+    "id": "010",
+    "number": 10,
+    "title": "Recurrence Window",
+    "date": "2026-03-16",
+    "tagline": "A comparative viewer for failures hiding inside bad summaries.",
+    "summary": "Recurrence Window is a forensic comparison surface for the moment an incident stops looking isolated and starts looking like part of a pattern. It helps viewers inspect recurring operational signals that stay hidden inside weak metadata and scattered attachments.",
+    "principles": [
+      "Make invisible processes legible",
+      "Turn continuity into infrastructure",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "In deviation and incident work, repeat failures often stay invisible because summaries are weak, attachments are scattered, and metadata is inconsistent. People do not need another logging form. They need a way to see when a supposedly isolated incident is echoing older ones.",
+      "whatChanged": [
+        "Built the artifact as a comparative viewer instead of another entry-based workflow tool.",
+        "Focused the first version on active incident versus prior echoes rather than broad reporting or dashboard metrics.",
+        "Added a tighter signal-extraction pass so repeated patterns remain visible even when summary language changes."
+      ],
+      "artDirection": "Default Night Lab editorial direction with dark mode. The darker treatment supports a forensic, comparison-first reading of the artifact without becoming dashboard-heavy.",
+      "nextMove": "Add attachment excerpts, recurrence confidence, and a trigger view that shows when a current incident should have surfaced earlier echoes automatically.",
+      "promotionRead": "Maybe. More structurally distinct than the last few builds, and grounded in a real problem, but it still needs proof that the comparison model becomes operationally useful beyond a compelling first screen."
+    }
   }
 ];
 

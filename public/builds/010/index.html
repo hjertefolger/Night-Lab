@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recurrence Window</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1010;
+      --panel: #141515;
+      --panel-2: #191a1a;
+      --text: #f3f2ed;
+      --muted: rgba(243,242,237,.58);
+      --line: rgba(243,242,237,.11);
+      --soft: rgba(243,242,237,.04);
+      --accent: #a89d79;
+      --warn: #ba7461;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+    body { font-family: 'Geist', system-ui, sans-serif; }
+    .mono, .meta, .chip, .tag, .tiny, button {
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 18px;
+      padding: 24px 22px 20px;
+    }
+    .top {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(320px, .9fr);
+      gap: 14px;
+    }
+    .hero, .focus, .panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+    }
+    .hero { padding: 18px; display: grid; gap: 14px; }
+    .focus { padding: 18px; display: grid; gap: 12px; }
+    .meta, .tiny { color: var(--muted); }
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: .9;
+      letter-spacing: -.08em;
+      font-weight: 500;
+      max-width: 8ch;
+    }
+    .intro {
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(243,242,237,.72);
+      max-width: 42ch;
+    }
+    .chips, .tags, .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .chip, .tag, button {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 9px;
+    }
+    button { cursor: pointer; }
+    button.active, button:hover {
+      color: var(--text);
+      border-color: rgba(243,242,237,.24);
+      background: rgba(243,242,237,.04);
+    }
+    .focus-line {
+      font-size: 30px;
+      line-height: .96;
+      letter-spacing: -.06em;
+      font-weight: 500;
+      max-width: 13ch;
+    }
+    .focus-note {
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(243,242,237,.7);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr);
+      gap: 14px;
+      min-height: 0;
+    }
+    .panel {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+      min-height: 0;
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .timeline {
+      display: grid;
+      gap: 10px;
+    }
+    .incident {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel-2);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .incident.active {
+      border-color: rgba(168,157,121,.45);
+      background: linear-gradient(180deg, rgba(168,157,121,.08), rgba(255,255,255,.02));
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .title {
+      font-size: 18px;
+      line-height: 1.15;
+      letter-spacing: -.03em;
+      max-width: 26ch;
+    }
+    .summary {
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(243,242,237,.76);
+      max-width: 62ch;
+    }
+    .compare {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr 1fr;
+    }
+    .compare-box {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel-2);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      min-height: 240px;
+    }
+    .label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .big {
+      font-size: 20px;
+      line-height: 1.12;
+      letter-spacing: -.04em;
+      max-width: 18ch;
+    }
+    .list {
+      display: grid;
+      gap: 8px;
+    }
+    .line {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 11px;
+      background: rgba(255,255,255,.015);
+      font-size: 12px;
+      line-height: 1.45;
+      color: rgba(243,242,237,.74);
+    }
+    .line.hit { border-color: rgba(168,157,121,.42); color: var(--text); }
+    .line.warn { border-color: rgba(186,116,97,.4); }
+    @media (max-width: 980px) {
+      .top, .grid, .compare { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="top">
+      <div class="hero">
+        <div class="meta">Night Lab 010</div>
+        <h1>Recurrence Window</h1>
+        <div class="intro">
+          A comparative viewer for the moment an incident stops looking isolated and starts looking like a pattern hidden by weak summaries, scattered attachments, and bad metadata.
+        </div>
+        <div class="chips" id="filters"></div>
+      </div>
+      <div class="focus">
+        <div class="meta">pattern pressure</div>
+        <div class="focus-line" id="focusLine">3 prior incidents echo this failure.</div>
+        <div class="focus-note" id="focusNote">The summaries are inconsistent, but the same contamination + transfer timing pattern keeps reappearing.</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div class="meta">incident window</div>
+        <div class="tiny">viewer, not entry tool</div>
+      </div>
+      <div class="timeline" id="timeline"></div>
+    </section>
+
+    <section class="panel" style="padding-top:12px;">
+      <div class="panel-head">
+        <div class="meta">what the summary hides</div>
+        <div class="tiny" id="hideLabel">current incident read</div>
+      </div>
+      <div class="summary" id="hiddenRead" style="max-width:80ch; color:rgba(243,242,237,.82);"></div>
+    </section>
+
+    <section class="grid">
+      <section class="panel">
+        <div class="panel-head">
+          <div class="meta">recurrence comparison</div>
+          <div class="controls" id="compareControls"></div>
+        </div>
+        <div class="compare" id="compare"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div class="meta">signal extraction</div>
+          <div class="tiny">what repeats despite bad summaries</div>
+        </div>
+        <div class="list" id="signals"></div>
+      </section>
+    </section>
+  </div>
+
+  <script>
+    const incidents = [
+      {
+        id: 'dev-118',
+        date: '2026-03-15',
+        team: 'sterile fill',
+        title: 'late-stage contamination spike during line transfer',
+        summary: 'Summary says isolated operator lapse, but attachment notes mention the same transfer timing window seen before.',
+        short: 'isolated operator lapse',
+        hidden: 'transfer timing window repeated',
+        echoes: ['dev-094', 'dev-071', 'dev-052'],
+        signals: ['transfer timing', 'sterile handoff', 'late-shift recurrence']
+      },
+      {
+        id: 'dev-094',
+        date: '2026-02-22',
+        team: 'sterile fill',
+        title: 'material exposure beyond expected limit',
+        summary: 'Filed as environment variance. Attachment shows cleanup overrun during the same transfer interval.',
+        short: 'environment variance',
+        hidden: 'cleanup overrun near transfer',
+        echoes: ['dev-071', 'dev-052'],
+        signals: ['transfer timing', 'cleanup delay', 'late-shift recurrence']
+      },
+      {
+        id: 'dev-071',
+        date: '2026-01-18',
+        team: 'packaging bridge',
+        title: 'unexplained sterility hold after routine restart',
+        summary: 'Tagged as one-off restart instability. Notes mention rushed bridge between teams before restart.',
+        short: 'restart instability',
+        hidden: 'rushed bridge before restart',
+        echoes: ['dev-052'],
+        signals: ['handoff compression', 'transfer timing', 'bridge pressure']
+      },
+      {
+        id: 'dev-052',
+        date: '2025-12-09',
+        team: 'sterile fill',
+        title: 'batch pause after unresolved particulate alert',
+        summary: 'Marked as sensor anomaly. Follow-up attachment mentions same transfer crew + compressed reset window.',
+        short: 'sensor anomaly',
+        hidden: 'same crew in compressed reset window',
+        echoes: [],
+        signals: ['transfer crew overlap', 'compressed reset', 'late-shift recurrence']
+      }
+    ];
+
+    const filterValues = ['all', 'sterile fill', 'packaging bridge'];
+    const state = { filter: 'all', activeId: 'dev-118' };
+
+    const filtersEl = document.getElementById('filters');
+    const timelineEl = document.getElementById('timeline');
+    const compareEl = document.getElementById('compare');
+    const signalsEl = document.getElementById('signals');
+    const compareControlsEl = document.getElementById('compareControls');
+    const focusLineEl = document.getElementById('focusLine');
+    const focusNoteEl = document.getElementById('focusNote');
+    const hiddenReadEl = document.getElementById('hiddenRead');
+    const hideLabelEl = document.getElementById('hideLabel');
+
+    function currentIncidents() {
+      return state.filter === 'all'
+        ? incidents
+        : incidents.filter(item => item.team === state.filter);
+    }
+
+    function activeIncident() {
+      return incidents.find(item => item.id === state.activeId) || currentIncidents()[0];
+    }
+
+    function renderFilters() {
+      filtersEl.innerHTML = filterValues.map(value => `
+        <button class="${state.filter === value ? 'active' : ''}" data-filter="${value}">${value}</button>
+      `).join('');
+    }
+
+    function renderTimeline() {
+      const items = currentIncidents();
+      timelineEl.innerHTML = items.map(item => `
+        <article class="incident ${state.activeId === item.id ? 'active' : ''}" data-open="${item.id}">
+          <div class="row">
+            <div>
+              <div class="title">${item.title}</div>
+              <div class="tiny" style="margin-top:6px; color:var(--muted)">${item.id} / ${item.date} / ${item.team}</div>
+            </div>
+            <div class="tag">${item.echoes.length} echoes</div>
+          </div>
+          <div class="summary">${item.summary}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderCompare() {
+      const active = activeIncident();
+      if (!active) return;
+      const echoed = incidents.filter(item => active.echoes.includes(item.id));
+      compareControlsEl.innerHTML = `
+        <div class="tiny">active: ${active.id}</div>
+      `;
+      compareEl.innerHTML = [active, ...(echoed[0] ? [echoed[0]] : [])].map((item, index) => `
+        <section class="compare-box">
+          <div class="label">${index === 0 ? 'current incident' : 'closest prior echo'}</div>
+          <div class="big">${item.title}</div>
+          <div class="list">
+            <div class="line warn">summary label: ${item.short}</div>
+            <div class="line hit">hidden pattern: ${item.hidden}</div>
+          </div>
+          <div class="label">signals</div>
+          <div class="list">
+            ${item.signals.map(signal => `<div class="line ${active.signals.includes(signal) ? 'hit' : ''}">${signal}</div>`).join('')}
+          </div>
+        </section>
+      `).join('');
+    }
+
+    function renderSignals() {
+      const active = activeIncident();
+      if (!active) return;
+      const counts = {};
+      incidents.forEach(item => {
+        item.signals.forEach(signal => {
+          counts[signal] = (counts[signal] || 0) + 1;
+        });
+      });
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      signalsEl.innerHTML = sorted.map(([signal, count]) => `
+        <div class="line ${active.signals.includes(signal) ? 'hit' : ''}">
+          <strong style="display:block; margin-bottom:4px; color:var(--text); font-weight:500;">${signal}</strong>
+          seen in ${count} incidents${active.signals.includes(signal) ? ' / active match' : ''}
+        </div>
+      `).join('');
+
+      focusLineEl.textContent = `${active.echoes.length} prior incidents echo this failure.`;
+      focusNoteEl.textContent = `The headline labels differ — ${active.short}, environment variance, restart instability — but the same operational pattern keeps resurfacing underneath.`;
+      hideLabelEl.textContent = `${active.id} / hidden read`;
+      hiddenReadEl.textContent = `Official summary: ${active.short}. Re-read through attachments and prior echoes: ${active.hidden}. This is why the incident should not stay isolated.`;
+    }
+
+    function render() {
+      renderFilters();
+      renderTimeline();
+      renderCompare();
+      renderSignals();
+    }
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const filter = target.dataset.filter;
+      if (filter) {
+        state.filter = filter;
+        const visible = currentIncidents();
+        if (!visible.some(item => item.id === state.activeId)) state.activeId = visible[0]?.id || 'dev-118';
+        render();
+        return;
+      }
+      const open = target.closest('[data-open]')?.getAttribute('data-open');
+      if (open) {
+        state.activeId = open;
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
