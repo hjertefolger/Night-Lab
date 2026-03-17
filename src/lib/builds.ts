@@ -276,26 +276,25 @@ export const liveBuilds: BuildMeta[] = [
   {
     "id": "011",
     "number": 11,
-    "title": "State Reset Trace",
+    "title": "Access Window",
     "date": "2026-03-17",
-    "tagline": "A causal map for visible resets with hidden causes.",
-    "summary": "State Reset Trace is a comparative viewer for moments when a working environment appears to reset itself, even though the real trigger lives outside the visible surface. It maps symptoms back to hidden causes so the reset can be understood as a chain, not a mystery.",
+    "tagline": "A timed coordination object for the fragile moment someone needs to get into a home.",
+    "summary": "A Night Lab prototype for the operational mess around tenant access, contractor arrival, lockboxes, and missed time windows. It turns a vague appointment into a visible, time-bound access object with prep, arrival, and expiry.",
     "principles": [
-      "Make invisible processes legible",
-      "Compress complexity while preserving essence",
-      "Turn continuity into infrastructure"
+      "native artifact form over renamed workflow software",
+      "real operational friction made visible"
     ],
     "status": "live",
     "fieldNotes": {
-      "whyThisExists": "When sessions disappear, remote naming breaks, or interfaces suddenly act unstable, people often blame the visible surface first. But the true cause frequently sits in a hidden dependency, helper process, or lower system layer. This build exists to make that causal drift visible.",
+      "whyThisExists": "People coordinating apartment and home access still rely on scattered texts, memory, phone calls, and social guesswork. The missing thing is not another work-order tracker. It is a durable object for the access window itself: who needs in, how entry works, what can break the visit, and when the waiting party is released if the window collapses.",
       "whatChanged": [
-        "Built the first version as a causal trace viewer rather than another workflow or logging tool.",
-        "Focused the surface on hidden reset chains across browser, network, and mobile-web examples.",
-        "Added an explicit interpretation layer so the artifact states the downstream symptom versus hidden cause read more directly."
+        "Built the concept as a timed access object instead of a maintenance board or dashboard.",
+        "Added checkpoint moments so each visit reads like an operational ritual, not a vague appointment.",
+        "Made expiry explicit so the core tension is visible: residents are often held hostage by soft arrival promises."
       ],
-      "artDirection": "Default Night Lab editorial direction with a warm paper-toned surface. The lighter treatment keeps the causal map analytical and readable without drifting into alert-dashboard aesthetics.",
-      "nextMove": "Add real evidence snippets, branching possible causes, and a mode for isolating which hidden layer changed first so the trace becomes more diagnostic and less illustrative.",
-      "promotionRead": "Maybe. More structurally distinct than the repeated mini-app pattern and grounded in a real problem, but it still needs proof that the trace model becomes genuinely useful in practice rather than just persuasive on first view."
+      "artDirection": "Default Night Lab direction was used: dark editorial systems minimalism with restrained monochrome surfaces, thin borders, and quiet operational emphasis.",
+      "nextMove": "Test whether the access window becomes stronger as a live countdown object with proofs of entry, handoff survival across shift change, and explicit release conditions when the visit misses its slot.",
+      "promotionRead": "Maybe. The problem is concrete and the form is more distinct than recent builds, but it still needs one sharper interaction mechanic before it feels like a true standalone primitive."
     }
   }
 ];

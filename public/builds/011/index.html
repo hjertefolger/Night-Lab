@@ -3,128 +3,160 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>State Reset Trace</title>
+  <title>Access Window</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f3f0e8;
-      --panel: #fbfaf6;
-      --panel-2: #f7f4ec;
-      --text: #141414;
-      --muted: rgba(20,20,20,.58);
-      --line: rgba(20,20,20,.12);
-      --warn: #b96d5d;
-      --accent: #9a9270;
+      --bg: #0f1111;
+      --panel: #151717;
+      --panel-2: #1b1d1d;
+      --text: #f2f1ec;
+      --muted: rgba(242,241,236,.58);
+      --line: rgba(242,241,236,.12);
+      --soft: rgba(242,241,236,.04);
+      --warn: #bf7b67;
+      --ok: #8d9d84;
+      --accent: #ab9e79;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
-    body { font-family: 'Geist', system-ui, sans-serif; }
-    .mono, .meta, .chip, .tag, button {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-    }
-    .shell {
-      min-height: 100vh;
+    body {
+      font-family: 'Geist', system-ui, sans-serif;
+      padding: 24px 22px 22px;
       display: grid;
-      grid-template-rows: auto auto 1fr;
       gap: 16px;
-      padding: 24px 22px 20px;
+      min-height: 100vh;
     }
-    .top {
+    .mono, .meta, .tiny, .chip, button, input, textarea, select { font-family: 'JetBrains Mono', monospace; }
+    .meta, .tiny, .chip {
+      font-size: 11px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .frame, .panel, .row-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+    }
+    .hero {
       display: grid;
       grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
       gap: 14px;
     }
-    .hero, .focus, .panel, .trace {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,.46), rgba(255,255,255,.16));
-    }
-    .hero, .focus, .panel { padding: 16px; }
-    .hero { display: grid; gap: 14px; }
-    .focus { display: grid; gap: 10px; }
-    .meta { color: var(--muted); }
+    .frame { padding: 18px; }
     h1 {
       margin: 0;
-      font-size: clamp(34px, 5vw, 62px);
-      line-height: .9;
-      letter-spacing: -.08em;
+      font-size: clamp(38px, 5vw, 72px);
+      line-height: .88;
+      letter-spacing: -.09em;
       font-weight: 500;
-      max-width: 8ch;
+      max-width: 7ch;
     }
     .intro {
+      margin-top: 14px;
+      max-width: 42ch;
       font-size: 14px;
       line-height: 1.6;
-      color: rgba(20,20,20,.72);
-      max-width: 42ch;
+      color: rgba(242,241,236,.74);
     }
-    .chips, .controls {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 18px;
     }
-    .chip, button {
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: var(--soft);
+    }
+    .stat strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 29px;
+      font-weight: 500;
+      letter-spacing: -.06em;
+      font-family: 'Geist', system-ui, sans-serif;
+      color: var(--text);
+    }
+    .form-panel {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    label {
+      display: grid;
+      gap: 7px;
+      font-size: 11px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      color: var(--text);
+      padding: 12px 13px;
+      font-size: 12px;
+      outline: none;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    textarea { min-height: 82px; resize: vertical; font-family: 'Geist', system-ui, sans-serif; font-size: 14px; }
+    input:focus, textarea:focus, select:focus { border-color: rgba(242,241,236,.28); }
+    .actions, .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    button {
       border: 1px solid var(--line);
       border-radius: 999px;
+      padding: 10px 14px;
+      background: var(--text);
+      color: var(--bg);
+      cursor: pointer;
+      font-size: 11px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    button.secondary {
       background: transparent;
-      color: var(--muted);
-      padding: 7px 9px;
-    }
-    button { cursor: pointer; }
-    button.active, button:hover {
       color: var(--text);
-      border-color: rgba(20,20,20,.24);
-      background: rgba(20,20,20,.04);
     }
-    .focus-line {
-      font-size: 29px;
-      line-height: .96;
-      letter-spacing: -.06em;
-      font-weight: 500;
-      max-width: 14ch;
-    }
-    .focus-note {
-      font-size: 13px;
-      line-height: 1.55;
-      color: rgba(20,20,20,.7);
-    }
-    .panel {
+    button:hover { transform: translateY(-1px); }
+    .board {
       display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr);
       gap: 14px;
+      min-height: 0;
     }
+    .panel { padding: 16px; display: grid; gap: 12px; }
     .panel-head {
       display: flex;
       justify-content: space-between;
       gap: 10px;
       align-items: baseline;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
     }
-    .trace-grid {
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 14px;
-      min-height: 0;
-    }
-    .trace-list {
-      display: grid;
-      gap: 10px;
-      align-content: start;
-    }
-    .trace {
+    .window-list, .ledger, .steps { display: grid; gap: 10px; }
+    .row-card {
       padding: 14px;
       display: grid;
       gap: 10px;
       background: var(--panel-2);
     }
-    .trace.active {
-      border-color: rgba(154,146,112,.46);
-      background: linear-gradient(180deg, rgba(154,146,112,.08), rgba(255,255,255,.18));
-    }
-    .row {
+    .row-card.risk { border-color: rgba(191,123,103,.38); }
+    .row-card.safe { border-color: rgba(141,157,132,.34); }
+    .topline {
       display: flex;
       justify-content: space-between;
       gap: 12px;
@@ -134,241 +166,374 @@
       font-size: 18px;
       line-height: 1.14;
       letter-spacing: -.03em;
-      max-width: 28ch;
+      max-width: 24ch;
     }
-    .summary {
-      font-size: 13px;
-      line-height: 1.55;
-      color: rgba(20,20,20,.76);
-    }
-    .tag {
+    .chips .chip {
       border: 1px solid var(--line);
       border-radius: 999px;
-      color: var(--muted);
-      padding: 6px 8px;
+      padding: 6px 9px;
       background: transparent;
-      white-space: nowrap;
     }
-    .map {
+    .sub {
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(242,241,236,.74);
+    }
+    .timeline {
       display: grid;
+      grid-template-columns: 120px 1fr;
       gap: 10px;
-      align-content: start;
+      align-items: start;
+      padding: 11px 0;
+      border-top: 1px solid rgba(242,241,236,.08);
     }
-    .node {
+    .timeline:first-child { border-top: 0; padding-top: 0; }
+    .slot {
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: -.05em;
+      font-family: 'Geist', system-ui, sans-serif;
+    }
+    .step {
       border: 1px solid var(--line);
-      border-radius: 16px;
+      border-radius: 12px;
+      padding: 10px 11px;
+      background: rgba(255,255,255,.015);
+      display: grid;
+      gap: 4px;
+    }
+    .step strong {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -.02em;
+    }
+    .alert {
+      border: 1px solid rgba(191,123,103,.38);
+      background: rgba(191,123,103,.08);
+      border-radius: 14px;
       padding: 12px 13px;
-      background: var(--panel-2);
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(242,241,236,.82);
+    }
+    .ledger-item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 11px;
+      background: rgba(255,255,255,.015);
       display: grid;
       gap: 6px;
     }
-    .node.hit { border-color: rgba(185,109,93,.45); }
-    .node strong { font-weight: 500; font-size: 16px; letter-spacing: -.02em; }
-    .arrow {
-      color: var(--muted);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-      padding-left: 8px;
-    }
-    .note-box {
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: rgba(255,255,255,.22);
-      padding: 14px;
-      font-size: 13px;
-      line-height: 1.55;
-      color: rgba(20,20,20,.72);
-    }
+    .ledger-item.warn { border-color: rgba(191,123,103,.36); }
+    .ledger-item.ok { border-color: rgba(141,157,132,.32); }
     @media (max-width: 980px) {
-      .top, .trace-grid { grid-template-columns: 1fr; }
+      .hero, .board { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      .hero-grid, .grid2 { grid-template-columns: 1fr; }
+      .timeline { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <section class="top">
-      <div class="hero">
-        <div class="meta">Night Lab 011</div>
-        <h1>State Reset Trace</h1>
-        <div class="intro">
-          A causal map for the moment a working environment appears to reset from nowhere, even though the real trigger lives outside the surface that seems broken.
+  <section class="hero">
+    <div class="frame">
+      <div class="meta">Night Lab 011</div>
+      <h1>Access<br>Window</h1>
+      <div class="intro">
+        A single-purpose operational surface for the ugly, routine coordination around getting someone into a home at the right moment: tenant, contractor, manager, lockbox, pet, gate, call-ahead, no-show. Not a work-order board. Not a CRM. Just the window itself.
+      </div>
+      <div class="hero-grid" id="stats"></div>
+    </div>
+
+    <div class="frame form-panel">
+      <div class="meta">shape one visit</div>
+      <label>
+        unit / situation
+        <input id="title" placeholder="Unit 3B / leak under sink" />
+      </label>
+      <div class="grid2">
+        <label>
+          who needs in
+          <select id="visitor">
+            <option>contractor</option>
+            <option>maintenance</option>
+            <option>inspector</option>
+            <option>resident helper</option>
+          </select>
+        </label>
+        <label>
+          access mode
+          <select id="mode">
+            <option>tenant present</option>
+            <option>lockbox</option>
+            <option>master key</option>
+            <option>doorman handoff</option>
+          </select>
+        </label>
+      </div>
+      <div class="grid2">
+        <label>
+          arrival window
+          <input id="window" placeholder="13:00–15:00" />
+        </label>
+        <label>
+          friction level
+          <select id="risk">
+            <option>low</option>
+            <option>medium</option>
+            <option>high</option>
+          </select>
+        </label>
+      </div>
+      <label>
+        what can go wrong
+        <textarea id="failure" placeholder="tenant in meetings, dog loose, gate code changes after noon, contractor never calls ahead"></textarea>
+      </label>
+      <div class="actions">
+        <button id="add">open window</button>
+        <button class="secondary" id="sample">load sample</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="board">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="meta">today's access windows</div>
+        <div class="tiny" id="headline">3 windows / 1 at risk</div>
+      </div>
+      <div class="window-list" id="windows"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div class="meta">selected window</div>
+        <div class="tiny" id="selectionMeta">operational read</div>
+      </div>
+      <div class="row-card" id="detailCard">
+        <div class="topline">
+          <div>
+            <div class="title" id="detailTitle">Pick a window</div>
+            <div class="tiny" id="detailSub">timed ritual</div>
+          </div>
+          <div class="chips" id="detailChips"></div>
         </div>
-        <div class="chips" id="filters"></div>
+        <div class="sub" id="detailText">The point is to make the coordination object visible before everyone falls back to calls, texts, and guesswork.</div>
       </div>
-      <div class="focus">
-        <div class="meta">reset suspicion</div>
-        <div class="focus-line" id="focusLine">The browser is not the first thing that changed.</div>
-        <div class="focus-note" id="focusNote">A hidden dependency or OS-side helper often shifts first, and the visible reset arrives later as a symptom.</div>
-      </div>
+      <div class="alert" id="alertBox">No active risk read yet.</div>
+      <div class="steps" id="steps"></div>
+      <div class="ledger" id="ledger"></div>
     </section>
-
-    <section class="panel">
-      <div class="panel-head">
-        <div class="meta">observed traces</div>
-        <div class="controls" id="controls"></div>
-      </div>
-      <div class="trace-grid">
-        <div class="trace-list" id="traceList"></div>
-        <div class="map" id="map"></div>
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="panel-head">
-        <div class="meta">interpretation</div>
-        <div class="tag" id="interpretTag">reset read</div>
-      </div>
-      <div class="note-box" id="interpretation"></div>
-      <div class="note-box" id="wrongAssumption" style="background:rgba(185,109,93,.06); border-color:rgba(185,109,93,.28);"></div>
-    </section>
-  </div>
+  </section>
 
   <script>
-    const traces = [
-      {
-        id: 'edge-reset',
-        title: 'browser opens with sessions, extensions, and site state missing',
-        scope: 'browser',
-        symptom: 'User thinks the browser reset itself overnight.',
-        culprit: 'Game Assist service changed browser runtime context outside the browser surface.',
-        chain: [
-          ['external helper changes', 'Game Assist process reasserts itself'],
-          ['runtime context shifts', 'browser launches under changed conditions'],
-          ['visible symptom', 'sites/extensions/session state appear wiped'],
-          ['manual workaround', 'kill process / uninstall helper / relaunch browser']
-        ],
-        note: 'The visible reset is late in the chain. The user’s mental model is wrong because the cause is off-surface.'
-      },
-      {
-        id: 'ddns-drift',
-        title: 'remote access fails because visible public address and actual router-facing address diverge',
-        scope: 'network',
-        symptom: 'DDNS appears broken even though the connection is technically live.',
-        culprit: 'The upstream network path exposes one address publicly while the router sees another.',
-        chain: [
-          ['upstream path changes', 'router sees different actual IP'],
-          ['naming drift', 'DDNS target stays pointed at wrong identity'],
-          ['visible symptom', 'remote access fails or becomes unreliable'],
-          ['manual workaround', 'manually update address outside the normal flow']
-        ],
-        note: 'The problem is not only broken naming. It is hidden identity drift across network layers.'
-      },
-      {
-        id: 'ios-keyboard',
-        title: 'bottom-fixed CTA disappears or jumps when the mobile keyboard opens',
-        scope: 'mobile web',
-        symptom: 'The interface looks unstable exactly at the moment a user tries to submit.',
-        culprit: 'The viewport model changes under the UI, but the surface keeps pretending the screen is stable.',
-        chain: [
-          ['viewport changes', 'keyboard compresses visible area'],
-          ['layout assumption breaks', 'bottom-fixed CTA keeps old position logic'],
-          ['visible symptom', 'CTA disappears or jumps'],
-          ['manual workaround', 'custom visualViewport logic / transform hacks']
-        ],
-        note: 'This is a hidden geometry problem masquerading as a flaky button problem.'
-      }
-    ];
+    const state = {
+      selected: 0,
+      items: [
+        {
+          title: 'Unit 3B / leak under sink',
+          visitor: 'contractor',
+          mode: 'tenant present',
+          window: '13:00–15:00',
+          risk: 'high',
+          failure: 'tenant in back-to-back calls, dog barks at strangers, contractor usually arrives 40 min early',
+          checkpoints: [
+            { time: '12:30', step: 'confirm tenant still home', note: 'ask for exact room they can step out from' },
+            { time: '12:50', step: 'secure dog + clear under sink', note: 'avoid arrival turning into a cleanup delay' },
+            { time: '13:00', step: 'contractor must text before parking', note: 'early arrivals fail if they ring immediately' },
+            { time: '14:40', step: 'if no arrival, release tenant', note: 'window expires into a reschedule, not an all-day hostage' }
+          ],
+          ledger: [
+            { label: 'current workaround', text: 'property manager holds all context in phone notes + texts both sides manually', kind: 'warn' },
+            { label: 'why that is bad', text: 'tenant waits all afternoon while contractor still feels "on time"', kind: 'warn' },
+            { label: 'native object', text: 'one visible window with a countdown, prep state, and expiry rule', kind: 'ok' }
+          ]
+        },
+        {
+          title: '12A / annual inspection with absent resident',
+          visitor: 'inspector',
+          mode: 'lockbox',
+          window: '09:00–11:00',
+          risk: 'medium',
+          failure: 'lockbox code changed last month, resident forgets to silence alarm sticker instructions',
+          checkpoints: [
+            { time: '08:20', step: 'verify lockbox code still works', note: 'test before inspector is onsite' },
+            { time: '08:40', step: 'photo-send alarm disarm note', note: 'paper note alone often gets missed' },
+            { time: '09:00', step: 'inspector check-in must include entry proof', note: 'a photo of key retrieved beats three missed calls' },
+            { time: '11:00', step: 'close window + confirm relock', note: 'access is not complete until lockbox reset is confirmed' }
+          ],
+          ledger: [
+            { label: 'current workaround', text: 'resident leaves key and hopes no one needs clarification mid-visit', kind: 'warn' },
+            { label: 'failure pattern', text: 'missing one tiny access instruction burns the whole appointment', kind: 'warn' },
+            { label: 'native object', text: 'a visible sequence with entry proof and relock proof', kind: 'ok' }
+          ]
+        },
+        {
+          title: 'Lobby package room / elevator repair escort',
+          visitor: 'maintenance',
+          mode: 'doorman handoff',
+          window: '16:00–17:00',
+          risk: 'low',
+          failure: 'front desk shift changes at 16:30, escort gets lost if repair team is late',
+          checkpoints: [
+            { time: '15:40', step: 'name the receiving staffer', note: 'a role is too vague; a person survives shift change' },
+            { time: '16:00', step: 'repair team checks in with desk, not resident', note: 'keeps route stable' },
+            { time: '16:30', step: 'handoff to next desk staff if needed', note: 'window should survive personnel turnover' },
+            { time: '17:00', step: 'close if team not arrived', note: 'late arrival means a new escort window, not hallway drift' }
+          ],
+          ledger: [
+            { label: 'current workaround', text: 'everyone assumes the desk will somehow remember', kind: 'warn' },
+            { label: 'why that is bad', text: 'a shift change erases invisible coordination', kind: 'warn' },
+            { label: 'native object', text: 'handoff object names the person, not just the place', kind: 'ok' }
+          ]
+        }
+      ]
+    };
 
-    const scopes = ['all', 'browser', 'network', 'mobile web'];
-    const state = { filter: 'all', activeId: 'edge-reset' };
+    const statsEl = document.getElementById('stats');
+    const windowsEl = document.getElementById('windows');
+    const headlineEl = document.getElementById('headline');
+    const detailTitleEl = document.getElementById('detailTitle');
+    const detailSubEl = document.getElementById('detailSub');
+    const detailTextEl = document.getElementById('detailText');
+    const detailChipsEl = document.getElementById('detailChips');
+    const alertBoxEl = document.getElementById('alertBox');
+    const stepsEl = document.getElementById('steps');
+    const ledgerEl = document.getElementById('ledger');
+    const selectionMetaEl = document.getElementById('selectionMeta');
 
-    const filtersEl = document.getElementById('filters');
-    const controlsEl = document.getElementById('controls');
-    const traceListEl = document.getElementById('traceList');
-    const mapEl = document.getElementById('map');
-    const interpretationEl = document.getElementById('interpretation');
-    const wrongAssumptionEl = document.getElementById('wrongAssumption');
-    const interpretTagEl = document.getElementById('interpretTag');
-    const focusLineEl = document.getElementById('focusLine');
-    const focusNoteEl = document.getElementById('focusNote');
-
-    function visibleTraces() {
-      return state.filter === 'all' ? traces : traces.filter(item => item.scope === state.filter);
+    function selectedItem() {
+      return state.items[state.selected] || state.items[0];
     }
 
-    function activeTrace() {
-      return traces.find(item => item.id === state.activeId) || visibleTraces()[0];
+    function renderStats() {
+      const total = state.items.length;
+      const high = state.items.filter(item => item.risk === 'high').length;
+      const direct = state.items.filter(item => item.mode === 'tenant present').length;
+      statsEl.innerHTML = `
+        <div class="stat"><div class="meta">open windows</div><strong>${total}</strong></div>
+        <div class="stat"><div class="meta">high friction</div><strong>${high}</strong></div>
+        <div class="stat"><div class="meta">tenant-bound</div><strong>${direct}</strong></div>
+      `;
+      headlineEl.textContent = `${total} windows / ${high} at risk`;
     }
 
-    function renderFilters() {
-      filtersEl.innerHTML = scopes.map(scope => `
-        <button class="${state.filter === scope ? 'active' : ''}" data-filter="${scope}">${scope}</button>
-      `).join('');
-    }
-
-    function renderControls() {
-      const active = activeTrace();
-      controlsEl.innerHTML = active ? `<div class="tag">active: ${active.scope}</div>` : '';
-    }
-
-    function renderTraceList() {
-      traceListEl.innerHTML = visibleTraces().map(item => `
-        <article class="trace ${state.activeId === item.id ? 'active' : ''}" data-open="${item.id}">
-          <div class="row">
-            <div class="title">${item.title}</div>
-            <div class="tag">${item.scope}</div>
+    function renderWindows() {
+      windowsEl.innerHTML = state.items.map((item, index) => `
+        <article class="row-card ${item.risk === 'high' ? 'risk' : 'safe'}" data-index="${index}">
+          <div class="topline">
+            <div>
+              <div class="title">${item.title}</div>
+              <div class="tiny" style="margin-top:6px;">${item.window}</div>
+            </div>
+            <div class="chips">
+              <div class="chip">${item.visitor}</div>
+              <div class="chip">${item.mode}</div>
+            </div>
           </div>
-          <div class="summary">${item.symptom}</div>
+          <div class="sub">${item.failure}</div>
         </article>
       `).join('');
     }
 
-    function renderMap() {
-      const active = activeTrace();
-      if (!active) return;
-      mapEl.innerHTML = active.chain.map(([label, text], index) => `
-        ${index === 0 ? '' : '<div class="arrow">leads to</div>'}
-        <div class="node ${index === active.chain.length - 1 ? 'hit' : ''}">
-          <div class="meta">${label}</div>
-          <strong>${text}</strong>
+    function renderDetail() {
+      const item = selectedItem();
+      if (!item) return;
+      detailTitleEl.textContent = item.title;
+      detailSubEl.textContent = `${item.window} / ${item.visitor} / ${item.mode}`;
+      detailTextEl.textContent = `This window fails when everyone treats time, access, and readiness as separate messages instead of one shared object. The actual risk here is: ${item.failure}.`;
+      detailChipsEl.innerHTML = `
+        <div class="chip">${item.risk} friction</div>
+        <div class="chip">${item.checkpoints.length} checkpoints</div>
+      `;
+      selectionMetaEl.textContent = `${item.risk} friction read`;
+      alertBoxEl.textContent = item.risk === 'high'
+        ? 'This is a hostage window: the resident must stay vaguely available while the contractor feels loosely on time. The artifact should force a sharper arrival ritual or a hard expiry.'
+        : item.risk === 'medium'
+          ? 'This window is structurally fragile: a single missing code, note, or proof-of-entry step can collapse the visit.'
+          : 'This window is lower friction, but only if the named handoff survives timing drift and shift change.';
+      stepsEl.innerHTML = item.checkpoints.map(point => `
+        <div class="timeline">
+          <div class="slot">${point.time}</div>
+          <div class="step">
+            <strong>${point.step}</strong>
+            <div class="tiny">${point.note}</div>
+          </div>
+        </div>
+      `).join('');
+      ledgerEl.innerHTML = item.ledger.map(line => `
+        <div class="ledger-item ${line.kind}">
+          <div class="meta">${line.label}</div>
+          <div class="sub">${line.text}</div>
         </div>
       `).join('');
     }
 
-    function renderInterpretation() {
-      const active = activeTrace();
-      if (!active) return;
-      interpretationEl.textContent = `${active.note} Root cause read: ${active.culprit}`;
-      wrongAssumptionEl.textContent = active.scope === 'browser'
-        ? 'Wrong first assumption: the browser reset itself.'
-        : active.scope === 'network'
-        ? 'Wrong first assumption: remote access failed because naming broke by itself.'
-        : 'Wrong first assumption: the CTA itself is buggy.';
-      interpretTagEl.textContent = `${active.id} / reset read`;
-      focusLineEl.textContent = active.scope === 'browser'
-        ? 'The browser is not the first thing that changed.'
-        : active.scope === 'network'
-        ? 'Naming failure is downstream of identity drift.'
-        : 'The button is not the real thing that broke.';
-      focusNoteEl.textContent = active.note;
-    }
-
     function render() {
-      renderFilters();
-      renderControls();
-      renderTraceList();
-      renderMap();
-      renderInterpretation();
+      renderStats();
+      renderWindows();
+      renderDetail();
     }
 
     document.addEventListener('click', (event) => {
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
-      const filter = target.dataset.filter;
-      if (filter) {
-        state.filter = filter;
-        const visible = visibleTraces();
-        if (!visible.some(item => item.id === state.activeId)) state.activeId = visible[0]?.id || 'edge-reset';
+      const card = target.closest('[data-index]');
+      if (card) {
+        state.selected = Number(card.getAttribute('data-index'));
         render();
         return;
       }
-      const open = target.closest('[data-open]')?.getAttribute('data-open');
-      if (open) {
-        state.activeId = open;
-        render();
-      }
+    });
+
+    document.getElementById('add').addEventListener('click', () => {
+      const title = document.getElementById('title').value.trim();
+      const visitor = document.getElementById('visitor').value;
+      const mode = document.getElementById('mode').value;
+      const windowText = document.getElementById('window').value.trim();
+      const risk = document.getElementById('risk').value;
+      const failure = document.getElementById('failure').value.trim();
+      if (!title || !windowText) return;
+      state.items.unshift({
+        title,
+        visitor,
+        mode,
+        window: windowText,
+        risk,
+        failure: failure || 'No explicit failure read yet.',
+        checkpoints: [
+          { time: 'T-30', step: 'confirm access assumptions', note: 'who opens, who waits, who can leave' },
+          { time: 'T-10', step: 'prep the unit for entry', note: 'pets, alarms, clutter, codes' },
+          { time: 'T+0', step: 'arrival must announce itself', note: 'the window is real only if entry is explicit' },
+          { time: 'expiry', step: 'release the waiting party', note: 'a missed window should collapse cleanly' }
+        ],
+        ledger: [
+          { label: 'current workaround', text: 'still likely handled through ad-hoc calls and texts', kind: 'warn' },
+          { label: 'failure pattern', text: failure || 'risk still not fully named', kind: 'warn' },
+          { label: 'native object', text: 'window becomes a timed shared checkpoint instead of a vague appointment', kind: 'ok' }
+        ]
+      });
+      state.selected = 0;
+      document.getElementById('title').value = '';
+      document.getElementById('window').value = '';
+      document.getElementById('failure').value = '';
+      render();
+    });
+
+    document.getElementById('sample').addEventListener('click', () => {
+      const samples = [
+        ['4C / stove replacement', 'contractor', 'master key', '08:00–10:00', 'high', 'resident has school dropoff at 08:30 and refuses to leave pet alone with open door'],
+        ['Rear house / mold quote', 'inspector', 'tenant present', '17:30–18:30', 'medium', 'tenant gets home late and contractor stops answering once in van'],
+        ['2F / washer delivery', 'resident helper', 'doorman handoff', '12:00–13:00', 'low', 'delivery team dumps unit in lobby if no one names receiving person']
+      ];
+      const sample = samples[Math.floor(Math.random() * samples.length)];
+      document.getElementById('title').value = sample[0];
+      document.getElementById('visitor').value = sample[1];
+      document.getElementById('mode').value = sample[2];
+      document.getElementById('window').value = sample[3];
+      document.getElementById('risk').value = sample[4];
+      document.getElementById('failure').value = sample[5];
     });
 
     render();
