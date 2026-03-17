@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>State Reset Trace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3f0e8;
+      --panel: #fbfaf6;
+      --panel-2: #f7f4ec;
+      --text: #141414;
+      --muted: rgba(20,20,20,.58);
+      --line: rgba(20,20,20,.12);
+      --warn: #b96d5d;
+      --accent: #9a9270;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+    body { font-family: 'Geist', system-ui, sans-serif; }
+    .mono, .meta, .chip, .tag, button {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 16px;
+      padding: 24px 22px 20px;
+    }
+    .top {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
+      gap: 14px;
+    }
+    .hero, .focus, .panel, .trace {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.46), rgba(255,255,255,.16));
+    }
+    .hero, .focus, .panel { padding: 16px; }
+    .hero { display: grid; gap: 14px; }
+    .focus { display: grid; gap: 10px; }
+    .meta { color: var(--muted); }
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 62px);
+      line-height: .9;
+      letter-spacing: -.08em;
+      font-weight: 500;
+      max-width: 8ch;
+    }
+    .intro {
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(20,20,20,.72);
+      max-width: 42ch;
+    }
+    .chips, .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .chip, button {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 9px;
+    }
+    button { cursor: pointer; }
+    button.active, button:hover {
+      color: var(--text);
+      border-color: rgba(20,20,20,.24);
+      background: rgba(20,20,20,.04);
+    }
+    .focus-line {
+      font-size: 29px;
+      line-height: .96;
+      letter-spacing: -.06em;
+      font-weight: 500;
+      max-width: 14ch;
+    }
+    .focus-note {
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(20,20,20,.7);
+    }
+    .panel {
+      display: grid;
+      gap: 14px;
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .trace-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 14px;
+      min-height: 0;
+    }
+    .trace-list {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+    .trace {
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      background: var(--panel-2);
+    }
+    .trace.active {
+      border-color: rgba(154,146,112,.46);
+      background: linear-gradient(180deg, rgba(154,146,112,.08), rgba(255,255,255,.18));
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .title {
+      font-size: 18px;
+      line-height: 1.14;
+      letter-spacing: -.03em;
+      max-width: 28ch;
+    }
+    .summary {
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(20,20,20,.76);
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      padding: 6px 8px;
+      background: transparent;
+      white-space: nowrap;
+    }
+    .map {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+    .node {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 13px;
+      background: var(--panel-2);
+      display: grid;
+      gap: 6px;
+    }
+    .node.hit { border-color: rgba(185,109,93,.45); }
+    .node strong { font-weight: 500; font-size: 16px; letter-spacing: -.02em; }
+    .arrow {
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      padding-left: 8px;
+    }
+    .note-box {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.22);
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: rgba(20,20,20,.72);
+    }
+    @media (max-width: 980px) {
+      .top, .trace-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="top">
+      <div class="hero">
+        <div class="meta">Night Lab 011</div>
+        <h1>State Reset Trace</h1>
+        <div class="intro">
+          A causal map for the moment a working environment appears to reset from nowhere, even though the real trigger lives outside the surface that seems broken.
+        </div>
+        <div class="chips" id="filters"></div>
+      </div>
+      <div class="focus">
+        <div class="meta">reset suspicion</div>
+        <div class="focus-line" id="focusLine">The browser is not the first thing that changed.</div>
+        <div class="focus-note" id="focusNote">A hidden dependency or OS-side helper often shifts first, and the visible reset arrives later as a symptom.</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div class="meta">observed traces</div>
+        <div class="controls" id="controls"></div>
+      </div>
+      <div class="trace-grid">
+        <div class="trace-list" id="traceList"></div>
+        <div class="map" id="map"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div class="meta">interpretation</div>
+        <div class="tag" id="interpretTag">reset read</div>
+      </div>
+      <div class="note-box" id="interpretation"></div>
+      <div class="note-box" id="wrongAssumption" style="background:rgba(185,109,93,.06); border-color:rgba(185,109,93,.28);"></div>
+    </section>
+  </div>
+
+  <script>
+    const traces = [
+      {
+        id: 'edge-reset',
+        title: 'browser opens with sessions, extensions, and site state missing',
+        scope: 'browser',
+        symptom: 'User thinks the browser reset itself overnight.',
+        culprit: 'Game Assist service changed browser runtime context outside the browser surface.',
+        chain: [
+          ['external helper changes', 'Game Assist process reasserts itself'],
+          ['runtime context shifts', 'browser launches under changed conditions'],
+          ['visible symptom', 'sites/extensions/session state appear wiped'],
+          ['manual workaround', 'kill process / uninstall helper / relaunch browser']
+        ],
+        note: 'The visible reset is late in the chain. The user’s mental model is wrong because the cause is off-surface.'
+      },
+      {
+        id: 'ddns-drift',
+        title: 'remote access fails because visible public address and actual router-facing address diverge',
+        scope: 'network',
+        symptom: 'DDNS appears broken even though the connection is technically live.',
+        culprit: 'The upstream network path exposes one address publicly while the router sees another.',
+        chain: [
+          ['upstream path changes', 'router sees different actual IP'],
+          ['naming drift', 'DDNS target stays pointed at wrong identity'],
+          ['visible symptom', 'remote access fails or becomes unreliable'],
+          ['manual workaround', 'manually update address outside the normal flow']
+        ],
+        note: 'The problem is not only broken naming. It is hidden identity drift across network layers.'
+      },
+      {
+        id: 'ios-keyboard',
+        title: 'bottom-fixed CTA disappears or jumps when the mobile keyboard opens',
+        scope: 'mobile web',
+        symptom: 'The interface looks unstable exactly at the moment a user tries to submit.',
+        culprit: 'The viewport model changes under the UI, but the surface keeps pretending the screen is stable.',
+        chain: [
+          ['viewport changes', 'keyboard compresses visible area'],
+          ['layout assumption breaks', 'bottom-fixed CTA keeps old position logic'],
+          ['visible symptom', 'CTA disappears or jumps'],
+          ['manual workaround', 'custom visualViewport logic / transform hacks']
+        ],
+        note: 'This is a hidden geometry problem masquerading as a flaky button problem.'
+      }
+    ];
+
+    const scopes = ['all', 'browser', 'network', 'mobile web'];
+    const state = { filter: 'all', activeId: 'edge-reset' };
+
+    const filtersEl = document.getElementById('filters');
+    const controlsEl = document.getElementById('controls');
+    const traceListEl = document.getElementById('traceList');
+    const mapEl = document.getElementById('map');
+    const interpretationEl = document.getElementById('interpretation');
+    const wrongAssumptionEl = document.getElementById('wrongAssumption');
+    const interpretTagEl = document.getElementById('interpretTag');
+    const focusLineEl = document.getElementById('focusLine');
+    const focusNoteEl = document.getElementById('focusNote');
+
+    function visibleTraces() {
+      return state.filter === 'all' ? traces : traces.filter(item => item.scope === state.filter);
+    }
+
+    function activeTrace() {
+      return traces.find(item => item.id === state.activeId) || visibleTraces()[0];
+    }
+
+    function renderFilters() {
+      filtersEl.innerHTML = scopes.map(scope => `
+        <button class="${state.filter === scope ? 'active' : ''}" data-filter="${scope}">${scope}</button>
+      `).join('');
+    }
+
+    function renderControls() {
+      const active = activeTrace();
+      controlsEl.innerHTML = active ? `<div class="tag">active: ${active.scope}</div>` : '';
+    }
+
+    function renderTraceList() {
+      traceListEl.innerHTML = visibleTraces().map(item => `
+        <article class="trace ${state.activeId === item.id ? 'active' : ''}" data-open="${item.id}">
+          <div class="row">
+            <div class="title">${item.title}</div>
+            <div class="tag">${item.scope}</div>
+          </div>
+          <div class="summary">${item.symptom}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderMap() {
+      const active = activeTrace();
+      if (!active) return;
+      mapEl.innerHTML = active.chain.map(([label, text], index) => `
+        ${index === 0 ? '' : '<div class="arrow">leads to</div>'}
+        <div class="node ${index === active.chain.length - 1 ? 'hit' : ''}">
+          <div class="meta">${label}</div>
+          <strong>${text}</strong>
+        </div>
+      `).join('');
+    }
+
+    function renderInterpretation() {
+      const active = activeTrace();
+      if (!active) return;
+      interpretationEl.textContent = `${active.note} Root cause read: ${active.culprit}`;
+      wrongAssumptionEl.textContent = active.scope === 'browser'
+        ? 'Wrong first assumption: the browser reset itself.'
+        : active.scope === 'network'
+        ? 'Wrong first assumption: remote access failed because naming broke by itself.'
+        : 'Wrong first assumption: the CTA itself is buggy.';
+      interpretTagEl.textContent = `${active.id} / reset read`;
+      focusLineEl.textContent = active.scope === 'browser'
+        ? 'The browser is not the first thing that changed.'
+        : active.scope === 'network'
+        ? 'Naming failure is downstream of identity drift.'
+        : 'The button is not the real thing that broke.';
+      focusNoteEl.textContent = active.note;
+    }
+
+    function render() {
+      renderFilters();
+      renderControls();
+      renderTraceList();
+      renderMap();
+      renderInterpretation();
+    }
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const filter = target.dataset.filter;
+      if (filter) {
+        state.filter = filter;
+        const visible = visibleTraces();
+        if (!visible.some(item => item.id === state.activeId)) state.activeId = visible[0]?.id || 'edge-reset';
+        render();
+        return;
+      }
+      const open = target.closest('[data-open]')?.getAttribute('data-open');
+      if (open) {
+        state.activeId = open;
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>

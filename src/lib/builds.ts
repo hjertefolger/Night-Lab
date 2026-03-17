@@ -272,6 +272,31 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add attachment excerpts, recurrence confidence, and a trigger view that shows when a current incident should have surfaced earlier echoes automatically.",
       "promotionRead": "Maybe. More structurally distinct than the last few builds, and grounded in a real problem, but it still needs proof that the comparison model becomes operationally useful beyond a compelling first screen."
     }
+  },
+  {
+    "id": "011",
+    "number": 11,
+    "title": "State Reset Trace",
+    "date": "2026-03-17",
+    "tagline": "A causal map for visible resets with hidden causes.",
+    "summary": "State Reset Trace is a comparative viewer for moments when a working environment appears to reset itself, even though the real trigger lives outside the visible surface. It maps symptoms back to hidden causes so the reset can be understood as a chain, not a mystery.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence",
+      "Turn continuity into infrastructure"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "When sessions disappear, remote naming breaks, or interfaces suddenly act unstable, people often blame the visible surface first. But the true cause frequently sits in a hidden dependency, helper process, or lower system layer. This build exists to make that causal drift visible.",
+      "whatChanged": [
+        "Built the first version as a causal trace viewer rather than another workflow or logging tool.",
+        "Focused the surface on hidden reset chains across browser, network, and mobile-web examples.",
+        "Added an explicit interpretation layer so the artifact states the downstream symptom versus hidden cause read more directly."
+      ],
+      "artDirection": "Default Night Lab editorial direction with a warm paper-toned surface. The lighter treatment keeps the causal map analytical and readable without drifting into alert-dashboard aesthetics.",
+      "nextMove": "Add real evidence snippets, branching possible causes, and a mode for isolating which hidden layer changed first so the trace becomes more diagnostic and less illustrative.",
+      "promotionRead": "Maybe. More structurally distinct than the repeated mini-app pattern and grounded in a real problem, but it still needs proof that the trace model becomes genuinely useful in practice rather than just persuasive on first view."
+    }
   }
 ];
 
