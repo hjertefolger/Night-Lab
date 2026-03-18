@@ -296,6 +296,31 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Test whether the access window becomes stronger as a live countdown object with proofs of entry, handoff survival across shift change, and explicit release conditions when the visit misses its slot.",
       "promotionRead": "Maybe. The problem is concrete and the form is more distinct than recent builds, but it still needs one sharper interaction mechanic before it feels like a true standalone primitive."
     }
+  },
+  {
+    "id": "012",
+    "number": 12,
+    "title": "Inset Lab",
+    "date": "2026-03-18",
+    "tagline": "A spatial simulator for edge-to-edge inset problems.",
+    "summary": "Inset Lab is a small spatial playground for understanding how bars, gestures, and keyboards change the usable geometry of a mobile screen. It reframes edge-to-edge breakage as a live inset-state problem instead of a collection of isolated component bugs.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence",
+      "Convert deep technical structure into usable product leverage"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Forced edge-to-edge behavior keeps turning layout work into scattered one-off fixes. Developers patch individual screens, but the underlying problem is spatial: the usable screen changes under bars, gestures, and keyboards. This build makes that geometry visible.",
+      "whatChanged": [
+        "Built the concept as a spatial simulator instead of another workflow or diagnostic board.",
+        "Focused the first version on top, bottom, and keyboard insets as live geometry rather than static tokens or rules.",
+        "Added a stronger explanatory read so the artifact contrasts the wrong first assumption with the better spatial interpretation."
+      ],
+      "artDirection": "Default Night Lab editorial direction with dark mode. The darker treatment helps the inset simulator feel technical and tactile without becoming glossy or dashboard-like.",
+      "nextMove": "Add multiple screen archetypes, safe-area overlays, and saved edge-case states so the simulator becomes more useful as a real design and debugging object.",
+      "promotionRead": "Maybe. More form-distinct than the old repeated pattern and grounded in a real developer pain, but it still needs evidence that the simulator becomes operationally useful rather than mainly illustrative."
+    }
   }
 ];
 

@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inset Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #101111;
+      --panel: #151616;
+      --panel-2: #1b1c1c;
+      --text: #f2f1ec;
+      --muted: rgba(242,241,236,.58);
+      --line: rgba(242,241,236,.12);
+      --accent: #a59b79;
+      --warn: #b96d5d;
+      --safe: #8ca086;
+      --topInset: 24px;
+      --bottomInset: 34px;
+      --keyboardInset: 0px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+    body { font-family: 'Geist', system-ui, sans-serif; }
+    .mono, .meta, .chip, label, button, .tiny, .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 16px;
+      padding: 24px 22px 20px;
+    }
+    .top {
+      display: grid;
+      grid-template-columns: minmax(320px, 430px) 1fr;
+      gap: 14px;
+    }
+    .hero, .panel, .phone-shell {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+    }
+    .hero, .panel { padding: 16px; }
+    .hero { display: grid; gap: 14px; }
+    .meta, .tiny, label { color: var(--muted); }
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 60px);
+      line-height: .9;
+      letter-spacing: -.08em;
+      font-weight: 500;
+      max-width: 7ch;
+    }
+    .intro {
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(242,241,236,.72);
+      max-width: 40ch;
+    }
+    .controls { display: grid; gap: 12px; }
+    .field { display: grid; gap: 8px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    input[type="range"] { width: 100%; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip, button {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 9px;
+    }
+    button { cursor: pointer; }
+    button.active, button:hover {
+      color: var(--text);
+      border-color: rgba(242,241,236,.24);
+      background: rgba(242,241,236,.04);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(320px, 430px) 1fr;
+      gap: 14px;
+      min-height: 0;
+    }
+    .panel { display: grid; gap: 14px; }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .phone-shell {
+      padding: 14px;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 50% 0%, rgba(165,155,121,.08), rgba(255,255,255,.01));
+    }
+    .phone {
+      width: min(100%, 380px);
+      aspect-ratio: 9 / 19.5;
+      border-radius: 34px;
+      background: #0b0c0c;
+      border: 1px solid rgba(255,255,255,.08);
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+    .screen {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #151616, #111212);
+      padding: var(--topInset) 16px calc(var(--bottomInset) + var(--keyboardInset) + 16px);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+      transition: padding .18s ease;
+    }
+    .status {
+      height: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: rgba(242,241,236,.6);
+    }
+    .content {
+      border: 1px dashed rgba(242,241,236,.14);
+      border-radius: 18px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+    .bar {
+      height: 42px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
+    .cta {
+      height: 54px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(165,155,121,.14);
+      display: grid;
+      place-items: center;
+      color: var(--text);
+      transform: translateY(calc(var(--keyboardInset) * -1));
+      transition: transform .18s ease;
+    }
+    .keyboard {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--keyboardInset);
+      background: linear-gradient(180deg, rgba(185,109,93,.12), rgba(185,109,93,.2));
+      border-top: 1px solid rgba(255,255,255,.1);
+      transition: height .18s ease;
+    }
+    .readout {
+      display: grid;
+      gap: 10px;
+    }
+    .line {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 13px;
+      background: var(--panel-2);
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(242,241,236,.76);
+    }
+    .line.warn { border-color: rgba(185,109,93,.38); }
+    .line.safe { border-color: rgba(140,160,134,.34); }
+    @media (max-width: 980px) {
+      .top, .grid, .row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="top">
+      <div class="hero">
+        <div class="meta">Night Lab 012</div>
+        <h1>Inset Lab</h1>
+        <div class="intro">
+          A spatial simulator for the annoying reality that edge-to-edge layouts are not one rule but many overlapping inset situations that break differently under bars, gestures, and keyboards.
+        </div>
+        <div class="chips" id="presets"></div>
+      </div>
+      <section class="panel">
+        <div class="panel-head">
+          <div class="meta">inset controls</div>
+          <div class="tiny">simulate, don’t guess</div>
+        </div>
+        <div class="controls">
+          <div class="row">
+            <div class="field">
+              <label for="topInset">top inset</label>
+              <input id="topInset" type="range" min="0" max="80" value="24" />
+            </div>
+            <div class="field">
+              <label for="bottomInset">bottom inset</label>
+              <input id="bottomInset" type="range" min="0" max="80" value="34" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="keyboardInset">keyboard inset</label>
+            <input id="keyboardInset" type="range" min="0" max="320" value="0" />
+          </div>
+          <div class="chips" id="modes"></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="grid">
+      <section class="phone-shell">
+        <div class="phone">
+          <div class="screen" id="screen">
+            <div class="status"><span>9:41</span><span>edge-to-edge</span></div>
+            <div class="content" id="content">
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar" style="height:96px"></div>
+              <div class="bar"></div>
+            </div>
+            <div class="cta" id="cta">Send</div>
+          </div>
+          <div class="keyboard" id="keyboard"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div class="meta">spatial read</div>
+          <div class="tiny" id="modeLabel">list + fixed CTA</div>
+        </div>
+        <div class="readout">
+          <div class="line" id="problemLine"></div>
+          <div class="line warn" id="wrongLine"></div>
+          <div class="line safe" id="fixLine"></div>
+          <div class="line" id="geometryLine"></div>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <script>
+    const state = {
+      preset: 'default',
+      mode: 'cta',
+      topInset: 24,
+      bottomInset: 34,
+      keyboardInset: 0,
+    };
+
+    const presets = {
+      default: { topInset: 24, bottomInset: 34, keyboardInset: 0, mode: 'cta' },
+      keyboard: { topInset: 24, bottomInset: 34, keyboardInset: 260, mode: 'cta' },
+      gesture: { topInset: 8, bottomInset: 16, keyboardInset: 0, mode: 'list' },
+      dense: { topInset: 36, bottomInset: 42, keyboardInset: 180, mode: 'form' },
+    };
+
+    const modes = ['cta', 'list', 'form'];
+    const screenEl = document.getElementById('screen');
+    const keyboardEl = document.getElementById('keyboard');
+    const ctaEl = document.getElementById('cta');
+    const presetsEl = document.getElementById('presets');
+    const modesEl = document.getElementById('modes');
+    const modeLabelEl = document.getElementById('modeLabel');
+    const problemLineEl = document.getElementById('problemLine');
+    const wrongLineEl = document.getElementById('wrongLine');
+    const fixLineEl = document.getElementById('fixLine');
+    const geometryLineEl = document.getElementById('geometryLine');
+
+    const topInsetInput = document.getElementById('topInset');
+    const bottomInsetInput = document.getElementById('bottomInset');
+    const keyboardInsetInput = document.getElementById('keyboardInset');
+
+    function applyState() {
+      screenEl.style.setProperty('--topInset', `${state.topInset}px`);
+      screenEl.style.setProperty('--bottomInset', `${state.bottomInset}px`);
+      screenEl.style.setProperty('--keyboardInset', `${state.keyboardInset}px`);
+      keyboardEl.style.setProperty('--keyboardInset', `${state.keyboardInset}px`);
+      keyboardEl.style.height = `${state.keyboardInset}px`;
+      modeLabelEl.textContent = state.mode === 'cta' ? 'list + fixed CTA' : state.mode === 'list' ? 'scrolling list' : 'dense form';
+
+      const overlap = state.keyboardInset > 0 && state.mode === 'cta';
+      const edgePressure = state.topInset + state.bottomInset > 70;
+      problemLineEl.textContent = overlap
+        ? 'Problem: the keyboard changes the usable screen, but the CTA still behaves like the old screen exists.'
+        : edgePressure
+        ? 'Problem: inset pressure keeps stealing layout space in ways static padding does not explain.'
+        : 'Problem: a simple full-screen assumption breaks under bars, gestures, and changing safe areas.';
+      wrongLineEl.textContent = state.mode === 'cta'
+        ? 'Wrong first assumption: the button itself is buggy.'
+        : state.mode === 'list'
+        ? 'Wrong first assumption: the scroll container is just slightly off.'
+        : 'Wrong first assumption: more padding will fix the form everywhere.';
+      fixLineEl.textContent = state.mode === 'cta'
+        ? 'Better read: the viewport changed and the CTA needs to respond to live inset geometry, not fixed bottom spacing.'
+        : state.mode === 'list'
+        ? 'Better read: inset logic should be treated as a spatial state, not as one-time layout decoration.'
+        : 'Better read: the form is crossing multiple inset states and needs explicit adaptation rules, not a single patch.';
+      geometryLineEl.textContent = `Geometry now: top ${state.topInset}px / bottom ${state.bottomInset}px / keyboard ${state.keyboardInset}px`;
+    }
+
+    function renderPresets() {
+      presetsEl.innerHTML = Object.keys(presets).map(key => `
+        <button class="${state.preset === key ? 'active' : ''}" data-preset="${key}">${key}</button>
+      `).join('');
+    }
+
+    function renderModes() {
+      modesEl.innerHTML = modes.map(mode => `
+        <button class="${state.mode === mode ? 'active' : ''}" data-mode="${mode}">${mode}</button>
+      `).join('');
+    }
+
+    function syncInputs() {
+      topInsetInput.value = state.topInset;
+      bottomInsetInput.value = state.bottomInset;
+      keyboardInsetInput.value = state.keyboardInset;
+    }
+
+    function render() {
+      renderPresets();
+      renderModes();
+      syncInputs();
+      applyState();
+    }
+
+    topInsetInput.addEventListener('input', () => { state.topInset = Number(topInsetInput.value); render(); });
+    bottomInsetInput.addEventListener('input', () => { state.bottomInset = Number(bottomInsetInput.value); render(); });
+    keyboardInsetInput.addEventListener('input', () => { state.keyboardInset = Number(keyboardInsetInput.value); render(); });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const preset = target.dataset.preset;
+      if (preset) {
+        Object.assign(state, { preset }, presets[preset]);
+        render();
+        return;
+      }
+      const mode = target.dataset.mode;
+      if (mode) {
+        state.mode = mode;
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
