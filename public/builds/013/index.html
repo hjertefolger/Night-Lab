@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Link Mender</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1010;
+      --panel: #151616;
+      --panel-2: #1a1b1b;
+      --text: #f1efe8;
+      --muted: rgba(241,239,232,.58);
+      --line: rgba(241,239,232,.12);
+      --accent: #9da88a;
+      --warn: #b07162;
+      --ok: #86a196;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+    body { font-family: 'Geist', system-ui, sans-serif; }
+    .mono, .meta, button, .pill, .tiny, .path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .shell {
+      min-height: 100vh;
+      padding: 22px;
+      display: grid;
+      gap: 14px;
+      grid-template-rows: auto auto 1fr;
+    }
+    .hero, .toolbar, .workspace {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+    }
+    .hero, .toolbar { padding: 16px; }
+    .hero {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: minmax(280px, 440px) 1fr;
+      align-items: end;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(38px, 6vw, 72px);
+      line-height: .88;
+      letter-spacing: -.09em;
+      font-weight: 500;
+      max-width: 8ch;
+    }
+    .meta { color: var(--muted); }
+    .intro {
+      color: rgba(241,239,232,.72);
+      max-width: 54ch;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    button {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 8px 10px;
+      cursor: pointer;
+    }
+    button:hover, button.active {
+      color: var(--text);
+      border-color: rgba(241,239,232,.24);
+      background: rgba(241,239,232,.04);
+    }
+    .workspace {
+      display: grid;
+      grid-template-columns: 1.2fr .9fr;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .canvas {
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      border-right: 1px solid var(--line);
+    }
+    .issue {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      overflow: hidden;
+    }
+    .issue-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .issue-body {
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      background: linear-gradient(180deg, rgba(255,255,255,.01), transparent);
+    }
+    .link-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+    .path {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 11px 12px;
+      background: var(--panel-2);
+      color: rgba(241,239,232,.84);
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    .path.dead { border-color: rgba(176,113,98,.34); color: rgba(241,239,232,.66); }
+    .path.live { border-color: rgba(134,161,150,.34); }
+    .arrow {
+      color: var(--muted);
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+    }
+    .flags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 8px;
+      color: var(--muted);
+    }
+    .pill.warn { border-color: rgba(176,113,98,.34); color: #d9a79b; }
+    .pill.ok { border-color: rgba(134,161,150,.34); color: #afc6bd; }
+    .sidebar {
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      background: rgba(255,255,255,.01);
+    }
+    .box {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 13px 14px;
+      background: var(--panel);
+      line-height: 1.55;
+      color: rgba(241,239,232,.74);
+      font-size: 13px;
+    }
+    .box strong { color: var(--text); font-weight: 500; }
+    .preview {
+      border: 1px dashed rgba(241,239,232,.16);
+      border-radius: 16px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .preview-line {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+    .label { color: var(--muted); }
+    @media (max-width: 980px) {
+      .hero, .workspace, .link-row { grid-template-columns: 1fr; }
+      .canvas { border-right: 0; border-bottom: 1px solid var(--line); }
+      .arrow { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div>
+        <div class="meta">Night Lab 013</div>
+        <h1>Link Mender</h1>
+      </div>
+      <div class="intro">
+        A constrained repair instrument for the boring but dangerous aftermath of migration: dead legacy links that make a system look intact until someone clicks through the floor.
+      </div>
+    </section>
+
+    <section class="toolbar">
+      <div class="meta">scan → preview → repair</div>
+      <div class="actions" id="filters"></div>
+    </section>
+
+    <section class="workspace">
+      <div class="canvas" id="canvas"></div>
+      <aside class="sidebar">
+        <div class="box"><strong>Why this exists</strong><br>Migration cleanup is usually treated as a support chore or one-off script. But broken references are really continuity failures. The system still appears whole while meaning quietly rots underneath.</div>
+        <div class="box"><strong>Wrong first instinct</strong><br>Track broken links as tickets. That produces status work. The real unit here is the repairable continuity break itself.</div>
+        <div class="preview">
+          <div class="meta">repair preview</div>
+          <div class="preview-line"><div class="label mono">legacy</div><div id="legacyPreview">old-jira.company.local/browse/OPS-1482</div></div>
+          <div class="preview-line"><div class="label mono">rewrite</div><div id="rewritePreview">jira.company.com/browse/PLAT-412</div></div>
+          <div class="preview-line"><div class="label mono">confidence</div><div id="confidencePreview">key changed, host changed, path stable</div></div>
+        </div>
+        <div class="box"><strong>Native next move</strong><br>Add host rules, path transforms, and confidence-downgrade states so the instrument can tell the difference between safe repair, ambiguous remap, and human review.</div>
+      </aside>
+    </section>
+  </div>
+
+  <script>
+    const cases = [
+      {
+        id: 'OPS-1482',
+        mode: 'safe',
+        title: 'Description link survived as dead legacy URL',
+        context: 'description',
+        legacy: 'https://old-jira.company.local/browse/OPS-1482',
+        repaired: 'https://jira.company.com/browse/PLAT-412',
+        confidence: 'key changed, host changed, target verified',
+        flags: ['legacy host', 'key remap', 'safe rewrite']
+      },
+      {
+        id: 'FIN-088',
+        mode: 'review',
+        title: 'Custom field points to unknown project after migration',
+        context: 'environment field',
+        legacy: 'https://jira-old.internal/browse/FIN-088',
+        repaired: 'https://jira.company.com/browse/?candidate=FINOPS-088',
+        confidence: 'project likely renamed, mapping still ambiguous',
+        flags: ['legacy host', 'ambiguous remap', 'human review']
+      },
+      {
+        id: 'SUP-512',
+        mode: 'safe',
+        title: 'Remote link preserves dead issue key inside comment trail',
+        context: 'remote link',
+        legacy: 'http://legacy-jira/browse/SUP-512',
+        repaired: 'https://jira.company.com/browse/CX-512',
+        confidence: 'comment text preserved, redirect absent, replacement exact',
+        flags: ['remote link', 'exact target', 'safe rewrite']
+      }
+    ];
+
+    const filters = [
+      { key: 'all', label: 'all repairs' },
+      { key: 'safe', label: 'safe rewrites' },
+      { key: 'review', label: 'needs review' }
+    ];
+
+    const state = { filter: 'all', selected: 0 };
+    const canvas = document.getElementById('canvas');
+    const filtersEl = document.getElementById('filters');
+    const legacyPreview = document.getElementById('legacyPreview');
+    const rewritePreview = document.getElementById('rewritePreview');
+    const confidencePreview = document.getElementById('confidencePreview');
+
+    function visibleCases() {
+      return state.filter === 'all' ? cases : cases.filter(item => item.mode === state.filter);
+    }
+
+    function renderFilters() {
+      filtersEl.innerHTML = filters.map(filter => `
+        <button class="${state.filter === filter.key ? 'active' : ''}" data-filter="${filter.key}">${filter.label}</button>
+      `).join('');
+    }
+
+    function renderCases() {
+      const list = visibleCases();
+      if (!list.length) {
+        canvas.innerHTML = '<div class="box">No repairs in this mode.</div>';
+        return;
+      }
+      const selected = list[Math.min(state.selected, list.length - 1)];
+      state.selected = Math.min(state.selected, list.length - 1);
+      legacyPreview.textContent = selected.legacy;
+      rewritePreview.textContent = selected.repaired;
+      confidencePreview.textContent = selected.confidence;
+      canvas.innerHTML = list.map((item, index) => `
+        <article class="issue" data-index="${index}">
+          <div class="issue-head">
+            <div>
+              <div class="meta">${item.id} · ${item.context}</div>
+              <div>${item.title}</div>
+            </div>
+            <div class="pill ${item.mode === 'safe' ? 'ok' : 'warn'}">${item.mode === 'safe' ? 'safe rewrite' : 'needs review'}</div>
+          </div>
+          <div class="issue-body">
+            <div class="link-row">
+              <div class="path dead">${item.legacy}</div>
+              <div class="arrow">→</div>
+              <div class="path live">${item.repaired}</div>
+            </div>
+            <div class="flags">
+              ${item.flags.map(flag => `<div class="pill ${flag.includes('review') ? 'warn' : flag.includes('safe') || flag.includes('exact') ? 'ok' : ''}">${flag}</div>`).join('')}
+            </div>
+            <div class="box"><strong>Repair read</strong><br>${item.confidence}</div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function render() {
+      renderFilters();
+      renderCases();
+    }
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      const filter = target.dataset.filter;
+      if (filter) {
+        state.filter = filter;
+        state.selected = 0;
+        render();
+        return;
+      }
+      const issue = target.closest('[data-index]');
+      if (issue instanceof HTMLElement) {
+        state.selected = Number(issue.dataset.index || 0);
+        const list = visibleCases();
+        const selected = list[state.selected];
+        if (selected) {
+          legacyPreview.textContent = selected.legacy;
+          rewritePreview.textContent = selected.repaired;
+          confidencePreview.textContent = selected.confidence;
+        }
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>

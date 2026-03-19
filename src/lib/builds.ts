@@ -321,6 +321,31 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add multiple screen archetypes, safe-area overlays, and saved edge-case states so the simulator becomes more useful as a real design and debugging object.",
       "promotionRead": "Maybe. More form-distinct than the old repeated pattern and grounded in a real developer pain, but it still needs evidence that the simulator becomes operationally useful rather than mainly illustrative."
     }
+  },
+  {
+    "id": "013",
+    "number": 13,
+    "title": "Link Mender",
+    "date": "2026-03-19",
+    "tagline": "A constrained repair instrument for broken migration links.",
+    "summary": "Link Mender is a focused repair tool for the hidden continuity breaks left behind after Jira migrations. It treats dead legacy URLs not as generic cleanup tickets, but as repairable breaks in meaning that need scan, preview, and confidence-aware rewriting.",
+    "principles": [
+      "Make invisible processes legible",
+      "Preserve continuity across transformation",
+      "Prefer native repair actions over administrative tracking"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "After migrations, systems often look intact while their references quietly rot underneath. Broken legacy links in comments, descriptions, and remote fields turn continuity into a support ritual. This build makes that repair problem visible as a first-class artifact.",
+      "whatChanged": [
+        "Built the concept as a constrained repair instrument instead of another ticketing or dashboard surface.",
+        "Focused the interaction on scan, preview, and rewrite confidence rather than issue management or reporting.",
+        "Kept ambiguity visible through safe rewrite versus human review states rather than flattening every case into a binary fixed/broken result."
+      ],
+      "artDirection": "Default Night Lab editorial direction with dark mode. The darker palette helps the repair instrument feel forensic and precise without drifting into dashboard aesthetics.",
+      "nextMove": "Add host rules, path transforms, and explicit downgrade states so the instrument can distinguish safe repair, ambiguous remap, and human review more rigorously.",
+      "promotionRead": "Maybe. Tighter and more native than many recent builds, but it still needs a stronger real repair grammar to move beyond a clean first concept."
+    }
   }
 ];
 
