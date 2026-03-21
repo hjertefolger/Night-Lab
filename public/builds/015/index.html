@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Set Field</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0c0b0e;
+      --surface: #16151a;
+      --surface-2: #1e1d23;
+      --text: #c8c4c0;
+      --text-bright: #ebe8e5;
+      --muted: #5e5b56;
+      --dim: #3a3a3e;
+      --line: rgba(255,255,255,0.04);
+      --ring: rgba(255,255,255,0.06);
+      --node: #c9b88a;
+      --node-dim: rgba(201,184,138,0.35);
+      --smooth: #5d9e72;
+      --near: #8e9e5d;
+      --stretch: #c9a040;
+      --jump: #b85555;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg); color: var(--text); }
+    body {
+      font-family: 'Geist', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 24px 80px;
+      max-width: 800px;
+      margin: 0 auto;
+      opacity: 0;
+      animation: fadeIn 0.5s ease 0.1s forwards;
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    header { text-align: center; margin-bottom: 44px; }
+    .build-tag { color: var(--dim); margin-bottom: 10px; display: block; }
+    h1 {
+      font-weight: 500;
+      font-size: 30px;
+      letter-spacing: -0.025em;
+      color: var(--text-bright);
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    .field-container {
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto 28px;
+      position: relative;
+    }
+    .field-container svg { width: 100%; height: auto; display: block; }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--dim);
+    }
+    .legend-swatch {
+      width: 16px;
+      height: 2px;
+      border-radius: 1px;
+    }
+
+    .readings {
+      display: flex;
+      gap: 36px;
+      justify-content: center;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+    }
+    .reading { text-align: center; }
+    .reading .r-label { display: block; color: var(--muted); margin-bottom: 5px; }
+    .reading .r-value {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text-bright);
+    }
+
+    .curves {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .curve {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .curve-label {
+      width: 50px;
+      text-align: right;
+      flex-shrink: 0;
+      color: var(--dim);
+    }
+    .curve svg { flex: 1; height: 48px; display: block; }
+
+    .setlist-section {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      border-top: 1px solid var(--line);
+      padding-top: 24px;
+    }
+    .sl-heading { color: var(--dim); margin-bottom: 14px; }
+    .sl-row {
+      display: flex;
+      align-items: center;
+      padding: 7px 8px;
+      gap: 12px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.15s;
+    }
+    .sl-row:hover, .sl-row.active { background: var(--surface); }
+    .sl-num { width: 18px; text-align: right; color: var(--dim); flex-shrink: 0; }
+    .sl-name { flex: 1; font-size: 14px; color: var(--text); }
+    .sl-key { color: var(--muted); width: 30px; text-align: center; }
+    .sl-bpm { color: var(--dim); width: 42px; text-align: right; }
+    .sl-bar-wrap {
+      width: 56px;
+      height: 3px;
+      background: var(--surface-2);
+      border-radius: 2px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .sl-bar {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+    .sl-trans {
+      display: flex;
+      align-items: center;
+      padding: 3px 0 3px 38px;
+      gap: 6px;
+    }
+    .sl-arrow { color: var(--dim); font-size: 10px; }
+    .sl-badge {
+      font-size: 10px;
+      padding: 1px 7px;
+      border-radius: 3px;
+    }
+    .q-smooth { background: rgba(93,158,114,0.12); color: var(--smooth); }
+    .q-near { background: rgba(142,158,93,0.12); color: var(--near); }
+    .q-stretch { background: rgba(201,160,64,0.12); color: var(--stretch); }
+    .q-jump { background: rgba(184,85,85,0.15); color: var(--jump); }
+
+    .detail-panel {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 18px 24px 16px;
+      max-width: 380px;
+      width: calc(100% - 40px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .detail-panel.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+    .dp-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-bright);
+      margin-bottom: 6px;
+    }
+    .dp-meta {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 14px;
+      color: var(--muted);
+    }
+    .dp-conns { display: flex; flex-direction: column; gap: 7px; }
+    .dp-conn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .dp-dir { color: var(--dim); width: 30px; }
+    .dp-conn-name { flex: 1; }
+    .dp-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      background: none;
+      border: none;
+      color: var(--dim);
+      cursor: pointer;
+      font-size: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1;
+    }
+    .dp-close:hover { color: var(--text); }
+
+    @media (max-width: 560px) {
+      body { padding: 24px 16px 80px; }
+      h1 { font-size: 24px; }
+      .readings { gap: 20px; }
+      .reading .r-value { font-size: 15px; }
+      .legend { gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="build-tag mono">015 · Night Lab</span>
+    <h1>Set Field</h1>
+    <p class="subtitle">See how your setlist moves through harmonic space. Key distance, energy, and tempo — visible at a glance.</p>
+  </header>
+
+  <div class="field-container">
+    <svg id="field" viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Setlist harmonic field visualization"></svg>
+  </div>
+
+  <div class="legend" id="legend"></div>
+  <div class="readings" id="readings"></div>
+  <div class="curves" id="curves"></div>
+  <div class="setlist-section" id="setlist-section"></div>
+
+  <div class="detail-panel" id="detail-panel">
+    <button class="dp-close" id="dp-close" aria-label="Close">&times;</button>
+    <div class="dp-title" id="dp-title"></div>
+    <div class="dp-meta mono" id="dp-meta"></div>
+    <div class="dp-conns" id="dp-conns"></div>
+  </div>
+
+<script>
+// ── Data ──────────────────────────────────────────────
+const CIRCLE = ['C','G','D','A','E','B','F♯','D♭','A♭','E♭','B♭','F'];
+
+const REL_MAJOR = {
+  'A':'C','E':'G','B':'D','F♯':'A','C♯':'E','G♯':'B',
+  'D':'F','G':'B♭','C':'E♭','F':'A♭','B♭':'D♭','E♭':'F♯'
+};
+
+const songs = [
+  { id:1,  title:'Morning Light', key:'C', minor:false, bpm:118, energy:6 },
+  { id:2,  title:'Hollow Ground', key:'A', minor:true,  bpm:96,  energy:4 },
+  { id:3,  title:'Voltage',       key:'E', minor:false, bpm:142, energy:9 },
+  { id:4,  title:'Paper Walls',   key:'G', minor:false, bpm:112, energy:5 },
+  { id:5,  title:'Undertow',      key:'D', minor:true,  bpm:86,  energy:3 },
+  { id:6,  title:'Bright Wreck',  key:'A', minor:false, bpm:132, energy:8 },
+  { id:7,  title:'Still Water',   key:'F', minor:false, bpm:74,  energy:2 },
+  { id:8,  title:'Burning Maps',  key:'B', minor:true,  bpm:146, energy:10 },
+  { id:9,  title:'Ghost Light',   key:'E', minor:true,  bpm:106, energy:5 },
+  { id:10, title:'End Credits',   key:'C', minor:false, bpm:70,  energy:1 },
+];
+
+// ── Geometry ──────────────────────────────────────────
+const CX = 320, CY = 316;
+const R_OUTER = 248;
+const R_MAJOR = 198;
+const R_MINOR = 152;
+
+function idx(key, minor) {
+  const k = minor ? REL_MAJOR[key] : key;
+  return CIRCLE.indexOf(k);
+}
+
+function angle(i) { return (i * 30) * Math.PI / 180; }
+
+function pos(a, r) {
+  return { x: CX + r * Math.sin(a), y: CY - r * Math.cos(a) };
+}
+
+function dist(a, b) {
+  const d = Math.abs(a - b);
+  return Math.min(d, 12 - d);
+}
+
+function quality(d) {
+  if (d <= 1) return { label:'Smooth', cls:'q-smooth', color:'#5d9e72' };
+  if (d === 2) return { label:'Near',   cls:'q-near',   color:'#8e9e5d' };
+  if (d === 3) return { label:'Stretch',cls:'q-stretch',color:'#c9a040' };
+  return             { label:'Jump',   cls:'q-jump',   color:'#b85555' };
+}
+
+function keyLabel(s) { return s.minor ? s.key + 'm' : s.key; }
+
+function nodeRadius(s) { return 8 + (s.energy / 10) * 10; }
+
+// ── Positions (handle collisions) ─────────────────────
+function computePositions() {
+  const groups = {};
+  songs.forEach(s => {
+    const i = idx(s.key, s.minor);
+    const ring = s.minor ? 'min' : 'maj';
+    const k = i + '-' + ring;
+    (groups[k] = groups[k] || []).push(s);
+  });
+
+  const out = {};
+  for (const [k, group] of Object.entries(groups)) {
+    const [iStr, ring] = k.split('-');
+    const i = +iStr;
+    const baseA = angle(i);
+    const r = ring === 'min' ? R_MINOR : R_MAJOR;
+    const spread = 15 * Math.PI / 180;
+    group.forEach((s, j) => {
+      const offset = (j - (group.length - 1) / 2) * spread;
+      out[s.id] = pos(baseA + offset, r);
+    });
+  }
+  return out;
+}
+
+// ── SVG helper ────────────────────────────────────────
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, styles) {
+  const e = document.createElementNS(NS, tag);
+  if (attrs) Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
+  if (styles) Object.entries(styles).forEach(([k, v]) => e.style[k] = v);
+  return e;
+}
+
+// ── Render ────────────────────────────────────────────
+function render() {
+  const svg = document.getElementById('field');
+  const P = computePositions();
+
+  // Rings
+  [R_MAJOR, R_MINOR].forEach(r => {
+    svg.appendChild(el('circle', { cx:CX, cy:CY, r:r }, { fill:'none', stroke:'rgba(255,255,255,0.05)', strokeWidth:'1' }));
+  });
+
+  // Spokes
+  for (let i = 0; i < 12; i++) {
+    const a = angle(i);
+    const p1 = pos(a, R_MINOR - 12);
+    const p2 = pos(a, R_MAJOR + 12);
+    svg.appendChild(el('line', { x1:p1.x, y1:p1.y, x2:p2.x, y2:p2.y }, { stroke:'rgba(255,255,255,0.025)', strokeWidth:'1' }));
+  }
+
+  // Key labels
+  CIRCLE.forEach((key, i) => {
+    const a = angle(i);
+    const p = pos(a, R_OUTER + 4);
+    const t = el('text', { x:p.x, y:p.y, 'text-anchor':'middle', 'dominant-baseline':'central' },
+      { fontFamily:"'JetBrains Mono',monospace", fontSize:'11px', fill:'rgba(255,255,255,0.18)', letterSpacing:'0.02em' });
+    t.textContent = key;
+    svg.appendChild(t);
+  });
+
+  // Path segments
+  const pathEls = [];
+  for (let i = 0; i < songs.length - 1; i++) {
+    const s1 = songs[i], s2 = songs[i + 1];
+    const p1 = P[s1.id], p2 = P[s2.id];
+    const d = dist(idx(s1.key, s1.minor), idx(s2.key, s2.minor));
+    const q = quality(d);
+
+    const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2;
+    const dx = mx - CX, dy = my - CY;
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    const bend = 12 + d * 6;
+    const cx2 = mx + (dx / len) * bend;
+    const cy2 = my + (dy / len) * bend;
+
+    const path = el('path', {
+      d: `M${p1.x},${p1.y} Q${cx2},${cy2} ${p2.x},${p2.y}`,
+      'data-idx': i
+    }, {
+      fill: 'none',
+      stroke: q.color,
+      strokeWidth: '1.5',
+      strokeLinecap: 'round',
+      opacity: '0.55'
+    });
+    svg.appendChild(path);
+    pathEls.push(path);
+  }
+
+  // Animate paths
+  requestAnimationFrame(() => {
+    pathEls.forEach((p, i) => {
+      const len = p.getTotalLength();
+      p.style.strokeDasharray = len;
+      p.style.strokeDashoffset = len;
+      p.style.transition = `stroke-dashoffset 0.5s ease ${0.15 + i * 0.1}s`;
+      requestAnimationFrame(() => { p.style.strokeDashoffset = '0'; });
+    });
+  });
+
+  // Song nodes
+  songs.forEach((s, i) => {
+    const p = P[s.id];
+    const r = nodeRadius(s);
+
+    // Glow
+    svg.appendChild(el('circle', { cx:p.x, cy:p.y, r:r+8 }, { fill:'rgba(201,184,138,0.04)' }));
+
+    // Node
+    const node = el('circle', { cx:p.x, cy:p.y, r:r, 'data-id':s.id },
+      { fill: s.minor ? 'rgba(201,184,138,0.35)' : '#c9b88a', cursor:'pointer', transition:'filter 0.15s' });
+    node.addEventListener('mouseenter', () => { node.style.filter = 'brightness(1.25)'; highlightRow(s.id); });
+    node.addEventListener('mouseleave', () => { node.style.filter = ''; highlightRow(null); });
+    node.addEventListener('click', (e) => { e.stopPropagation(); showDetail(s.id); });
+    svg.appendChild(node);
+
+    // Number
+    const num = el('text', { x:p.x, y:p.y, 'text-anchor':'middle', 'dominant-baseline':'central' },
+      { fontFamily:"'JetBrains Mono',monospace", fontSize:'9px', fill:'#0c0b0e', fontWeight:'500', pointerEvents:'none' });
+    num.textContent = s.id;
+    svg.appendChild(num);
+
+    // Title
+    const label = el('text', { x:p.x, y:p.y + r + 14, 'text-anchor':'middle', 'dominant-baseline':'auto' },
+      { fontFamily:"'Geist',system-ui,sans-serif", fontSize:'10px', fill:'rgba(200,196,192,0.7)', pointerEvents:'none' });
+    label.textContent = s.title;
+    svg.appendChild(label);
+
+    // Key badge (only when not crowded — skip if another node is within 40px)
+    const crowded = songs.some(other => other.id !== s.id && P[other.id] &&
+      Math.hypot(P[other.id].x - p.x, P[other.id].y - p.y) < 55);
+    if (!crowded) {
+      const kb = el('text', { x:p.x, y:p.y + r + 25, 'text-anchor':'middle', 'dominant-baseline':'auto' },
+        { fontFamily:"'JetBrains Mono',monospace", fontSize:'8px', fill:'rgba(255,255,255,0.12)', pointerEvents:'none' });
+      kb.textContent = keyLabel(s);
+      svg.appendChild(kb);
+    }
+  });
+
+  // Legend
+  renderLegend();
+  renderReadings();
+  renderCurves();
+  renderSetlist();
+}
+
+// ── Legend ─────────────────────────────────────────────
+function renderLegend() {
+  const c = document.getElementById('legend');
+  const items = [
+    { label:'Smooth (0–1)', color:'#5d9e72' },
+    { label:'Near (2)', color:'#8e9e5d' },
+    { label:'Stretch (3)', color:'#c9a040' },
+    { label:'Jump (4+)', color:'#b85555' },
+  ];
+  c.innerHTML = items.map(i => `
+    <div class="legend-item mono">
+      <span class="legend-swatch" style="background:${i.color}"></span>
+      <span>${i.label}</span>
+    </div>
+  `).join('') + `<div class="legend-item mono" style="gap:4px">
+    <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#c9b88a;opacity:0.5"></span>
+    <span>Size = energy</span>
+  </div>`;
+}
+
+// ── Readings ──────────────────────────────────────────
+function renderReadings() {
+  let total = 0, smoothN = 0, worstI = 0, worstD = 0;
+  for (let i = 0; i < songs.length - 1; i++) {
+    const d = dist(idx(songs[i].key, songs[i].minor), idx(songs[i+1].key, songs[i+1].minor));
+    total += d;
+    if (d <= 1) smoothN++;
+    if (d > worstD) { worstD = d; worstI = i; }
+  }
+  const avg = total / (songs.length - 1);
+  const cohesion = Math.max(0, ((1 - avg / 6) * 10)).toFixed(1);
+  const w1 = songs[worstI], w2 = songs[worstI + 1];
+
+  document.getElementById('readings').innerHTML = `
+    <div class="reading">
+      <span class="r-label mono">Harmonic cohesion</span>
+      <span class="r-value">${cohesion} <span style="color:var(--dim);font-size:13px">/ 10</span></span>
+    </div>
+    <div class="reading">
+      <span class="r-label mono">Smooth transitions</span>
+      <span class="r-value">${smoothN} <span style="color:var(--dim);font-size:13px">of ${songs.length - 1}</span></span>
+    </div>
+    <div class="reading">
+      <span class="r-label mono">Biggest jump</span>
+      <span class="r-value" style="font-size:14px">${keyLabel(w1)} → ${keyLabel(w2)} · ${worstD} steps</span>
+    </div>
+  `;
+}
+
+// ── Curves ────────────────────────────────────────────
+function renderCurves() {
+  const W = 440, H = 52, PAD = 16;
+
+  function spark(values, max, color, label) {
+    const step = (W - PAD * 2) / (values.length - 1);
+    const pts = values.map((v, i) => ({
+      x: PAD + i * step,
+      y: H - 10 - ((v / max) * (H - 20))
+    }));
+
+    let d = `M${pts[0].x},${pts[0].y}`;
+    for (let i = 1; i < pts.length; i++) {
+      const cp = (pts[i-1].x + pts[i].x) / 2;
+      d += ` C${cp},${pts[i-1].y} ${cp},${pts[i].y} ${pts[i].x},${pts[i].y}`;
+    }
+
+    const dots = pts.map(p => `<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="${color}" opacity="0.7"/>`).join('');
+    const nums = pts.map((p, i) => `<text x="${p.x}" y="${H - 1}" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:rgba(255,255,255,0.1)">${i+1}</text>`).join('');
+
+    return `<div class="curve">
+      <span class="curve-label mono">${label}</span>
+      <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+        <path d="${d}" fill="none" stroke="${color}" stroke-width="1.5" opacity="0.45"/>
+        ${dots}${nums}
+      </svg>
+    </div>`;
+  }
+
+  document.getElementById('curves').innerHTML =
+    spark(songs.map(s => s.energy), 10, '#c9b88a', 'Energy') +
+    spark(songs.map(s => s.bpm), 160, '#5e5b56', 'Tempo');
+}
+
+// ── Linear setlist ────────────────────────────────────
+function renderSetlist() {
+  const c = document.getElementById('setlist-section');
+  let h = '<div class="sl-heading mono">Setlist Order</div>';
+
+  songs.forEach((s, i) => {
+    h += `<div class="sl-row" data-sid="${s.id}" onclick="showDetail(${s.id})"
+          onmouseenter="highlightNode(${s.id})" onmouseleave="highlightNode(null)">
+      <span class="sl-num mono">${s.id}</span>
+      <span class="sl-name">${s.title}</span>
+      <span class="sl-key mono">${keyLabel(s)}</span>
+      <span class="sl-bpm mono">${s.bpm}</span>
+      <div class="sl-bar-wrap">
+        <div class="sl-bar" style="width:${s.energy*10}%;background:${s.minor?'rgba(201,184,138,0.35)':'#c9b88a'}"></div>
+      </div>
+    </div>`;
+
+    if (i < songs.length - 1) {
+      const next = songs[i + 1];
+      const d = dist(idx(s.key, s.minor), idx(next.key, next.minor));
+      const q = quality(d);
+      h += `<div class="sl-trans">
+        <span class="sl-arrow mono">↓</span>
+        <span class="sl-badge mono ${q.cls}">${q.label} · ${d} step${d!==1?'s':''}</span>
+      </div>`;
+    }
+  });
+
+  c.innerHTML = h;
+}
+
+// ── Interaction ───────────────────────────────────────
+let activeId = null;
+
+function showDetail(id) {
+  const s = songs.find(x => x.id === id);
+  if (!s) return;
+  activeId = id;
+
+  document.getElementById('dp-title').textContent = s.title;
+  document.getElementById('dp-meta').innerHTML =
+    `<span>${keyLabel(s)}</span><span>${s.bpm} BPM</span><span>Energy ${s.energy}/10</span>`;
+
+  const si = songs.indexOf(s);
+  let ch = '';
+  if (si > 0) {
+    const prev = songs[si - 1];
+    const d = dist(idx(prev.key, prev.minor), idx(s.key, s.minor));
+    const q = quality(d);
+    ch += `<div class="dp-conn">
+      <span class="dp-dir mono">From</span>
+      <span class="dp-conn-name">${prev.title} (${keyLabel(prev)})</span>
+      <span class="mono ${q.cls}" style="font-size:11px">${q.label}</span>
+    </div>`;
+  }
+  if (si < songs.length - 1) {
+    const next = songs[si + 1];
+    const d = dist(idx(s.key, s.minor), idx(next.key, next.minor));
+    const q = quality(d);
+    ch += `<div class="dp-conn">
+      <span class="dp-dir mono">To</span>
+      <span class="dp-conn-name">${next.title} (${keyLabel(next)})</span>
+      <span class="mono ${q.cls}" style="font-size:11px">${q.label}</span>
+    </div>`;
+  }
+  document.getElementById('dp-conns').innerHTML = ch;
+  document.getElementById('detail-panel').classList.add('visible');
+
+  // Highlight in list
+  document.querySelectorAll('.sl-row').forEach(r => r.classList.toggle('active', +r.dataset.sid === id));
+}
+
+function closeDetail() {
+  document.getElementById('detail-panel').classList.remove('visible');
+  document.querySelectorAll('.sl-row').forEach(r => r.classList.remove('active'));
+  activeId = null;
+}
+
+function highlightRow(id) {
+  if (activeId) return;
+  document.querySelectorAll('.sl-row').forEach(r =>
+    r.style.background = (+r.dataset.sid === id) ? 'var(--surface)' : '');
+}
+
+function highlightNode(id) {
+  if (activeId) return;
+  document.querySelectorAll('[data-id]').forEach(n => {
+    if (n.tagName === 'circle' && n.style.cursor === 'pointer') {
+      n.style.filter = (+n.dataset.id === id) ? 'brightness(1.25)' : '';
+    }
+  });
+}
+
+document.getElementById('dp-close').addEventListener('click', closeDetail);
+document.addEventListener('click', (e) => {
+  if (activeId && !e.target.closest('.detail-panel') && !e.target.closest('[data-id]') && !e.target.closest('.sl-row')) {
+    closeDetail();
+  }
+});
+
+// ── Init ──────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>

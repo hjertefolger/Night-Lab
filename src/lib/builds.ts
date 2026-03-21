@@ -371,6 +371,32 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add a live travel-drag and pull-forward mode so the instrument can test whether a vacation override, partial fill, or renewal nudge would actually resolve the month or only shift the pressure elsewhere.",
       "promotionRead": "Maybe. The artifact form feels more distinct than many recent builds and the problem is real, but it still needs evidence that the instrument becomes genuinely useful instead of mainly explanatory."
     }
+  },
+  {
+    "id": "015",
+    "number": 15,
+    "title": "Set Field",
+    "date": "2026-03-21",
+    "tagline": "A harmonic flow instrument for live setlists.",
+    "summary": "Set Field is a visual instrument for musicians building live setlists. Songs are placed on a circle of fifths according to their key, with the setlist path drawn through harmonic space. Transition quality \u2014 smooth, near, stretch, or jump \u2014 is immediately visible as physical distance on the circle. Node size encodes energy level. Sparklines show energy and tempo arcs. The instrument makes harmonic distance between songs newly visible, revealing problem transitions that a text list hides.",
+    "principles": [
+      "Make invisible harmonic relationships visible",
+      "Use a form native to the problem \u2014 the circle of fifths is the actual structural framework",
+      "Prefer spatial instruments over text lists for spatial problems"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Musicians planning setlists work from text lists that hide the harmonic and energy relationships between songs. Awkward key transitions and energy crashes are invisible until rehearsal or performance. This instrument makes the flow visible before it's too late.",
+      "whatChanged": [
+        "Built the concept as a circle-of-fifths spatial instrument instead of another setlist planner, song organizer, or music management surface.",
+        "Made transition quality visible as path color and physical distance so problem zones announce themselves without labels.",
+        "Added energy and tempo sparklines as secondary reads that complement the harmonic field without competing with it.",
+        "Applied a v1.1 pass to reduce visual noise in crowded key areas by suppressing redundant key badges and widening node spread."
+      ],
+      "artDirection": "Dark editorial treatment with warm gold/sand nodes and restrained transition colors. The dark surface fits the performance domain while staying within the Night Lab editorial discipline.",
+      "nextMove": "Add drag-to-reorder interaction so musicians can experiment with song order and watch the harmonic path redraw in real time.",
+      "promotionRead": "Maybe. The form is genuinely native to the problem and the artifact makes something invisible newly visible, but it needs the interactive reorder to become operationally useful rather than only diagnostic."
+    }
   }
 ];
 
