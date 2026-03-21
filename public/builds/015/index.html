@@ -114,17 +114,8 @@
       flex-direction: column;
       gap: 16px;
     }
-    .curve {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .curve-label {
-      width: 50px;
-      text-align: right;
-      flex-shrink: 0;
-      color: var(--dim);
-    }
+    .curve { display: flex; align-items: center; gap: 12px; }
+    .curve-label { width: 50px; text-align: right; flex-shrink: 0; color: var(--dim); }
     .curve svg { flex: 1; height: 48px; display: block; }
 
     .setlist-section {
@@ -134,34 +125,63 @@
       border-top: 1px solid var(--line);
       padding-top: 24px;
     }
-    .sl-heading { color: var(--dim); margin-bottom: 14px; }
+    .sl-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .sl-heading { color: var(--dim); }
+    .sl-actions { display: flex; gap: 8px; }
     .sl-row {
       display: flex;
       align-items: center;
       padding: 7px 8px;
-      gap: 12px;
-      cursor: pointer;
+      gap: 8px;
       border-radius: 5px;
       transition: background 0.15s;
+      position: relative;
     }
     .sl-row:hover, .sl-row.active { background: var(--surface); }
     .sl-num { width: 18px; text-align: right; color: var(--dim); flex-shrink: 0; }
-    .sl-name { flex: 1; font-size: 14px; color: var(--text); }
-    .sl-key { color: var(--muted); width: 30px; text-align: center; }
-    .sl-bpm { color: var(--dim); width: 42px; text-align: right; }
+    .sl-name { flex: 1; font-size: 14px; color: var(--text); cursor: pointer; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sl-key { color: var(--muted); width: 30px; text-align: center; flex-shrink: 0; }
+    .sl-bpm { color: var(--dim); width: 36px; text-align: right; flex-shrink: 0; }
     .sl-bar-wrap {
-      width: 56px;
+      width: 44px;
       height: 3px;
       background: var(--surface-2);
       border-radius: 2px;
       overflow: hidden;
       flex-shrink: 0;
     }
-    .sl-bar {
-      height: 100%;
-      border-radius: 2px;
-      transition: width 0.3s;
+    .sl-bar { height: 100%; border-radius: 2px; }
+    .sl-controls {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity 0.15s;
     }
+    .sl-row:hover .sl-controls { opacity: 1; }
+    .sl-btn {
+      background: none;
+      border: 1px solid var(--dim);
+      color: var(--muted);
+      width: 22px;
+      height: 22px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      transition: border-color 0.15s, color 0.15s;
+      padding: 0;
+    }
+    .sl-btn:hover { border-color: var(--node); color: var(--text-bright); }
+    .sl-btn.sl-remove:hover { border-color: var(--jump); color: var(--jump); }
     .sl-trans {
       display: flex;
       align-items: center;
@@ -169,16 +189,100 @@
       gap: 6px;
     }
     .sl-arrow { color: var(--dim); font-size: 10px; }
-    .sl-badge {
-      font-size: 10px;
-      padding: 1px 7px;
-      border-radius: 3px;
-    }
+    .sl-badge { font-size: 10px; padding: 1px 7px; border-radius: 3px; }
     .q-smooth { background: rgba(93,158,114,0.12); color: var(--smooth); }
     .q-near { background: rgba(142,158,93,0.12); color: var(--near); }
     .q-stretch { background: rgba(201,160,64,0.12); color: var(--stretch); }
     .q-jump { background: rgba(184,85,85,0.15); color: var(--jump); }
 
+    /* Add form */
+    .add-form {
+      margin-top: 16px;
+      padding: 14px 12px;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .add-form.open { display: flex; }
+    .af-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .af-input, .af-select {
+      background: var(--bg);
+      border: 1px solid var(--dim);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: 'Geist', system-ui, sans-serif;
+      font-size: 13px;
+      padding: 6px 10px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .af-input:focus, .af-select:focus { border-color: var(--node); }
+    .af-input::placeholder { color: var(--dim); }
+    .af-title { flex: 1; min-width: 120px; }
+    .af-select { min-width: 64px; }
+    .af-bpm { width: 70px; }
+    .af-energy-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .af-energy-label { color: var(--dim); white-space: nowrap; }
+    .af-energy {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 80px;
+      height: 3px;
+      background: var(--dim);
+      border-radius: 2px;
+      outline: none;
+    }
+    .af-energy::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--node);
+      cursor: pointer;
+    }
+    .af-energy-val { color: var(--muted); width: 16px; text-align: center; }
+    .btn {
+      background: none;
+      border: 1px solid var(--dim);
+      color: var(--muted);
+      padding: 5px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn:hover { border-color: var(--node); color: var(--text-bright); }
+    .btn-primary {
+      border-color: var(--node);
+      color: var(--node);
+    }
+    .btn-primary:hover {
+      background: rgba(201,184,138,0.1);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--dim);
+      font-size: 14px;
+    }
+
+    /* Detail panel */
     .detail-panel {
       position: fixed;
       bottom: 20px;
@@ -202,34 +306,17 @@
       pointer-events: auto;
       transform: translateX(-50%) translateY(0);
     }
-    .dp-title {
-      font-size: 16px;
-      font-weight: 500;
-      color: var(--text-bright);
-      margin-bottom: 6px;
-    }
-    .dp-meta {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 14px;
-      color: var(--muted);
-    }
+    .dp-title { font-size: 16px; font-weight: 500; color: var(--text-bright); margin-bottom: 6px; }
+    .dp-meta { display: flex; gap: 16px; margin-bottom: 14px; color: var(--muted); }
     .dp-conns { display: flex; flex-direction: column; gap: 7px; }
-    .dp-conn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-    }
+    .dp-conn { display: flex; align-items: center; gap: 8px; font-size: 13px; }
     .dp-dir { color: var(--dim); width: 30px; }
     .dp-conn-name { flex: 1; }
     .dp-close {
       position: absolute;
       top: 14px; right: 16px;
-      background: none;
-      border: none;
-      color: var(--dim);
-      cursor: pointer;
+      background: none; border: none;
+      color: var(--dim); cursor: pointer;
       font-size: 16px;
       font-family: 'JetBrains Mono', monospace;
       line-height: 1;
@@ -242,6 +329,8 @@
       .readings { gap: 20px; }
       .reading .r-value { font-size: 15px; }
       .legend { gap: 10px; }
+      .sl-controls { opacity: 1; }
+      .af-row { gap: 6px; }
     }
   </style>
 </head>
@@ -250,11 +339,11 @@
   <header>
     <span class="build-tag mono">015 · Night Lab</span>
     <h1>Set Field</h1>
-    <p class="subtitle">See how your setlist moves through harmonic space. Key distance, energy, and tempo — visible at a glance.</p>
+    <p class="subtitle">See how your setlist moves through harmonic space. Add songs, reorder, and watch the field reshape.</p>
   </header>
 
   <div class="field-container">
-    <svg id="field" viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Setlist harmonic field visualization"></svg>
+    <svg id="field" viewBox="0 0 640 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Setlist harmonic field"></svg>
   </div>
 
   <div class="legend" id="legend"></div>
@@ -278,72 +367,75 @@ const REL_MAJOR = {
   'D':'F','G':'B♭','C':'E♭','F':'A♭','B♭':'D♭','E♭':'F♯'
 };
 
-const songs = [
-  { id:1,  title:'Morning Light', key:'C', minor:false, bpm:118, energy:6 },
-  { id:2,  title:'Hollow Ground', key:'A', minor:true,  bpm:96,  energy:4 },
-  { id:3,  title:'Voltage',       key:'E', minor:false, bpm:142, energy:9 },
-  { id:4,  title:'Paper Walls',   key:'G', minor:false, bpm:112, energy:5 },
-  { id:5,  title:'Undertow',      key:'D', minor:true,  bpm:86,  energy:3 },
-  { id:6,  title:'Bright Wreck',  key:'A', minor:false, bpm:132, energy:8 },
-  { id:7,  title:'Still Water',   key:'F', minor:false, bpm:74,  energy:2 },
-  { id:8,  title:'Burning Maps',  key:'B', minor:true,  bpm:146, energy:10 },
-  { id:9,  title:'Ghost Light',   key:'E', minor:true,  bpm:106, energy:5 },
-  { id:10, title:'End Credits',   key:'C', minor:false, bpm:70,  energy:1 },
+const DEMO_SONGS = [
+  { title:'Morning Light', key:'C', minor:false, bpm:118, energy:6 },
+  { title:'Hollow Ground', key:'A', minor:true,  bpm:96,  energy:4 },
+  { title:'Voltage',       key:'E', minor:false, bpm:142, energy:9 },
+  { title:'Paper Walls',   key:'G', minor:false, bpm:112, energy:5 },
+  { title:'Undertow',      key:'D', minor:true,  bpm:86,  energy:3 },
+  { title:'Bright Wreck',  key:'A', minor:false, bpm:132, energy:8 },
+  { title:'Still Water',   key:'F', minor:false, bpm:74,  energy:2 },
+  { title:'Burning Maps',  key:'B', minor:true,  bpm:146, energy:10 },
+  { title:'Ghost Light',   key:'E', minor:true,  bpm:106, energy:5 },
+  { title:'End Credits',   key:'C', minor:false, bpm:70,  energy:1 },
 ];
+
+let nextId = 1;
+let songs = [];
+let firstRender = true;
+let activeId = null;
+
+function initSongs(data) {
+  songs = data.map(s => ({ ...s, _id: nextId++ }));
+}
+
+// Key options for the dropdown
+const MAJOR_KEYS = ['C','D♭','D','E♭','E','F','F♯','G','A♭','A','B♭','B'];
+const MINOR_KEYS = ['Am','B♭m','Bm','Cm','C♯m','Dm','E♭m','Em','Fm','F♯m','Gm','G♯m'];
+
+function parseKeyValue(val) {
+  if (val.endsWith('m')) return { key: val.slice(0, -1), minor: true };
+  return { key: val, minor: false };
+}
 
 // ── Geometry ──────────────────────────────────────────
 const CX = 320, CY = 316;
-const R_OUTER = 248;
-const R_MAJOR = 198;
-const R_MINOR = 152;
+const R_OUTER = 248, R_MAJOR = 198, R_MINOR = 152;
 
-function idx(key, minor) {
+function kIdx(key, minor) {
   const k = minor ? REL_MAJOR[key] : key;
-  return CIRCLE.indexOf(k);
+  const i = CIRCLE.indexOf(k);
+  return i >= 0 ? i : 0;
 }
-
-function angle(i) { return (i * 30) * Math.PI / 180; }
-
-function pos(a, r) {
-  return { x: CX + r * Math.sin(a), y: CY - r * Math.cos(a) };
-}
-
-function dist(a, b) {
-  const d = Math.abs(a - b);
-  return Math.min(d, 12 - d);
-}
-
+function ang(i) { return (i * 30) * Math.PI / 180; }
+function pt(a, r) { return { x: CX + r * Math.sin(a), y: CY - r * Math.cos(a) }; }
+function kDist(a, b) { const d = Math.abs(a - b); return Math.min(d, 12 - d); }
 function quality(d) {
   if (d <= 1) return { label:'Smooth', cls:'q-smooth', color:'#5d9e72' };
-  if (d === 2) return { label:'Near',   cls:'q-near',   color:'#8e9e5d' };
-  if (d === 3) return { label:'Stretch',cls:'q-stretch',color:'#c9a040' };
-  return             { label:'Jump',   cls:'q-jump',   color:'#b85555' };
+  if (d === 2) return { label:'Near', cls:'q-near', color:'#8e9e5d' };
+  if (d === 3) return { label:'Stretch', cls:'q-stretch', color:'#c9a040' };
+  return { label:'Jump', cls:'q-jump', color:'#b85555' };
 }
+function kLabel(s) { return s.minor ? s.key + 'm' : s.key; }
+function nRadius(s) { return 8 + (s.energy / 10) * 10; }
 
-function keyLabel(s) { return s.minor ? s.key + 'm' : s.key; }
-
-function nodeRadius(s) { return 8 + (s.energy / 10) * 10; }
-
-// ── Positions (handle collisions) ─────────────────────
 function computePositions() {
   const groups = {};
   songs.forEach(s => {
-    const i = idx(s.key, s.minor);
+    const i = kIdx(s.key, s.minor);
     const ring = s.minor ? 'min' : 'maj';
     const k = i + '-' + ring;
     (groups[k] = groups[k] || []).push(s);
   });
-
   const out = {};
   for (const [k, group] of Object.entries(groups)) {
     const [iStr, ring] = k.split('-');
-    const i = +iStr;
-    const baseA = angle(i);
+    const baseA = ang(+iStr);
     const r = ring === 'min' ? R_MINOR : R_MAJOR;
     const spread = 15 * Math.PI / 180;
     group.forEach((s, j) => {
       const offset = (j - (group.length - 1) / 2) * spread;
-      out[s.id] = pos(baseA + offset, r);
+      out[s._id] = pt(baseA + offset, r);
     });
   }
   return out;
@@ -353,33 +445,42 @@ function computePositions() {
 const NS = 'http://www.w3.org/2000/svg';
 function el(tag, attrs, styles) {
   const e = document.createElementNS(NS, tag);
-  if (attrs) Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
-  if (styles) Object.entries(styles).forEach(([k, v]) => e.style[k] = v);
+  if (attrs) for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (styles) for (const [k, v] of Object.entries(styles)) e.style[k] = v;
   return e;
 }
 
-// ── Render ────────────────────────────────────────────
-function render() {
+// ── Render All ────────────────────────────────────────
+function renderAll() {
+  closeDetail();
+  renderField();
+  renderLegend();
+  renderReadings();
+  renderCurves();
+  renderSetlist();
+  firstRender = false;
+}
+
+function renderField() {
   const svg = document.getElementById('field');
+  svg.innerHTML = '';
+  if (songs.length === 0) return;
+
   const P = computePositions();
 
-  // Rings
-  [R_MAJOR, R_MINOR].forEach(r => {
-    svg.appendChild(el('circle', { cx:CX, cy:CY, r:r }, { fill:'none', stroke:'rgba(255,255,255,0.05)', strokeWidth:'1' }));
-  });
-
-  // Spokes
+  // Rings + spokes
+  [R_MAJOR, R_MINOR].forEach(r =>
+    svg.appendChild(el('circle', { cx:CX, cy:CY, r }, { fill:'none', stroke:'rgba(255,255,255,0.05)', strokeWidth:'1' }))
+  );
   for (let i = 0; i < 12; i++) {
-    const a = angle(i);
-    const p1 = pos(a, R_MINOR - 12);
-    const p2 = pos(a, R_MAJOR + 12);
+    const a = ang(i);
+    const p1 = pt(a, R_MINOR - 12), p2 = pt(a, R_MAJOR + 12);
     svg.appendChild(el('line', { x1:p1.x, y1:p1.y, x2:p2.x, y2:p2.y }, { stroke:'rgba(255,255,255,0.025)', strokeWidth:'1' }));
   }
 
   // Key labels
   CIRCLE.forEach((key, i) => {
-    const a = angle(i);
-    const p = pos(a, R_OUTER + 4);
+    const p = pt(ang(i), R_OUTER + 4);
     const t = el('text', { x:p.x, y:p.y, 'text-anchor':'middle', 'dominant-baseline':'central' },
       { fontFamily:"'JetBrains Mono',monospace", fontSize:'11px', fill:'rgba(255,255,255,0.18)', letterSpacing:'0.02em' });
     t.textContent = key;
@@ -390,122 +491,97 @@ function render() {
   const pathEls = [];
   for (let i = 0; i < songs.length - 1; i++) {
     const s1 = songs[i], s2 = songs[i + 1];
-    const p1 = P[s1.id], p2 = P[s2.id];
-    const d = dist(idx(s1.key, s1.minor), idx(s2.key, s2.minor));
+    const p1 = P[s1._id], p2 = P[s2._id];
+    if (!p1 || !p2) continue;
+    const d = kDist(kIdx(s1.key, s1.minor), kIdx(s2.key, s2.minor));
     const q = quality(d);
-
     const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2;
     const dx = mx - CX, dy = my - CY;
     const len = Math.sqrt(dx * dx + dy * dy) || 1;
     const bend = 12 + d * 6;
-    const cx2 = mx + (dx / len) * bend;
-    const cy2 = my + (dy / len) * bend;
-
     const path = el('path', {
-      d: `M${p1.x},${p1.y} Q${cx2},${cy2} ${p2.x},${p2.y}`,
-      'data-idx': i
-    }, {
-      fill: 'none',
-      stroke: q.color,
-      strokeWidth: '1.5',
-      strokeLinecap: 'round',
-      opacity: '0.55'
-    });
+      d: `M${p1.x},${p1.y} Q${mx + (dx/len)*bend},${my + (dy/len)*bend} ${p2.x},${p2.y}`
+    }, { fill:'none', stroke:q.color, strokeWidth:'1.5', strokeLinecap:'round', opacity:'0.55' });
     svg.appendChild(path);
     pathEls.push(path);
   }
 
-  // Animate paths
-  requestAnimationFrame(() => {
-    pathEls.forEach((p, i) => {
-      const len = p.getTotalLength();
-      p.style.strokeDasharray = len;
-      p.style.strokeDashoffset = len;
-      p.style.transition = `stroke-dashoffset 0.5s ease ${0.15 + i * 0.1}s`;
-      requestAnimationFrame(() => { p.style.strokeDashoffset = '0'; });
+  // Animate on first render only
+  if (firstRender) {
+    requestAnimationFrame(() => {
+      pathEls.forEach((p, i) => {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = len;
+        p.style.strokeDashoffset = len;
+        p.style.transition = `stroke-dashoffset 0.5s ease ${0.15 + i * 0.1}s`;
+        requestAnimationFrame(() => { p.style.strokeDashoffset = '0'; });
+      });
     });
-  });
+  }
 
   // Song nodes
   songs.forEach((s, i) => {
-    const p = P[s.id];
-    const r = nodeRadius(s);
+    const p = P[s._id];
+    if (!p) return;
+    const r = nRadius(s);
 
-    // Glow
     svg.appendChild(el('circle', { cx:p.x, cy:p.y, r:r+8 }, { fill:'rgba(201,184,138,0.04)' }));
 
-    // Node
-    const node = el('circle', { cx:p.x, cy:p.y, r:r, 'data-id':s.id },
+    const node = el('circle', { cx:p.x, cy:p.y, r, 'data-id':s._id },
       { fill: s.minor ? 'rgba(201,184,138,0.35)' : '#c9b88a', cursor:'pointer', transition:'filter 0.15s' });
-    node.addEventListener('mouseenter', () => { node.style.filter = 'brightness(1.25)'; highlightRow(s.id); });
+    node.addEventListener('mouseenter', () => { node.style.filter = 'brightness(1.25)'; highlightRow(s._id); });
     node.addEventListener('mouseleave', () => { node.style.filter = ''; highlightRow(null); });
-    node.addEventListener('click', (e) => { e.stopPropagation(); showDetail(s.id); });
+    node.addEventListener('click', (e) => { e.stopPropagation(); showDetail(s._id); });
     svg.appendChild(node);
 
-    // Number
     const num = el('text', { x:p.x, y:p.y, 'text-anchor':'middle', 'dominant-baseline':'central' },
       { fontFamily:"'JetBrains Mono',monospace", fontSize:'9px', fill:'#0c0b0e', fontWeight:'500', pointerEvents:'none' });
-    num.textContent = s.id;
+    num.textContent = i + 1;
     svg.appendChild(num);
 
-    // Title
-    const label = el('text', { x:p.x, y:p.y + r + 14, 'text-anchor':'middle', 'dominant-baseline':'auto' },
+    const label = el('text', { x:p.x, y:p.y + r + 14, 'text-anchor':'middle' },
       { fontFamily:"'Geist',system-ui,sans-serif", fontSize:'10px', fill:'rgba(200,196,192,0.7)', pointerEvents:'none' });
     label.textContent = s.title;
     svg.appendChild(label);
 
-    // Key badge (only when not crowded — skip if another node is within 40px)
-    const crowded = songs.some(other => other.id !== s.id && P[other.id] &&
-      Math.hypot(P[other.id].x - p.x, P[other.id].y - p.y) < 55);
+    const crowded = songs.some(o => o._id !== s._id && P[o._id] &&
+      Math.hypot(P[o._id].x - p.x, P[o._id].y - p.y) < 55);
     if (!crowded) {
-      const kb = el('text', { x:p.x, y:p.y + r + 25, 'text-anchor':'middle', 'dominant-baseline':'auto' },
+      const kb = el('text', { x:p.x, y:p.y + r + 25, 'text-anchor':'middle' },
         { fontFamily:"'JetBrains Mono',monospace", fontSize:'8px', fill:'rgba(255,255,255,0.12)', pointerEvents:'none' });
-      kb.textContent = keyLabel(s);
+      kb.textContent = kLabel(s);
       svg.appendChild(kb);
     }
   });
-
-  // Legend
-  renderLegend();
-  renderReadings();
-  renderCurves();
-  renderSetlist();
 }
 
 // ── Legend ─────────────────────────────────────────────
 function renderLegend() {
-  const c = document.getElementById('legend');
-  const items = [
-    { label:'Smooth (0–1)', color:'#5d9e72' },
-    { label:'Near (2)', color:'#8e9e5d' },
-    { label:'Stretch (3)', color:'#c9a040' },
-    { label:'Jump (4+)', color:'#b85555' },
-  ];
-  c.innerHTML = items.map(i => `
-    <div class="legend-item mono">
-      <span class="legend-swatch" style="background:${i.color}"></span>
-      <span>${i.label}</span>
-    </div>
-  `).join('') + `<div class="legend-item mono" style="gap:4px">
-    <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#c9b88a;opacity:0.5"></span>
-    <span>Size = energy</span>
-  </div>`;
+  document.getElementById('legend').innerHTML = [
+    { l:'Smooth (0–1)', c:'#5d9e72' },
+    { l:'Near (2)', c:'#8e9e5d' },
+    { l:'Stretch (3)', c:'#c9a040' },
+    { l:'Jump (4+)', c:'#b85555' },
+  ].map(i => `<div class="legend-item mono"><span class="legend-swatch" style="background:${i.c}"></span><span>${i.l}</span></div>`)
+  .join('') + `<div class="legend-item mono" style="gap:4px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#c9b88a;opacity:0.5"></span><span>Size = energy</span></div>`;
 }
 
 // ── Readings ──────────────────────────────────────────
 function renderReadings() {
+  const c = document.getElementById('readings');
+  if (songs.length < 2) { c.innerHTML = ''; return; }
+
   let total = 0, smoothN = 0, worstI = 0, worstD = 0;
   for (let i = 0; i < songs.length - 1; i++) {
-    const d = dist(idx(songs[i].key, songs[i].minor), idx(songs[i+1].key, songs[i+1].minor));
+    const d = kDist(kIdx(songs[i].key, songs[i].minor), kIdx(songs[i+1].key, songs[i+1].minor));
     total += d;
     if (d <= 1) smoothN++;
     if (d > worstD) { worstD = d; worstI = i; }
   }
   const avg = total / (songs.length - 1);
   const cohesion = Math.max(0, ((1 - avg / 6) * 10)).toFixed(1);
-  const w1 = songs[worstI], w2 = songs[worstI + 1];
 
-  document.getElementById('readings').innerHTML = `
+  c.innerHTML = `
     <div class="reading">
       <span class="r-label mono">Harmonic cohesion</span>
       <span class="r-value">${cohesion} <span style="color:var(--dim);font-size:13px">/ 10</span></span>
@@ -516,114 +592,172 @@ function renderReadings() {
     </div>
     <div class="reading">
       <span class="r-label mono">Biggest jump</span>
-      <span class="r-value" style="font-size:14px">${keyLabel(w1)} → ${keyLabel(w2)} · ${worstD} steps</span>
-    </div>
-  `;
+      <span class="r-value" style="font-size:14px">${kLabel(songs[worstI])} → ${kLabel(songs[worstI+1])} · ${worstD} steps</span>
+    </div>`;
 }
 
 // ── Curves ────────────────────────────────────────────
 function renderCurves() {
+  const c = document.getElementById('curves');
+  if (songs.length < 2) { c.innerHTML = ''; return; }
   const W = 440, H = 52, PAD = 16;
 
   function spark(values, max, color, label) {
     const step = (W - PAD * 2) / (values.length - 1);
-    const pts = values.map((v, i) => ({
-      x: PAD + i * step,
-      y: H - 10 - ((v / max) * (H - 20))
-    }));
-
+    const pts = values.map((v, i) => ({ x: PAD + i * step, y: H - 10 - ((v / max) * (H - 20)) }));
     let d = `M${pts[0].x},${pts[0].y}`;
     for (let i = 1; i < pts.length; i++) {
       const cp = (pts[i-1].x + pts[i].x) / 2;
       d += ` C${cp},${pts[i-1].y} ${cp},${pts[i].y} ${pts[i].x},${pts[i].y}`;
     }
-
     const dots = pts.map(p => `<circle cx="${p.x}" cy="${p.y}" r="2.5" fill="${color}" opacity="0.7"/>`).join('');
-    const nums = pts.map((p, i) => `<text x="${p.x}" y="${H - 1}" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:rgba(255,255,255,0.1)">${i+1}</text>`).join('');
-
-    return `<div class="curve">
-      <span class="curve-label mono">${label}</span>
+    const nums = pts.map((p, i) => `<text x="${p.x}" y="${H-1}" text-anchor="middle" style="font-family:'JetBrains Mono',monospace;font-size:7px;fill:rgba(255,255,255,0.1)">${i+1}</text>`).join('');
+    return `<div class="curve"><span class="curve-label mono">${label}</span>
       <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-        <path d="${d}" fill="none" stroke="${color}" stroke-width="1.5" opacity="0.45"/>
-        ${dots}${nums}
-      </svg>
-    </div>`;
+        <path d="${d}" fill="none" stroke="${color}" stroke-width="1.5" opacity="0.45"/>${dots}${nums}
+      </svg></div>`;
   }
 
-  document.getElementById('curves').innerHTML =
-    spark(songs.map(s => s.energy), 10, '#c9b88a', 'Energy') +
-    spark(songs.map(s => s.bpm), 160, '#5e5b56', 'Tempo');
+  c.innerHTML = spark(songs.map(s => s.energy), 10, '#c9b88a', 'Energy') +
+                spark(songs.map(s => s.bpm), 160, '#5e5b56', 'Tempo');
 }
 
 // ── Linear setlist ────────────────────────────────────
 function renderSetlist() {
   const c = document.getElementById('setlist-section');
-  let h = '<div class="sl-heading mono">Setlist Order</div>';
+
+  let h = `<div class="sl-header">
+    <span class="sl-heading mono">Setlist Order</span>
+    <div class="sl-actions">
+      <button class="btn mono" onclick="toggleAddForm()" id="add-toggle">+ Add</button>
+      <button class="btn mono" onclick="resetDemo()">Reset</button>
+    </div>
+  </div>`;
+
+  if (songs.length === 0) {
+    h += '<div class="empty-state">No songs yet. Add one to begin.</div>';
+  }
 
   songs.forEach((s, i) => {
-    h += `<div class="sl-row" data-sid="${s.id}" onclick="showDetail(${s.id})"
-          onmouseenter="highlightNode(${s.id})" onmouseleave="highlightNode(null)">
-      <span class="sl-num mono">${s.id}</span>
-      <span class="sl-name">${s.title}</span>
-      <span class="sl-key mono">${keyLabel(s)}</span>
+    h += `<div class="sl-row" data-sid="${s._id}">
+      <span class="sl-num mono">${i + 1}</span>
+      <span class="sl-name" onclick="showDetail(${s._id})">${s.title}</span>
+      <span class="sl-key mono">${kLabel(s)}</span>
       <span class="sl-bpm mono">${s.bpm}</span>
-      <div class="sl-bar-wrap">
-        <div class="sl-bar" style="width:${s.energy*10}%;background:${s.minor?'rgba(201,184,138,0.35)':'#c9b88a'}"></div>
+      <div class="sl-bar-wrap"><div class="sl-bar" style="width:${s.energy*10}%;background:${s.minor?'rgba(201,184,138,0.35)':'#c9b88a'}"></div></div>
+      <div class="sl-controls">
+        ${i > 0 ? `<button class="sl-btn mono" onclick="moveSong(${s._id},-1)" title="Move up">↑</button>` : '<span style="width:22px"></span>'}
+        ${i < songs.length - 1 ? `<button class="sl-btn mono" onclick="moveSong(${s._id},1)" title="Move down">↓</button>` : '<span style="width:22px"></span>'}
+        <button class="sl-btn sl-remove mono" onclick="removeSong(${s._id})" title="Remove">×</button>
       </div>
     </div>`;
 
     if (i < songs.length - 1) {
       const next = songs[i + 1];
-      const d = dist(idx(s.key, s.minor), idx(next.key, next.minor));
+      const d = kDist(kIdx(s.key, s.minor), kIdx(next.key, next.minor));
       const q = quality(d);
-      h += `<div class="sl-trans">
-        <span class="sl-arrow mono">↓</span>
-        <span class="sl-badge mono ${q.cls}">${q.label} · ${d} step${d!==1?'s':''}</span>
-      </div>`;
+      h += `<div class="sl-trans"><span class="sl-arrow mono">↓</span><span class="sl-badge mono ${q.cls}">${q.label} · ${d} step${d!==1?'s':''}</span></div>`;
     }
   });
 
+  // Add form
+  h += `<div class="add-form" id="add-form">
+    <div class="af-row">
+      <input type="text" class="af-input af-title" id="af-title" placeholder="Song title" maxlength="40">
+      <select class="af-input af-select" id="af-key">
+        <option value="">Key</option>
+        <optgroup label="Major">${MAJOR_KEYS.map(k => `<option value="${k}">${k}</option>`).join('')}</optgroup>
+        <optgroup label="Minor">${MINOR_KEYS.map(k => `<option value="${k}">${k}</option>`).join('')}</optgroup>
+      </select>
+    </div>
+    <div class="af-row">
+      <input type="number" class="af-input af-bpm" id="af-bpm" placeholder="BPM" min="40" max="260" step="1">
+      <div class="af-energy-wrap">
+        <span class="af-energy-label mono">Energy</span>
+        <input type="range" class="af-energy" id="af-energy" min="1" max="10" value="5">
+        <span class="af-energy-val mono" id="af-energy-val">5</span>
+      </div>
+      <button class="btn btn-primary mono" onclick="addSong()">Add</button>
+    </div>
+  </div>`;
+
   c.innerHTML = h;
+
+  // Energy slider live update
+  const slider = document.getElementById('af-energy');
+  const valSpan = document.getElementById('af-energy-val');
+  if (slider) slider.addEventListener('input', () => { valSpan.textContent = slider.value; });
 }
 
-// ── Interaction ───────────────────────────────────────
-let activeId = null;
+// ── Actions ───────────────────────────────────────────
+function addSong() {
+  const title = document.getElementById('af-title').value.trim();
+  const keyVal = document.getElementById('af-key').value;
+  const bpm = parseInt(document.getElementById('af-bpm').value);
+  const energy = parseInt(document.getElementById('af-energy').value);
 
+  if (!title || !keyVal || isNaN(bpm)) return;
+
+  const { key, minor } = parseKeyValue(keyVal);
+  songs.push({ _id: nextId++, title, key, minor, bpm: Math.max(40, Math.min(260, bpm)), energy });
+  renderAll();
+
+  // Re-open form and clear
+  const form = document.getElementById('add-form');
+  if (form) form.classList.add('open');
+}
+
+function removeSong(id) {
+  songs = songs.filter(s => s._id !== id);
+  renderAll();
+}
+
+function moveSong(id, dir) {
+  const i = songs.findIndex(s => s._id === id);
+  const j = i + dir;
+  if (j < 0 || j >= songs.length) return;
+  [songs[i], songs[j]] = [songs[j], songs[i]];
+  renderAll();
+}
+
+function resetDemo() {
+  nextId = 1;
+  initSongs(DEMO_SONGS);
+  firstRender = false;
+  renderAll();
+}
+
+function toggleAddForm() {
+  const form = document.getElementById('add-form');
+  if (form) form.classList.toggle('open');
+}
+
+// ── Detail panel ──────────────────────────────────────
 function showDetail(id) {
-  const s = songs.find(x => x.id === id);
+  const s = songs.find(x => x._id === id);
   if (!s) return;
   activeId = id;
+  const si = songs.indexOf(s);
 
   document.getElementById('dp-title').textContent = s.title;
   document.getElementById('dp-meta').innerHTML =
-    `<span>${keyLabel(s)}</span><span>${s.bpm} BPM</span><span>Energy ${s.energy}/10</span>`;
+    `<span>${kLabel(s)}</span><span>${s.bpm} BPM</span><span>Energy ${s.energy}/10</span>`;
 
-  const si = songs.indexOf(s);
   let ch = '';
   if (si > 0) {
     const prev = songs[si - 1];
-    const d = dist(idx(prev.key, prev.minor), idx(s.key, s.minor));
+    const d = kDist(kIdx(prev.key, prev.minor), kIdx(s.key, s.minor));
     const q = quality(d);
-    ch += `<div class="dp-conn">
-      <span class="dp-dir mono">From</span>
-      <span class="dp-conn-name">${prev.title} (${keyLabel(prev)})</span>
-      <span class="mono ${q.cls}" style="font-size:11px">${q.label}</span>
-    </div>`;
+    ch += `<div class="dp-conn"><span class="dp-dir mono">From</span><span class="dp-conn-name">${prev.title} (${kLabel(prev)})</span><span class="mono ${q.cls}" style="font-size:11px">${q.label}</span></div>`;
   }
   if (si < songs.length - 1) {
     const next = songs[si + 1];
-    const d = dist(idx(s.key, s.minor), idx(next.key, next.minor));
+    const d = kDist(kIdx(s.key, s.minor), kIdx(next.key, next.minor));
     const q = quality(d);
-    ch += `<div class="dp-conn">
-      <span class="dp-dir mono">To</span>
-      <span class="dp-conn-name">${next.title} (${keyLabel(next)})</span>
-      <span class="mono ${q.cls}" style="font-size:11px">${q.label}</span>
-    </div>`;
+    ch += `<div class="dp-conn"><span class="dp-dir mono">To</span><span class="dp-conn-name">${next.title} (${kLabel(next)})</span><span class="mono ${q.cls}" style="font-size:11px">${q.label}</span></div>`;
   }
   document.getElementById('dp-conns').innerHTML = ch;
   document.getElementById('detail-panel').classList.add('visible');
-
-  // Highlight in list
   document.querySelectorAll('.sl-row').forEach(r => r.classList.toggle('active', +r.dataset.sid === id));
 }
 
@@ -642,21 +776,20 @@ function highlightRow(id) {
 function highlightNode(id) {
   if (activeId) return;
   document.querySelectorAll('[data-id]').forEach(n => {
-    if (n.tagName === 'circle' && n.style.cursor === 'pointer') {
+    if (n.tagName === 'circle' && n.style.cursor === 'pointer')
       n.style.filter = (+n.dataset.id === id) ? 'brightness(1.25)' : '';
-    }
   });
 }
 
 document.getElementById('dp-close').addEventListener('click', closeDetail);
 document.addEventListener('click', (e) => {
-  if (activeId && !e.target.closest('.detail-panel') && !e.target.closest('[data-id]') && !e.target.closest('.sl-row')) {
+  if (activeId && !e.target.closest('.detail-panel') && !e.target.closest('[data-id]') && !e.target.closest('.sl-row'))
     closeDetail();
-  }
 });
 
 // ── Init ──────────────────────────────────────────────
-render();
+initSongs(DEMO_SONGS);
+renderAll();
 </script>
 </body>
 </html>
