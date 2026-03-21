@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Refill Orbit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f2ede4;
+      --panel: rgba(255,255,255,.56);
+      --panel-2: rgba(255,255,255,.74);
+      --text: #171514;
+      --muted: rgba(23,21,20,.58);
+      --line: rgba(23,21,20,.12);
+      --line-strong: rgba(23,21,20,.22);
+      --sand: #9b8d69;
+      --sage: #73877b;
+      --rust: #a36556;
+      --slate: #697791;
+      --danger: #b45f58;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+    body { font-family: 'Geist', system-ui, sans-serif; }
+    .mono, .meta, .tiny, button, .badge, .legend, .day-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      gap: 14px;
+      padding: 22px;
+      grid-template-rows: auto auto 1fr;
+    }
+    .hero, .toolbar, .stage {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,.24));
+      backdrop-filter: blur(14px);
+    }
+    .hero, .toolbar { padding: 18px; }
+    .hero {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: minmax(280px, 460px) 1fr;
+      align-items: end;
+    }
+    .meta, .tiny, .legend { color: var(--muted); }
+    h1 {
+      margin: 0;
+      font-size: clamp(40px, 7vw, 84px);
+      line-height: .88;
+      letter-spacing: -.09em;
+      font-weight: 500;
+      max-width: 8ch;
+    }
+    .intro {
+      max-width: 56ch;
+      color: rgba(23,21,20,.72);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .chips, .legend {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    button {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: background .16s ease, color .16s ease, border-color .16s ease;
+    }
+    button:hover,
+    button.active {
+      color: var(--text);
+      background: rgba(255,255,255,.65);
+      border-color: var(--line-strong);
+    }
+    .stage {
+      display: grid;
+      grid-template-columns: 280px minmax(420px, 1fr) 320px;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .rail,
+    .dial-panel,
+    .detail {
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      min-height: 0;
+    }
+    .dial-panel {
+      border-left: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.08));
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+    }
+    .box {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      background: var(--panel-2);
+      display: grid;
+      gap: 10px;
+      line-height: 1.58;
+      color: rgba(23,21,20,.74);
+      font-size: 14px;
+    }
+    .box strong { color: var(--text); font-weight: 500; }
+    .focus-title,
+    .blocker-title {
+      font-size: 23px;
+      line-height: 1.05;
+      letter-spacing: -.05em;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .copy {
+      color: rgba(23,21,20,.72);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .dial-wrap {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,.85), rgba(255,255,255,.4) 48%, rgba(255,255,255,.14) 70%, rgba(255,255,255,.06));
+      padding: 14px;
+      display: grid;
+      place-items: center;
+      min-height: 0;
+    }
+    #dial {
+      width: min(100%, 640px);
+      aspect-ratio: 1;
+      display: block;
+    }
+    .metric-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255,255,255,.52);
+      display: grid;
+      gap: 6px;
+    }
+    .metric-value {
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: -.05em;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .list {
+      display: grid;
+      gap: 8px;
+    }
+    .row {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255,255,255,.5);
+      display: grid;
+      gap: 8px;
+      cursor: pointer;
+      transition: border-color .16s ease, background .16s ease, transform .16s ease;
+    }
+    .row:hover,
+    .row.active {
+      background: rgba(255,255,255,.78);
+      border-color: var(--line-strong);
+      transform: translateY(-1px);
+    }
+    .row-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+    .row-title {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--tone, var(--text));
+      flex: 0 0 auto;
+    }
+    .row-meta {
+      color: rgba(23,21,20,.72);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 7px;
+      color: var(--muted);
+      background: rgba(255,255,255,.42);
+    }
+    .badge.warn {
+      border-color: rgba(180,95,88,.3);
+      color: var(--danger);
+      background: rgba(180,95,88,.06);
+    }
+    .badge.ok {
+      border-color: rgba(115,135,123,.28);
+      color: #62786d;
+      background: rgba(115,135,123,.08);
+    }
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+    svg text {
+      font-family: 'JetBrains Mono', monospace;
+      fill: rgba(23,21,20,.58);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 11px;
+    }
+    .center-copy {
+      font-family: 'Geist', system-ui, sans-serif;
+      fill: var(--text);
+      font-size: 34px;
+      letter-spacing: -.05em;
+      text-transform: none;
+      font-weight: 500;
+    }
+    .center-sub {
+      font-family: 'Geist', system-ui, sans-serif;
+      fill: rgba(23,21,20,.72);
+      font-size: 14px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .center-tiny {
+      fill: rgba(23,21,20,.52);
+    }
+    .legend-line {
+      width: 28px;
+      height: 10px;
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+    }
+    .legend-line::before,
+    .legend-line::after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      border-top: 2px solid var(--line-strong);
+    }
+    .legend-line.dashed::after {
+      border-top-style: dashed;
+      border-top-color: var(--text);
+    }
+    .legend-line.travel::after {
+      border-top-width: 5px;
+      border-top-color: rgba(163,101,86,.32);
+      border-top-style: solid;
+    }
+    @media (max-width: 1080px) {
+      .stage { grid-template-columns: 1fr; }
+      .dial-panel {
+        border-left: 0;
+        border-right: 0;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+      .hero { grid-template-columns: 1fr; }
+      .metric-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div>
+        <div class="meta">Night Lab 014</div>
+        <h1>Refill Orbit</h1>
+      </div>
+      <div class="intro">
+        A visual instrument for the month when one prescription quietly dictates everything else. Instead of treating refills as isolated reminders, it shows overlapping depletion windows, travel absences, and the one line that actually constrains the plan.
+      </div>
+    </section>
+
+    <section class="toolbar">
+      <div class="meta">alignment beats reminders</div>
+      <div class="chips" id="scenarioChips"></div>
+    </section>
+
+    <section class="stage">
+      <aside class="rail">
+        <div class="box">
+          <div class="meta">blocker read</div>
+          <div class="blocker-title" id="blockerTitle"></div>
+          <div class="copy" id="blockerCopy"></div>
+        </div>
+        <div class="box">
+          <div class="meta">current workaround</div>
+          <div class="copy" id="workaroundCopy"></div>
+        </div>
+        <div class="box">
+          <div class="meta">what this artifact changes</div>
+          <div class="copy">
+            It makes the month legible as one constrained system. The problem is usually not forgetting a refill exists. The problem is seeing which line actually dictates the trip, the pickup, or the doctor call.
+          </div>
+        </div>
+      </aside>
+
+      <section class="dial-panel">
+        <div class="panel-head">
+          <div class="meta">month instrument</div>
+          <div class="tiny" id="travelLabel"></div>
+        </div>
+        <div class="dial-wrap">
+          <svg id="dial" viewBox="0 0 620 620" aria-label="Refill alignment instrument"></svg>
+        </div>
+        <div class="legend">
+          <span><span class="legend-line"></span> days left on hand</span>
+          <span><span class="legend-line dashed"></span> refill window</span>
+          <span><span class="legend-line travel"></span> away / unavailable</span>
+        </div>
+      </section>
+
+      <aside class="detail">
+        <div class="box">
+          <div class="meta">selected line</div>
+          <div class="focus-title" id="focusName"></div>
+          <div class="copy" id="focusCopy"></div>
+        </div>
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="meta">eligible</div>
+            <div class="metric-value" id="eligibleMetric"></div>
+          </div>
+          <div class="metric">
+            <div class="meta">runout</div>
+            <div class="metric-value" id="runoutMetric"></div>
+          </div>
+          <div class="metric">
+            <div class="meta">window</div>
+            <div class="metric-value" id="windowMetric"></div>
+          </div>
+        </div>
+        <div class="list" id="medList"></div>
+        <div class="box">
+          <div class="meta">why ordinary reminder apps miss this</div>
+          <div class="copy">
+            A reminder can tell you that refill day exists. It usually cannot show that one constrained medication is now the true blocker for an entire trip, pickup plan, or doctor office chase.
+          </div>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <script>
+    const DAYS = 31;
+    const svg = document.getElementById('dial');
+    const scenarioChips = document.getElementById('scenarioChips');
+    const medList = document.getElementById('medList');
+
+    const scenarios = [
+      {
+        id: 'quiet',
+        label: 'quiet month',
+        today: 6,
+        travel: null,
+        blockerId: 'stimulant',
+        blockerTitle: 'One line still dictates the month',
+        blockerCopy: 'Nothing dramatic is happening, but the stimulant refill is still the first non-negotiable pickup. Everything else only feels flexible because this line has not failed yet.',
+        workaround: 'People keep a spreadsheet, stack calendar alerts, or ask the pharmacy to “sync things up” over multiple months by refilling slightly early again and again.',
+        meds: [
+          { id: 'stimulant', name: 'Stimulant', type: 'restricted refill', tone: '#a36556', eligible: 13, runout: 16, pickup: null, note: 'Small window. The month turns the moment this line finally opens.' },
+          { id: 'thyroid', name: 'Thyroid', type: '90-day fill', tone: '#9b8d69', eligible: 9, runout: 28, pickup: 10, note: 'Stable and boring in the best way. Long runway after pickup.' },
+          { id: 'bp', name: 'Blood pressure', type: '30-day fill', tone: '#73877b', eligible: 12, runout: 24, pickup: 13, note: 'Easy to grab once the window opens. Not the blocker tonight.' },
+          { id: 'migraine', name: 'Migraine preventive', type: 'maintenance refill', tone: '#697791', eligible: 7, runout: 17, pickup: 8, note: 'Close enough to feel stressful, but still recoverable inside the month.' }
+        ]
+      },
+      {
+        id: 'trip',
+        label: '10-day trip',
+        today: 8,
+        travel: { start: 17, end: 26, label: 'away days 17–26' },
+        blockerId: 'stimulant',
+        blockerTitle: 'Travel is not the blocker. This refill rule is.',
+        blockerCopy: 'The trip only becomes dangerous because the stimulant refill opens after departure and runs out before return. The real constraint is not the calendar. It is the refill window.',
+        workaround: 'People start calling multiple pharmacies, ask for a vacation override, split older doses, or try to squeeze the doctor and the insurer into the same day.',
+        meds: [
+          { id: 'stimulant', name: 'Stimulant', type: 'restricted refill', tone: '#a36556', eligible: 18, runout: 20, pickup: null, note: 'This line never opens before departure, so the trip inherits the risk.' },
+          { id: 'thyroid', name: 'Thyroid', type: '90-day fill', tone: '#9b8d69', eligible: 12, runout: 30, pickup: 12, note: 'Handled early. Long enough runway to disappear from attention.' },
+          { id: 'bp', name: 'Blood pressure', type: '30-day fill', tone: '#73877b', eligible: 15, runout: 27, pickup: 16, note: 'Tight, but still solvable before leaving town.' },
+          { id: 'migraine', name: 'Migraine preventive', type: 'maintenance refill', tone: '#697791', eligible: 10, runout: 18, pickup: 11, note: 'Gets solved in time, which is why the real blocker becomes clearer.' }
+        ]
+      },
+      {
+        id: 'renewal',
+        label: 'doctor renewal lag',
+        today: 9,
+        travel: null,
+        blockerId: 'migraine',
+        blockerTitle: 'A short office delay can flip the whole month',
+        blockerCopy: 'The medication is technically eligible, but the refill still cannot land until the doctor’s renewal clears. What looks like “pharmacy timing” is really an authorization bottleneck.',
+        workaround: 'People leave repeated voicemails, call the nurse line, ask for an emergency bridge fill, or start rationing doses while waiting for the renewal to move.',
+        meds: [
+          { id: 'stimulant', name: 'Stimulant', type: 'restricted refill', tone: '#a36556', eligible: 16, runout: 21, pickup: 17, note: 'Not ideal, but the line still behaves once the window opens.' },
+          { id: 'thyroid', name: 'Thyroid', type: '90-day fill', tone: '#9b8d69', eligible: 14, runout: 29, pickup: 14, note: 'Quiet and well-behaved. Good example of a line not demanding attention.' },
+          { id: 'bp', name: 'Blood pressure', type: '30-day fill', tone: '#73877b', eligible: 13, runout: 24, pickup: 14, note: 'Easy to solve early enough that it does not become the story.' },
+          { id: 'migraine', name: 'Migraine preventive', type: 'renewal still pending', tone: '#697791', eligible: 12, runout: 15, pickup: null, note: 'The true problem is renewal latency, not refill memory.' }
+        ]
+      },
+      {
+        id: 'sync',
+        label: 'forced sync attempt',
+        today: 7,
+        travel: { start: 24, end: 28, label: 'away days 24–28' },
+        blockerId: 'bp',
+        blockerTitle: 'The “same day next month” dream breaks on one stubborn line',
+        blockerCopy: 'Three lines can be nudged into place, but the blood-pressure refill still opens too late. The sync plan collapses because one insurer-controlled cycle refuses to move with the rest.',
+        workaround: 'People pay cash for a short fill, do a partial pickup, or keep making extra pharmacy trips just to pull one line closer to the others over time.',
+        meds: [
+          { id: 'stimulant', name: 'Stimulant', type: 'restricted refill', tone: '#a36556', eligible: 16, runout: 19, pickup: 16, note: 'Solved first because it is rigid and cannot be improvised later.' },
+          { id: 'thyroid', name: 'Thyroid', type: '90-day fill', tone: '#9b8d69', eligible: 10, runout: 27, pickup: 10, note: 'Already aligned. Barely participates in the stress anymore.' },
+          { id: 'bp', name: 'Blood pressure', type: 'too-early lock', tone: '#73877b', eligible: 21, runout: 23, pickup: null, note: 'This line is the stubborn straggler. It breaks the sync attempt.' },
+          { id: 'migraine', name: 'Migraine preventive', type: 'maintenance refill', tone: '#697791', eligible: 8, runout: 19, pickup: 9, note: 'Pulled forward with a partial fill so the next month might align.' }
+        ]
+      }
+    ];
+
+    const state = {
+      scenarioId: 'trip',
+      focusId: 'stimulant'
+    };
+
+    function getScenario() {
+      return scenarios.find(s => s.id === state.scenarioId);
+    }
+
+    function getFocus() {
+      const scenario = getScenario();
+      return scenario.meds.find(m => m.id === state.focusId) || scenario.meds[0];
+    }
+
+    function dayToAngle(day) {
+      return -90 + ((day - 1) / DAYS) * 360;
+    }
+
+    function polar(cx, cy, r, angle) {
+      const rad = angle * Math.PI / 180;
+      return {
+        x: cx + r * Math.cos(rad),
+        y: cy + r * Math.sin(rad)
+      };
+    }
+
+    function arcPath(cx, cy, r, startDay, endDay) {
+      let start = dayToAngle(startDay);
+      let end = dayToAngle(endDay);
+      while (end <= start) end += 360;
+      const startPoint = polar(cx, cy, r, start);
+      const endPoint = polar(cx, cy, r, end);
+      const largeArc = end - start > 180 ? 1 : 0;
+      return `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)} A ${r} ${r} 0 ${largeArc} 1 ${endPoint.x.toFixed(2)} ${endPoint.y.toFixed(2)}`;
+    }
+
+    function createSVG(tag, attrs = {}) {
+      const node = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, value));
+      return node;
+    }
+
+    function overlap(aStart, aEnd, bStart, bEnd) {
+      return aStart <= bEnd && bStart <= aEnd;
+    }
+
+    function hasTravelConflict(med, scenario) {
+      if (!scenario.travel) return false;
+      const { start, end } = scenario.travel;
+      if (med.pickup && med.pickup < start && med.runout > med.pickup) return false;
+      if (med.runout >= start && med.runout <= end) return true;
+      if (med.eligible >= start && med.eligible <= end && !med.pickup) return true;
+      if (med.eligible > start && !med.pickup) return true;
+      return false;
+    }
+
+    function statusBadges(med, scenario) {
+      const badges = [
+        { text: `eligible d${med.eligible}` },
+        { text: `runout d${med.runout}` }
+      ];
+      const windowDays = Math.max(0, med.runout - med.eligible);
+      badges.push({ text: `${windowDays}d window`, className: windowDays <= 3 ? 'warn' : 'ok' });
+      if (med.pickup) {
+        badges.push({ text: `pickup d${med.pickup}`, className: 'ok' });
+      } else if (med.eligible <= scenario.today) {
+        badges.push({ text: 'needs pickup', className: 'warn' });
+      } else {
+        badges.push({ text: 'still locked' });
+      }
+      if (hasTravelConflict(med, scenario)) {
+        badges.push({ text: 'travel conflict', className: 'warn' });
+      }
+      if (med.id === scenario.blockerId) {
+        badges.push({ text: 'current blocker', className: 'warn' });
+      }
+      return badges;
+    }
+
+    function renderScenarioChips() {
+      scenarioChips.innerHTML = '';
+      scenarios.forEach((scenario) => {
+        const button = document.createElement('button');
+        button.textContent = scenario.label;
+        if (scenario.id === state.scenarioId) button.classList.add('active');
+        button.addEventListener('click', () => {
+          state.scenarioId = scenario.id;
+          state.focusId = scenario.blockerId;
+          render();
+        });
+        scenarioChips.appendChild(button);
+      });
+    }
+
+    function renderList() {
+      const scenario = getScenario();
+      medList.innerHTML = '';
+      scenario.meds.forEach((med) => {
+        const row = document.createElement('div');
+        row.className = `row${med.id === state.focusId ? ' active' : ''}`;
+        row.style.setProperty('--tone', med.tone);
+
+        const head = document.createElement('div');
+        head.className = 'row-head';
+        head.innerHTML = `
+          <div class="row-title"><span class="dot"></span>${med.name}</div>
+          <div class="tiny">${med.type}</div>
+        `;
+
+        const meta = document.createElement('div');
+        meta.className = 'row-meta';
+        meta.textContent = med.note;
+
+        const badges = document.createElement('div');
+        badges.className = 'badges';
+        statusBadges(med, scenario).forEach((badge) => {
+          const el = document.createElement('div');
+          el.className = `badge${badge.className ? ' ' + badge.className : ''}`;
+          el.textContent = badge.text;
+          badges.appendChild(el);
+        });
+
+        row.append(head, meta, badges);
+        row.addEventListener('click', () => {
+          state.focusId = med.id;
+          render();
+        });
+        medList.appendChild(row);
+      });
+    }
+
+    function renderReadouts() {
+      const scenario = getScenario();
+      const focus = getFocus();
+      const blocker = scenario.meds.find(m => m.id === scenario.blockerId);
+      const windowDays = Math.max(0, focus.runout - focus.eligible);
+      const travelLabel = scenario.travel ? scenario.travel.label : 'no away window';
+
+      document.getElementById('blockerTitle').textContent = scenario.blockerTitle;
+      document.getElementById('blockerCopy').textContent = scenario.blockerCopy;
+      document.getElementById('workaroundCopy').textContent = scenario.workaround;
+      document.getElementById('travelLabel').textContent = travelLabel;
+      document.getElementById('focusName').textContent = focus.name;
+      document.getElementById('focusCopy').textContent = focus.note;
+      document.getElementById('eligibleMetric').textContent = `day ${focus.eligible}`;
+      document.getElementById('runoutMetric').textContent = `day ${focus.runout}`;
+      document.getElementById('windowMetric').textContent = `${windowDays}d`;
+
+      if (!scenario.meds.some(m => m.id === state.focusId)) {
+        state.focusId = blocker.id;
+      }
+    }
+
+    function renderDial() {
+      const scenario = getScenario();
+      const focus = getFocus();
+      svg.innerHTML = '';
+      const cx = 310;
+      const cy = 310;
+      const tickOuter = 286;
+      const tickInner = 275;
+
+      const background = createSVG('circle', {
+        cx, cy, r: 248,
+        fill: 'none',
+        stroke: 'rgba(23,21,20,.06)',
+        'stroke-width': 42
+      });
+      svg.appendChild(background);
+
+      for (let day = 1; day <= DAYS; day += 1) {
+        const angle = dayToAngle(day);
+        const outer = polar(cx, cy, tickOuter, angle);
+        const inner = polar(cx, cy, day % 5 === 0 || day === 1 ? tickInner - 8 : tickInner, angle);
+        const tick = createSVG('line', {
+          x1: inner.x, y1: inner.y, x2: outer.x, y2: outer.y,
+          stroke: 'rgba(23,21,20,.18)',
+          'stroke-width': day % 5 === 0 || day === 1 ? 1.5 : 1,
+          'stroke-linecap': 'round'
+        });
+        svg.appendChild(tick);
+
+        if (day === 1 || day % 5 === 0 || day === 31) {
+          const labelPos = polar(cx, cy, 300, angle);
+          const label = createSVG('text', {
+            x: labelPos.x,
+            y: labelPos.y,
+            'text-anchor': 'middle',
+            'dominant-baseline': 'middle'
+          });
+          label.textContent = day;
+          svg.appendChild(label);
+        }
+      }
+
+      if (scenario.travel) {
+        const travelArc = createSVG('path', {
+          d: arcPath(cx, cy, 255, scenario.travel.start, scenario.travel.end),
+          fill: 'none',
+          stroke: 'rgba(163,101,86,.28)',
+          'stroke-width': 18,
+          'stroke-linecap': 'round'
+        });
+        svg.appendChild(travelArc);
+      }
+
+      const todayAngle = dayToAngle(scenario.today);
+      const todayInner = polar(cx, cy, 92, todayAngle);
+      const todayOuter = polar(cx, cy, 286, todayAngle);
+      svg.appendChild(createSVG('line', {
+        x1: todayInner.x,
+        y1: todayInner.y,
+        x2: todayOuter.x,
+        y2: todayOuter.y,
+        stroke: 'rgba(23,21,20,.22)',
+        'stroke-width': 1.5,
+        'stroke-linecap': 'round'
+      }));
+      const todayTag = polar(cx, cy, 314, todayAngle);
+      const todayText = createSVG('text', {
+        x: todayTag.x,
+        y: todayTag.y,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'middle'
+      });
+      todayText.textContent = `today ${scenario.today}`;
+      svg.appendChild(todayText);
+
+      const radii = [220, 188, 156, 124];
+      scenario.meds.forEach((med, index) => {
+        const radius = radii[index];
+        const isFocus = med.id === focus.id;
+        const windowStart = Math.max(scenario.today, med.eligible);
+        const group = createSVG('g', {
+          'data-med': med.id,
+          style: 'cursor:pointer;'
+        });
+
+        group.appendChild(createSVG('circle', {
+          cx, cy, r: radius,
+          fill: 'none',
+          stroke: 'rgba(23,21,20,.08)',
+          'stroke-width': isFocus ? 22 : 18
+        }));
+
+        group.appendChild(createSVG('path', {
+          d: arcPath(cx, cy, radius, scenario.today, med.runout),
+          fill: 'none',
+          stroke: med.tone,
+          'stroke-opacity': isFocus ? '.75' : '.42',
+          'stroke-width': isFocus ? 22 : 18,
+          'stroke-linecap': 'round'
+        }));
+
+        if (windowStart < med.runout) {
+          group.appendChild(createSVG('path', {
+            d: arcPath(cx, cy, radius, windowStart, med.runout),
+            fill: 'none',
+            stroke: med.tone,
+            'stroke-width': isFocus ? 10 : 8,
+            'stroke-linecap': 'round',
+            'stroke-dasharray': isFocus ? '3 9' : '2 8'
+          }));
+        }
+
+        const eligiblePos = polar(cx, cy, radius, dayToAngle(med.eligible));
+        group.appendChild(createSVG('circle', {
+          cx: eligiblePos.x,
+          cy: eligiblePos.y,
+          r: isFocus ? 5.5 : 4.5,
+          fill: '#ffffff',
+          stroke: med.tone,
+          'stroke-width': 2
+        }));
+
+        const runoutPos = polar(cx, cy, radius, dayToAngle(med.runout));
+        group.appendChild(createSVG('circle', {
+          cx: runoutPos.x,
+          cy: runoutPos.y,
+          r: isFocus ? 6 : 5,
+          fill: '#ffffff',
+          stroke: hasTravelConflict(med, scenario) || med.id === scenario.blockerId ? 'rgba(180,95,88,.92)' : 'rgba(23,21,20,.36)',
+          'stroke-width': 2.5
+        }));
+
+        if (med.pickup) {
+          const pickupPos = polar(cx, cy, radius, dayToAngle(med.pickup));
+          group.appendChild(createSVG('circle', {
+            cx: pickupPos.x,
+            cy: pickupPos.y,
+            r: isFocus ? 6 : 5,
+            fill: med.tone,
+            stroke: '#ffffff',
+            'stroke-width': 2.5
+          }));
+        }
+
+        if (isFocus) {
+          group.appendChild(createSVG('circle', {
+            cx, cy, r: radius,
+            fill: 'none',
+            stroke: 'rgba(23,21,20,.12)',
+            'stroke-width': 28
+          }));
+        }
+
+        group.addEventListener('click', () => {
+          state.focusId = med.id;
+          render();
+        });
+
+        svg.appendChild(group);
+      });
+
+      svg.appendChild(createSVG('circle', {
+        cx, cy, r: 92,
+        fill: 'rgba(255,255,255,.92)',
+        stroke: 'rgba(23,21,20,.08)',
+        'stroke-width': 1.5
+      }));
+
+      const blocker = scenario.meds.find(m => m.id === scenario.blockerId);
+      const centerMeta = createSVG('text', {
+        x: cx,
+        y: cy - 42,
+        'text-anchor': 'middle',
+        class: 'center-tiny'
+      });
+      centerMeta.textContent = focus.id === blocker.id ? 'current blocker' : 'selected line';
+      svg.appendChild(centerMeta);
+
+      const centerName = createSVG('text', {
+        x: cx,
+        y: cy - 4,
+        'text-anchor': 'middle',
+        class: 'center-copy'
+      });
+      centerName.textContent = focus.name;
+      svg.appendChild(centerName);
+
+      const centerLineA = createSVG('text', {
+        x: cx,
+        y: cy + 26,
+        'text-anchor': 'middle',
+        class: 'center-sub'
+      });
+      centerLineA.textContent = `eligible day ${focus.eligible} · runout day ${focus.runout}`;
+      svg.appendChild(centerLineA);
+
+      const windowDays = Math.max(0, focus.runout - focus.eligible);
+      const focusConflict = hasTravelConflict(focus, scenario);
+      const centerLineB = createSVG('text', {
+        x: cx,
+        y: cy + 50,
+        'text-anchor': 'middle',
+        class: 'center-sub'
+      });
+      centerLineB.textContent = focusConflict ? `travel conflict · ${windowDays} day window` : `${windowDays} day pickup window`;
+      svg.appendChild(centerLineB);
+    }
+
+    function render() {
+      renderScenarioChips();
+      renderReadouts();
+      renderList();
+      renderDial();
+    }
+
+    render();
+  </script>
+</body>
+</html>

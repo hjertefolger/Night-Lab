@@ -346,6 +346,31 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add host rules, path transforms, and explicit downgrade states so the instrument can distinguish safe repair, ambiguous remap, and human review more rigorously.",
       "promotionRead": "Maybe. Tighter and more native than many recent builds, but it still needs a stronger real repair grammar to move beyond a clean first concept."
     }
+  },
+  {
+    "id": "014",
+    "number": 14,
+    "title": "Refill Orbit",
+    "date": "2026-03-21",
+    "tagline": "A visual instrument for overlapping refill windows.",
+    "summary": "Refill Orbit is a visual month instrument for people managing several ongoing prescriptions whose refill dates, travel plans, and authorization rules do not line up cleanly. It reframes the problem from isolated reminders into one overlapping constraint system, making the real blocker legible before the month collapses into calls, partial fills, or rationing.",
+    "principles": [
+      "Make invisible constraints legible",
+      "Prefer problem-native instruments over administrative apps",
+      "Show the true blocker instead of the full list"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "People with multiple recurring prescriptions often compensate with spreadsheets, pill organizers, calendar reminders, and repeated pharmacy calls, but the real problem is usually structural: one refill window quietly dictates the whole month. This build makes that hidden constraint visible.",
+      "whatChanged": [
+        "Built the concept as a circular alignment instrument instead of another medication tracker, reminder list, or planner surface.",
+        "Made travel absence, refill eligibility, and runout pressure visible in the same artifact so the real blocker can surface immediately.",
+        "Added a light v1.1 pass with direct line selection inside the orbit so the instrument stays primary instead of the side list becoming the real interaction."
+      ],
+      "artDirection": "Default Night Lab editorial direction with a warm light treatment. The lighter paper-toned surface fits the healthcare-adjacent subject while staying restrained, precise, and non-clinical.",
+      "nextMove": "Add a live travel-drag and pull-forward mode so the instrument can test whether a vacation override, partial fill, or renewal nudge would actually resolve the month or only shift the pressure elsewhere.",
+      "promotionRead": "Maybe. The artifact form feels more distinct than many recent builds and the problem is real, but it still needs evidence that the instrument becomes genuinely useful instead of mainly explanatory."
+    }
   }
 ];
 
