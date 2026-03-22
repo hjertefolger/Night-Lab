@@ -397,6 +397,30 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add drag-to-reorder interaction so musicians can experiment with song order and watch the harmonic path redraw in real time.",
       "promotionRead": "Maybe. The form is genuinely native to the problem and the artifact makes something invisible newly visible, but it needs the interactive reorder to become operationally useful rather than only diagnostic."
     }
+  },
+  {
+    "id": "016",
+    "number": 16,
+    "title": "Stage Ghost",
+    "date": "2026-03-22",
+    "tagline": "Scrub through a scene and see where everyone stands.",
+    "summary": "Stage Ghost turns blocking notes into a spatial sequence you can scrub. Actor positions move through a stage diagram as you drag the timeline, with ghost trails tracing each path through the scene. Text annotations become spatial reading.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Stage blocking is spatial information trapped in text. Directors write 'X DSR on line 42' in margins, but the actual spatial relationships between actors at any moment are invisible. The only way to review blocking is to mentally simulate every position from abbreviations. Stage Ghost makes the spatial story of a scene directly readable.",
+      "whatChanged": [
+        "v1.1: Added play/auto-scrub for watching the scene flow continuously.",
+        "v1.1: Added presence dot strip on timeline showing which actors are onstage at each cue.",
+        "v1.1: Added spacebar support for play/pause."
+      ],
+      "artDirection": "Default Night Lab dark editorial direction. Near-black stage with extremely subtle grid and zone labels. Actors and ghost trails are the only elements that demand attention. Monochrome grayscale palette differentiates actors without color.",
+      "nextMove": "Add drag-to-reposition actors on the stage diagram so directors can sketch blocking visually, not just review it.",
+      "promotionRead": "Maybe. The form is genuinely native to the problem, and the ghost trail mechanic is a real discovery. Needs interactive editing to graduate from reading instrument to creative tool."
+    }
   }
 ];
 
