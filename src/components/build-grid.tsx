@@ -31,8 +31,8 @@ function ProviderIcon({ number, isLatest }: { number: number; isLatest: boolean 
   const Icon = isOpenAI ? OpenAIIcon : ClaudeIcon;
   return (
     <Icon
-      className={`absolute bottom-1 right-1 w-[10px] h-[10px] ${
-        isLatest ? "opacity-40" : "opacity-20"
+      className={`absolute bottom-1 right-1 w-[14px] h-[14px] ${
+        isLatest ? "opacity-50" : "opacity-30"
       }`}
     />
   );
