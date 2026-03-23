@@ -127,7 +127,13 @@ def copy_public_files(source: Path, target: Path) -> None:
     if target.exists():
         shutil.rmtree(target)
     target.mkdir(parents=True, exist_ok=True)
-    for path in source.iterdir():
+
+    # If the source has a dist/ with index.html, use dist/ as the actual source.
+    # This handles vite projects without needing manual "copy dist to root" steps.
+    dist_dir = source / "dist"
+    copy_root = dist_dir if (dist_dir.is_dir() and (dist_dir / "index.html").exists()) else source
+
+    for path in copy_root.iterdir():
         if path.name in {"PUBLISH_READY.json", "PUBLISHED.json", "BROADCAST_SENT.json", "README.md", "notes.md"}:
             continue
         dest = target / path.name
