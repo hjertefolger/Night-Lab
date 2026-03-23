@@ -421,6 +421,28 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add drag-to-reposition actors on the stage diagram so directors can sketch blocking visually, not just review it.",
       "promotionRead": "Maybe. The form is genuinely native to the problem, and the ghost trail mechanic is a real discovery. Needs interactive editing to graduate from reading instrument to creative tool."
     }
+  },
+  {
+    "id": "017",
+    "number": 17,
+    "title": "Mix Space",
+    "date": "2026-03-23",
+    "tagline": "A spatial color-gamut instrument for painters working with limited palettes.",
+    "summary": "Three pigments form the vertices of a triangle. Every point inside is a mixture. The invisible territory of your palette becomes visible \u2014 hover to read recipes, pin to compare, set a target to find the nearest achievable mix.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Painters navigating a limited palette mix by trial and error because the achievable color territory is invisible. The triangle is the actual mathematical structure of three-component mixing \u2014 barycentric coordinates ARE mixing proportions. This instrument makes the gamut visible so you can see what your palette can reach before you waste paint.",
+      "whatChanged": [
+        "No iteration pass. The first version stayed true to the core move."
+      ],
+      "artDirection": "Deliberately light theme \u2014 colors need neutral backgrounds for accuracy. The rest stays restrained: monospace labels, thin borders, generous negative space. The triangle carries the visual weight.",
+      "nextMove": "Add custom pigments via hex input or preset pigment database so painters can see their own palette's gamut, not just the three presets.",
+      "promotionRead": "Maybe. Strong form-to-problem fit \u2014 the triangle is the native mathematical structure. Makes something real newly visible. But stays educational rather than transforming studio workflow."
+    }
   }
 ];
 
