@@ -443,6 +443,28 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add custom pigments via hex input or preset pigment database so painters can see their own palette's gamut, not just the three presets.",
       "promotionRead": "Maybe. Strong form-to-problem fit \u2014 the triangle is the native mathematical structure. Makes something real newly visible. But stays educational rather than transforming studio workflow."
     }
+  },
+  {
+    "id": "018",
+    "number": 18,
+    "title": "Sling Force",
+    "date": "2026-03-24",
+    "tagline": "A force-geometry instrument that makes invisible sling angle tension visible.",
+    "summary": "When riggers spread a two-leg sling wider, the tension in each leg grows non-linearly. At 120\u00b0 each leg carries the full load. At 145\u00b0 nearly 4\u00d7. This instrument draws the force vectors as live geometry so you can feel the spike, not just read a chart.",
+    "principles": [
+      "Make invisible processes legible",
+      "Convert deep technical structure into usable product leverage"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "30% of rigging accidents involve incorrect sling usage. The non-linear relationship between sling angle and tension is invisible \u2014 lookup tables give numbers but not intuition. The force vector triangle IS the physics, so the right form for understanding it is geometric and interactive.",
+      "whatChanged": [
+        "No iterations. The first version hit the core move cleanly."
+      ],
+      "artDirection": "Dark editorial. Monochrome-first with structural color: gray (safe), amber (caution), red (danger). Geist + JetBrains Mono. Generous negative space reinforces the geometry \u2014 empty space below the rising load IS the danger signal.",
+      "nextMove": "Add a sling rating overlay so users can input rated capacity and see the exact angle threshold where their specific sling exceeds its limit.",
+      "promotionRead": "Maybe. The form-to-problem fit is mathematically native \u2014 the force vector triangle is the actual physics, not a visualization metaphor. But the audience is narrow and the instrument is diagnostic-only."
+    }
   }
 ];
 
