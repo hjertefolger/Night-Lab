@@ -465,6 +465,28 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add a sling rating overlay so users can input rated capacity and see the exact angle threshold where their specific sling exceeds its limit.",
       "promotionRead": "Maybe. The form-to-problem fit is mathematically native \u2014 the force vector triangle is the actual physics, not a visualization metaphor. But the audience is narrow and the instrument is diagnostic-only."
     }
+  },
+  {
+    "id": "019",
+    "number": 19,
+    "title": "Recurrence",
+    "date": "2026-03-25",
+    "tagline": "A temporal grid that turns scattered incidents into visible patterns.",
+    "summary": "People can't prove recurring disturbances because each incident looks isolated. This instrument maps incidents to a week-by-hour grid where cells glow with frequency \u2014 the rhythm becomes undeniable evidence, not just a feeling.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Recurring disturbances (noise, outages, pain episodes) are invisible as patterns because they're experienced one at a time. A log lists events linearly; this grid shows the rhythm at a glance. The accumulation of incidents in the same cells IS the proof.",
+      "whatChanged": [
+        "Fixed midnight wraparound in peak window display."
+      ],
+      "artDirection": "Dark editorial with warm amber accent for incident intensity. Cells glow brighter with frequency, creating emotional weight. Geist for readouts, JetBrains Mono for labels.",
+      "nextMove": "Add week-over-week tracking so patterns emerge over time, not just in aggregate. Export as PDF evidence report.",
+      "promotionRead": "Not yet. The core move is clean but needs temporal depth (week-by-week view) to graduate from snapshot to evidence timeline."
+    }
   }
 ];
 
