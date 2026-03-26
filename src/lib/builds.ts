@@ -487,6 +487,28 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add week-over-week tracking so patterns emerge over time, not just in aggregate. Export as PDF evidence report.",
       "promotionRead": "Not yet. The core move is clean but needs temporal depth (week-by-week view) to graduate from snapshot to evidence timeline."
     }
+  },
+  {
+    "id": "020",
+    "number": 20,
+    "title": "Say It Clear",
+    "date": "2026-03-26",
+    "tagline": "A constrained editor that turns difficult feedback into clear, structured messages.",
+    "summary": "People can't structure hard conversations. The SBI framework (Situation \u2192 Behavior \u2192 Impact \u2192 Request) works but is invisible in the moment. This editor walks you through four prompts, one at a time, and composes a clear message from your answers.",
+    "principles": [
+      "Compress complexity while preserving essence",
+      "Extend human cognition without obscuring agency"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Difficult feedback gets ruined by structure, not intent. People know what they want to say \u2014 they just can't organize it in the moment. The SBI sequence is well-established but invisible. This editor makes the structure visible by constraining the input order.",
+      "whatChanged": [
+        "No iterations. Deliberately minimal \u2014 the constraint is the feature."
+      ],
+      "artDirection": "Light editorial minimalism. White background, no decoration. The emptiness creates a calm space for uncomfortable thinking. JetBrains Mono for prompts, Geist for input text.",
+      "nextMove": "Add tone preview \u2014 show how the message might land before composing. Assertive? Diplomatic? Aggressive?",
+      "promotionRead": "Maybe. Genuinely different form for Night Lab \u2014 text-based constrained editor. Clean mechanic, but thin artifact. Needs operational depth to graduate."
+    }
   }
 ];
 
