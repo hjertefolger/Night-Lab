@@ -509,6 +509,28 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add tone preview \u2014 show how the message might land before composing. Assertive? Diplomatic? Aggressive?",
       "promotionRead": "Maybe. Genuinely different form for Night Lab \u2014 text-based constrained editor. Clean mechanic, but thin artifact. Needs operational depth to graduate."
     }
+  },
+  {
+    "id": "021",
+    "number": 21,
+    "title": "Tank State",
+    "date": "2026-03-27",
+    "tagline": "A parameter-space instrument that reveals the invisible interaction between pH, temperature, and ammonia toxicity in aquarium water.",
+    "summary": "Aquarium test kits measure total ammonia, but the fraction that's actually toxic depends on a chemical equilibrium governed by pH and temperature. The same ammonia reading can be safe or lethal depending on conditions the test kit doesn't measure together. Tank State renders this invisible parameter space as a navigable 2D field \u2014 pH on one axis, temperature on the other, toxicity as color \u2014 so you can see where your readings place you relative to danger.",
+    "principles": [
+      "Make the invisible visible through its native mathematical form",
+      "The domain's own structure becomes the artifact form"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Aquarium hobbyists manage ammonia, pH, and temperature as three separate numbers. But the NH3/NH4+ equilibrium makes these parameters interdependent \u2014 high pH and high temperature amplify ammonia toxicity by 10-20x. Individual 'safe' readings can combine to be lethal. The phase diagram is the domain's native structure, and showing it makes the combined danger newly visible.",
+      "whatChanged": [
+        "First build. Canvas-rendered heat map with analytical contour lines derived from the Emerson et al. (1975) equilibrium equation."
+      ],
+      "artDirection": "Dark editorial. Canvas heat map transitions from near-black (safe) through warm amber (caution) to deep rust-red (danger). Dashed contour lines at toxicity thresholds. White position marker with glow. Generous negative space. JetBrains Mono for data, Geist for body text.",
+      "nextMove": "Could add a 'water change simulator' \u2014 show how a 25% water change shifts your position on the map by diluting TAN. Would make the instrument actionable, not just diagnostic.",
+      "promotionRead": "Strong form-to-problem fit. The 2D state space IS the domain's mathematical structure \u2014 showing it reveals a genuinely hidden interaction. The curved contour lines are the key insight: danger isn't a threshold on any single axis. Structurally distinct from recent builds (not a grid, text editor, or force diagram). Grounded in real chemistry with real consequences."
+    }
   }
 ];
 
