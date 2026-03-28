@@ -531,6 +531,26 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Could add a 'water change simulator' \u2014 show how a 25% water change shifts your position on the map by diluting TAN. Would make the instrument actionable, not just diagnostic.",
       "promotionRead": "Strong form-to-problem fit. The 2D state space IS the domain's mathematical structure \u2014 showing it reveals a genuinely hidden interaction. The curved contour lines are the key insight: danger isn't a threshold on any single axis. Structurally distinct from recent builds (not a grid, text editor, or force diagram). Grounded in real chemistry with real consequences."
     }
+  },
+  {
+    "id": "022",
+    "number": 22,
+    "title": "Sleep Debt",
+    "date": "2026-03-28",
+    "tagline": "The gap between how you feel and how you perform.",
+    "summary": "A divergence instrument revealing the invisible blind spot of chronic sleep restriction. Two curves \u2014 perceived alertness and actual cognitive capacity \u2014 split apart over 14 days as sleep debt accumulates.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "After about a week of restricted sleep, subjective sleepiness plateaus \u2014 you stop feeling tired. But cognitive performance keeps declining. Research shows a 27-point gap between perceived and actual capacity after 14 days of 6-hour sleep. This dissociation is invisible. The instrument makes it visible.",
+      "whatChanged": [],
+      "artDirection": "Dark editorial, monochrome with restrained red accent for the divergence zone. Canvas-rendered. Follows default Night Lab direction.",
+      "nextMove": "Add a what-if recovery mode showing how many days of 8+ hours it takes to close the gap.",
+      "promotionRead": "Maybe. The insight is genuine and the form is native, but the artifact is an interactive model rather than a novel interaction mechanic."
+    }
   }
 ];
 
