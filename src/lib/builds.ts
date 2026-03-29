@@ -551,6 +551,28 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add a what-if recovery mode showing how many days of 8+ hours it takes to close the gap.",
       "promotionRead": "Maybe. The insight is genuine and the form is native, but the artifact is an interactive model rather than a novel interaction mechanic."
     }
+  },
+  {
+    "id": "023",
+    "number": 23,
+    "title": "Fire Timing",
+    "date": "2026-03-27",
+    "tagline": "Backward-schedule cook times from a shared plate moment. The expo's invisible coordination \u2014 made visible.",
+    "summary": "A reverse-countdown timing instrument that externalizes the kitchen expediter's mental model. Dishes with different cook times are backward-scheduled from a shared plate moment on a converging timeline, making the staggered fire calls visible as spatial layout.",
+    "principles": [
+      "Make invisible processes legible",
+      "Extend human cognition without obscuring agency"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "A kitchen expediter mentally juggles staggered fire calls across stations so dishes with different cook times all arrive at the pass together. This coordination lives entirely in the expo's head and crashes under pressure. This instrument externalizes that backward-scheduling model as a visible converging timeline.",
+      "whatChanged": [
+        "Initial build \u2014 no iterations."
+      ],
+      "artDirection": "Dark editorial. Station-colored accents (GRILL rust, SAUTE amber, FRY gold, GARDE green, PASTRY purple) are the only color. Monospace for technical labels and countdowns, Geist for dish names. Thin borders, generous negative space.",
+      "nextMove": "Add multi-table stacking to show overlapping fire windows across 2-3 simultaneous tickets \u2014 where the real coordination pressure lives.",
+      "promotionRead": "Not yet. The core move is genuine but the instrument currently handles only one ticket. Multi-table coordination is where this concept would earn promotion."
+    }
   }
 ];
 
