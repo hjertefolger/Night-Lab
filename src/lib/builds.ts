@@ -573,6 +573,26 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add multi-table stacking to show overlapping fire windows across 2-3 simultaneous tickets \u2014 where the real coordination pressure lives.",
       "promotionRead": "Not yet. The core move is genuine but the instrument currently handles only one ticket. Multi-table coordination is where this concept would earn promotion."
     }
+  },
+  {
+    "id": "024",
+    "number": 24,
+    "title": "Dose Clock",
+    "date": "2026-03-27",
+    "tagline": "See what's active in your body right now \u2014 not just when you took it.",
+    "summary": "A 24-hour radial clock showing medication concentration decay curves as concentric bands. Reveals when multiple drugs overlap at high concentration \u2014 the invisible temporal dimension of drug interaction that pill boxes and interaction checkers miss.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Patients on multiple medications have no visibility into what's simultaneously active in their body at any given hour. Pill organizers show when to take. Drug interaction checkers give binary answers. Nothing shows the temporal overlap \u2014 when during the day drug concentrations stack. This clock makes that invisible stacking visible.",
+      "whatChanged": [],
+      "artDirection": "Dark editorial direction with canvas-rendered radial clock. Restrained color \u2014 each drug gets a distinct hue, overlap ring uses warm amber-to-rust. Geist for interface text, JetBrains Mono for labels and data. Default Night Lab direction applied.",
+      "nextMove": "Add drag-to-reschedule interaction so patients or pharmacists can see how moving a dose time shifts the overlap pattern.",
+      "promotionRead": "Maybe. The form is native to the problem and the insight is genuine. But the pharmacokinetic model is simplified and the instrument is read-only. Needs dose-rescheduling interaction and real drug database to graduate."
+    }
   }
 ];
 
