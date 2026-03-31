@@ -593,6 +593,30 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add drag-to-reschedule interaction so patients or pharmacists can see how moving a dose time shifts the overlap pattern.",
       "promotionRead": "Maybe. The form is native to the problem and the insight is genuine. But the pharmacokinetic model is simplified and the instrument is read-only. Needs dose-rescheduling interaction and real drug database to graduate."
     }
+  },
+  {
+    "id": "025",
+    "number": 25,
+    "title": "Focus Field",
+    "date": "2026-03-30",
+    "tagline": "The shape of sharpness your camera sees but never shows you.",
+    "summary": "A spatial depth-of-field instrument that makes the invisible zone of acceptable focus visible as a side-view diagram. Three interacting parameters \u2014 aperture, focal length, and subject distance \u2014 reshape the zone in real time, revealing what calculators hide behind numbers.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Photographers control depth of field through three interacting variables, but the resulting zone of sharpness is invisible. Calculators return numbers without spatial understanding. This instrument shows the shape \u2014 a side-view diagram where the zone of acceptable focus reshapes as parameters change, revealing non-linear interactions that tables cannot convey.",
+      "whatChanged": [
+        "v1.1: Added cone-of-light metaphor with blur regions flanking the sharp zone",
+        "v1.1: Fixed label overlap at narrow DoF zones with adaptive positioning",
+        "v1.1: Added focus point glow and refined camera icon"
+      ],
+      "artDirection": "Default Night Lab dark editorial direction. Monochrome canvas instrument with JetBrains Mono labels. The darkness makes subtle zone gradients legible. Canvas is the primary artifact \u2014 controls serve it.",
+      "nextMove": "Add comparison mode: lock one configuration, change parameters, and see both zones overlaid to directly answer 'what if I stop down?' questions.",
+      "promotionRead": "Maybe. Strong form-to-problem fit \u2014 spatial information shown spatially. Genuinely reveals something invisible. But stays within the parameter-space instrument family and is diagnostic-only."
+    }
   }
 ];
 
