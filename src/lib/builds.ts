@@ -617,6 +617,28 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add comparison mode: lock one configuration, change parameters, and see both zones overlaid to directly answer 'what if I stop down?' questions.",
       "promotionRead": "Maybe. Strong form-to-problem fit \u2014 spatial information shown spatially. Genuinely reveals something invisible. But stays within the parameter-space instrument family and is diagnostic-only."
     }
+  },
+  {
+    "id": "026",
+    "number": 26,
+    "title": "Cue Pressure",
+    "date": "2026-04-01",
+    "tagline": "A calling bandwidth instrument for stage managers \u2014 revealing where cue density exceeds human vocal capacity.",
+    "summary": "Stage managers call hundreds of cues per show through a single voice channel. When cues stack during transitions, the calling rate exceeds human bandwidth. This instrument makes that invisible bottleneck visible \u2014 showing temporal density across five production departments and computing where calling load becomes physically impossible.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Cue sheets are flat lists that hide temporal density. A lighting designer adding 15 cues to a transition can't see that sound and flies already have 10 more in the same window. The SM discovers the bottleneck during tech rehearsal \u2014 under pressure, with no time to fix it. This instrument reveals the bottleneck before it happens.",
+      "whatChanged": [
+        "v1.1: Refined bottleneck detection \u2014 threshold raised to 100%, nearby zones merged, sub-3s artifacts filtered. False positives dropped from 30+ to 9 meaningful zones."
+      ],
+      "artDirection": "Dark editorial. Monochrome with red overload accents. Canvas-rendered timeline as primary instrument. JetBrains Mono for technical data, Geist for headings. Minimal chrome.",
+      "nextMove": "Drag-to-redistribute interaction \u2014 move cues in time and watch the bandwidth curve respond. Transforms the instrument from diagnostic to planning tool.",
+      "promotionRead": "Maybe. Strong form-to-problem fit. The three-preset contrast tells a genuine story about production archetypes. Needs interactivity and real cue-sheet import to graduate."
+    }
   }
 ];
 
