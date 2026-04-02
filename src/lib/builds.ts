@@ -639,6 +639,28 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Drag-to-redistribute interaction \u2014 move cues in time and watch the bandwidth curve respond. Transforms the instrument from diagnostic to planning tool.",
       "promotionRead": "Maybe. Strong form-to-problem fit. The three-preset contrast tells a genuine story about production archetypes. Needs interactivity and real cue-sheet import to graduate."
     }
+  },
+  {
+    "id": "027",
+    "number": 27,
+    "title": "Cure Line",
+    "date": "2026-04-01",
+    "tagline": "Making the invisible maturity state of curing concrete visible as a strength trajectory.",
+    "summary": "Concrete looks hard within hours but actual strength depends on accumulated temperature and time. This instrument shows the Nurse-Saul maturity curve rising toward structural thresholds, revealing why fixed-time stripping rules fail in cold weather.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Contractors need to know when concrete is strong enough to strip formwork, apply loads, or open to traffic. But strength depends on the integral of temperature over time \u2014 the maturity index \u2014 which is invisible. Fixed-time rules ignore temperature. Cylinder break tests measure a separate specimen. The actual in-situ strength trajectory is never seen. This instrument makes the Nurse-Saul maturity curve legible as a single rising line approaching structural thresholds.",
+      "whatChanged": [
+        "No iterations. First version captured the core move."
+      ],
+      "artDirection": "Dark editorial direction. Canvas-rendered accumulation curve with restrained warm amber for the strength curve and threshold markers. Blue tint in the temperature strip for freezing hours. JetBrains Mono for data labels. Default Night Lab direction followed.",
+      "nextMove": "Add a what-if blanket toggle that raises nighttime temperatures by 8-12\u00b0C and shows how the maturity curve shifts earlier \u2014 making the economic value of temperature protection visible in hours saved.",
+      "promotionRead": "Maybe. Form-to-problem fit is native (maturity integral IS the curve). Preset contrast reveals genuine invisible structure. But diagnostic-only with preset profiles \u2014 needs real temperature input and what-if interaction to graduate."
+    }
   }
 ];
 
