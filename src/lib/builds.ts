@@ -661,6 +661,30 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add a what-if blanket toggle that raises nighttime temperatures by 8-12\u00b0C and shows how the maturity curve shifts earlier \u2014 making the economic value of temperature protection visible in hours saved.",
       "promotionRead": "Maybe. Form-to-problem fit is native (maturity integral IS the curve). Preset contrast reveals genuine invisible structure. But diagnostic-only with preset profiles \u2014 needs real temperature input and what-if interaction to graduate."
     }
+  },
+  {
+    "id": "028",
+    "number": 28,
+    "title": "Grain Warp",
+    "date": "2026-04-01",
+    "tagline": "A wood movement deformation instrument that makes invisible anisotropic expansion visible.",
+    "summary": "Wood moves differently in different directions relative to the grain. This instrument shows a log cross-section deforming as moisture changes, and compares flat-sawn vs quarter-sawn boards side by side so you can see why one cups and the other stays flat.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Woodworkers know wood moves with humidity, but the directionality of that movement is invisible. Tangential expansion is 1.5x to 3x greater than radial, and this ratio varies by species. Online calculators return numbers, but numbers hide the spatial truth: the direction and differential that determines whether a board cups, a joint fails, or a panel cracks. This instrument makes the anisotropic movement visible as shape change.",
+      "whatChanged": [
+        "v1.1: Larger board cross-sections with more visible ring lines for clearer cupping contrast",
+        "v1.1: Added Season Cycle animation \u2014 oscillates moisture to show the wood breathing through a year",
+        "v1.1: Increased cupping exaggeration from 12x to 14x for clearer visual differentiation"
+      ],
+      "artDirection": "Dark theme, editorial minimalism. Geist + JetBrains Mono. Monochrome-first with rust-red for expansion, muted blue for shrinkage. Wood species in approximate natural colors. Default Night Lab direction.",
+      "nextMove": "Add a cross-grain joint visualizer showing two boards meeting at 90 degrees, watching the joint fight itself as moisture changes.",
+      "promotionRead": "Maybe. Solid form-to-problem fit but stays within the parameter-space instrument family."
+    }
   }
 ];
 
