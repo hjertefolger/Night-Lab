@@ -685,6 +685,31 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add a cross-grain joint visualizer showing two boards meeting at 90 degrees, watching the joint fight itself as moisture changes.",
       "promotionRead": "Maybe. Solid form-to-problem fit but stays within the parameter-space instrument family."
     }
+  },
+  {
+    "id": "029",
+    "number": 29,
+    "title": "Pitch Drift",
+    "date": "2026-04-03",
+    "tagline": "Making invisible comma accumulation visible across chord progressions.",
+    "summary": "When a choir tunes each chord for pure consonance, small mathematical errors accumulate invisibly across transitions. This instrument shows the drift path \u2014 revealing why hymns stay in tune while pop progressions spiral sharp.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "A cappella choirs experience pitch drift as a mysterious, unavoidable phenomenon. Directors hear the choir go flat or sharp but cannot identify which chord transitions cause it. The syntonic comma and related JI/ET discrepancies accumulate invisibly. This instrument makes the mathematical accumulation path visible, turning an invisible process into a readable trajectory.",
+      "whatChanged": [
+        "v1.1: Asymmetric y-axis range gives more space to the drift direction, less wasted space on the opposite side.",
+        "v1.1: Relocated SHARP/FLAT zone labels from right edge to y-axis area to prevent overlap with chord labels.",
+        "v1.1: Adaptive grid step (10c or 20c) based on range to reduce visual noise on large-range presets.",
+        "v1.1: Refined drift model with quality-transition weighting \u2014 only applies when chord quality changes between steps."
+      ],
+      "artDirection": "Default Night Lab dark editorial direction. Geist + JetBrains Mono. Monochrome base with directional color accents: amber/rust for flat drift, blue-gray for sharp drift. Canvas-rendered chart with generous padding.",
+      "nextMove": "Add a correction mode: mark specific transitions as 'temper here' and show how the drift path changes when those transitions use equal temperament instead of just intonation.",
+      "promotionRead": "Maybe. Mathematically native form-to-problem fit. The preset contrast is a genuine revelation. Diagnostic-only; needs correction mode to become actionable."
+    }
   }
 ];
 
