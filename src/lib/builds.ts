@@ -710,6 +710,30 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add a correction mode: mark specific transitions as 'temper here' and show how the drift path changes when those transitions use equal temperament instead of just intonation.",
       "promotionRead": "Maybe. Mathematically native form-to-problem fit. The preset contrast is a genuine revelation. Diagnostic-only; needs correction mode to become actionable."
     }
+  },
+  {
+    "id": "030",
+    "number": 30,
+    "title": "Temp Circle",
+    "date": "2026-04-05",
+    "tagline": "How tuning temperaments distribute impurity across the circle of fifths.",
+    "summary": "A circle-of-fifths instrument showing how five historical temperaments redistribute interval impurity across all twelve keys. Switch temperaments to see the pattern shift \u2014 from equal mediocrity to meantone's dramatic wolf to Werckmeister's gentle graduation.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Tuning temperaments trade purity in some keys for impurity in others, but the pattern of that tradeoff is invisible. Tables give numbers; this instrument makes the distribution visible on the circle of fifths \u2014 the domain's own mathematical structure.",
+      "whatChanged": [
+        "v1.1: Added divider ring between fifth and third quality zones for visual clarity.",
+        "v1.1: Fixed Werckmeister III and Kirnberger III fifth placement to match historical sources.",
+        "v1.1: Improved pure-interval indicators \u2014 thin arcs for purity vs filled bars for impurity."
+      ],
+      "artDirection": "Default Night Lab dark editorial direction. Monochrome with amber/rust for impurity and green-white for purity. Canvas-rendered radial geometry.",
+      "nextMove": "Add audio playback: click a key to hear its major triad in the selected temperament, making the beating audible alongside the visual impurity.",
+      "promotionRead": "Maybe. Mathematically native form-to-problem fit \u2014 the circle of fifths IS the domain's structure. Preset contrast is a genuine revelation. But diagnostic-only and specialized audience."
+    }
   }
 ];
 
