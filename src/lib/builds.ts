@@ -734,6 +734,30 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add audio playback: click a key to hear its major triad in the selected temperament, making the beating audible alongside the visual impurity.",
       "promotionRead": "Maybe. Mathematically native form-to-problem fit \u2014 the circle of fifths IS the domain's structure. Preset contrast is a genuine revelation. But diagnostic-only and specialized audience."
     }
+  },
+  {
+    "id": "031",
+    "number": 31,
+    "title": "Speech Banana",
+    "date": "2026-04-07",
+    "tagline": "What a hearing loss hears.",
+    "summary": "An interactive audiogram with 25 English phonemes plotted on the speech banana. Drag the hearing threshold curve \u2014 or pick a clinical preset \u2014 and watch which sounds of speech become inaudible. A live sentence renderer shows the dropouts as dots, making the connection between audiogram geometry and lived unintelligibility visible for the first time.",
+    "principles": [
+      "Make invisible processes legible",
+      "Prefer verification over vague trust",
+      "Compress complexity while preserving essence",
+      "Native form over wrapping interface"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Audiograms show hearing loss as an abstract decibel curve. The speech banana shows where speech lives as a static diagram. Neither lets a patient \u2014 or a patient's family \u2014 feel the connection between their specific curve and the specific sounds they can no longer distinguish. This build closes that gap by rendering the same test sentence through the current curve, replacing inaudible phonemes with dots. The moment 'She sells seashells' becomes '\u00b7\u00b7e \u00b7e\u00b7\u00b7 \u00b7ea\u00b7\u00b7e\u00b7\u00b7\u00b7' is the moment the abstract diagnosis becomes a lived experience.",
+      "whatChanged": [
+        "v1.0 \u2014 initial build. 25 phonemes at canonical speech-banana coordinates, 6 draggable audiometric test points, 5 clinical presets, 5 fricative-dense test sentences, log-linear threshold interpolation matching audiogram reading convention."
+      ],
+      "artDirection": "Default Night Lab direction. Light editorial monochrome, Geist body + system mono for labels and phoneme symbols, no color, no gradients, thin borders. The audiogram Y-axis runs 0\u2192110 dB top-to-bottom following audiology convention (quieter above, louder below) \u2014 a deliberate inversion that the domain requires.",
+      "nextMove": "v1.1 side-by-side comparison: render the same sentence through all five presets simultaneously so the difference between loss *types* (not just severity) becomes legible in one glance. v2.0 would add Web Audio API playback so the patient can hear their own hearing \u2014 cross from visualization to simulation.",
+      "promotionRead": "Maybe \u2014 leaning strong. First Night Lab build that translates diagnostic chart coordinates into word-level legibility via a generative mechanism. Passes the 'new legibility' north star test cleanly: the connection between audiogram geometry and lived unintelligibility becomes visible in a way static diagrams cannot show. Audio playback would push it from 'strong explainer' to 'diagnostic aid' and move it firmly into 'strong' territory. The audiology/accessibility domain is fresh for Night Lab and worth returning to."
+    }
   }
 ];
 
