@@ -758,6 +758,30 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "v1.1 side-by-side comparison: render the same sentence through all five presets simultaneously so the difference between loss *types* (not just severity) becomes legible in one glance. v2.0 would add Web Audio API playback so the patient can hear their own hearing \u2014 cross from visualization to simulation.",
       "promotionRead": "Maybe \u2014 leaning strong. First Night Lab build that translates diagnostic chart coordinates into word-level legibility via a generative mechanism. Passes the 'new legibility' north star test cleanly: the connection between audiogram geometry and lived unintelligibility becomes visible in a way static diagrams cannot show. Audio playback would push it from 'strong explainer' to 'diagnostic aid' and move it firmly into 'strong' territory. The audiology/accessibility domain is fresh for Night Lab and worth returning to."
     }
+  },
+  {
+    "id": "032",
+    "number": 32,
+    "title": "Window Slip",
+    "date": "2026-04-08",
+    "tagline": "The medication round you can't catch up on.",
+    "summary": "A live medication round simulator. Five patients, twelve scheduled doses, real ISMP timing windows. Click 'administer next dose' to advance the round, or take an interruption (call light, family question, re-order, rapid response). Watch which time-critical doses slip out of their legal windows in real time. The round is already at the edge before any delay happens \u2014 that cascade is what the MAR sheet does not show.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence",
+      "Convert deep technical structure into usable product leverage",
+      "Native form over wrapping interface"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Up to 72.6% of medication administration errors are timing errors. ISMP guidelines define administration windows: \u00b130 min for time-critical drugs (insulin, anti-rejection, anti-convulsant, anti-arrhythmic), \u00b160 min for routine. A typical 8 AM round is twelve doses across five patients, sequential, ~3 min each \u2014 the round already finishes at the edge of the last critical window before any interruption. A single ten-minute family question after the third patient pushes time-critical doses past their boundary, and there is no recovering. Nurses know this in their bones; managers and administrators don't. The MAR sheet cannot show projection, window width, or cumulative drift. This build can.",
+      "whatChanged": [
+        "v1.0 \u2014 initial build. Five-patient lane chart, twelve doses with ISMP-correct windows (\u00b130 critical, \u00b160 routine, \u00b190 flexible), sequential administration with 3 min/dose, four interruption buttons mapped to recognizable real-world events (call light, family question, re-order, rapid response), live counters including a 'critical at risk' projection that asks whether pending time-critical doses can still hit their windows from the current pace."
+      ],
+      "artDirection": "Default Night Lab direction. Light editorial monochrome, Geist body + system mono for labels and counters, generous negative space, thin borders, no color. The 'now' line is the only element with elevated contrast \u2014 it is the index finger of the round and earns the weight. Late doses are marked by dashed outline + reduced opacity rather than red, deliberately avoiding the dashboard color-status idiom.",
+      "nextMove": "v1.1: side-by-side comparison of a clean shift and a chaotic shift on the same data, so the cascade insight lands in one glance instead of requiring the user to remember the baseline between resets. v1.2: a 'time-critical first' re-ordering toggle that replays the round with critical doses pulled to the front of the queue, graduating from diagnostic to prescriptive. v2.0: editable round (add a patient, change a med, alter the start time) for nurse educators.",
+      "promotionRead": "Maybe \u2014 solid. Introduces a window-positioning instrument class that is new to the catalog (distinct from parameter-space, deformation, threshold-crossing, accumulation, radial). Passes the north-star 'new legibility' test: cumulative round drift and the moment a delay snaps a downstream dose out of its window are not visible in the MAR sheet that nurses currently use, and are visible here. The clean-run-already-at-the-edge insight is the kind of revelation Night Lab was built to surface. v1.1 with side-by-side comparison would push it to strong. Healthcare *operational* timing (rounds, handoffs, queue progression) is fresh territory worth returning to."
+    }
   }
 ];
 
