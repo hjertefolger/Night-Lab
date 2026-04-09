@@ -782,6 +782,30 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "v1.1: side-by-side comparison of a clean shift and a chaotic shift on the same data, so the cascade insight lands in one glance instead of requiring the user to remember the baseline between resets. v1.2: a 'time-critical first' re-ordering toggle that replays the round with critical doses pulled to the front of the queue, graduating from diagnostic to prescriptive. v2.0: editable round (add a patient, change a med, alter the start time) for nurse educators.",
       "promotionRead": "Maybe \u2014 solid. Introduces a window-positioning instrument class that is new to the catalog (distinct from parameter-space, deformation, threshold-crossing, accumulation, radial). Passes the north-star 'new legibility' test: cumulative round drift and the moment a delay snaps a downstream dose out of its window are not visible in the MAR sheet that nurses currently use, and are visible here. The clean-run-already-at-the-edge insight is the kind of revelation Night Lab was built to surface. v1.1 with side-by-side comparison would push it to strong. Healthcare *operational* timing (rounds, handoffs, queue progression) is fresh territory worth returning to."
     }
+  },
+  {
+    "id": "033",
+    "number": 33,
+    "title": "Ready Line",
+    "date": "2026-04-09",
+    "tagline": "A classroom transition is not a duration. It is twenty-five finish times gated by the max.",
+    "summary": "A straggler-tail instrument for classroom transitions. Four common transition strategies rendered as what they actually are: twenty-five independent completion times stacking into a step curve, with a shaded waste area showing the student-minutes lost to the long tail.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence",
+      "Push familiar primitives forward instead of inventing novelty for novelty's sake"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Teachers experience classroom transitions as behavior to manage. The mathematical truth is that transitions are max-functions across twenty-five independent completion times, and most of the minutes lost are lost in the tail, not in the mode. No classroom tool shows this \u2014 timers show the mode, behavior charts track individuals, nothing visualises the distribution and the max-gate together. This instrument makes the waste area visible in one glance.",
+      "whatChanged": [
+        "v1.0 \u2014 Cumulative step curve, waste area fill, class-ready and first-done vertical markers, metrics panel, counterfactual sentence, four real transition strategies.",
+        "v1.1 \u2014 Counterfactual language now adapts: when the tail is already cut (Timer + partner strategy saves only 2 seconds), the sentence says so honestly instead of over-claiming tail savings. The message is truthful on all four presets."
+      ],
+      "artDirection": "Default Night Lab direction, strictly applied. Light editorial monochrome on white. Geist variable for copy, system monospace for labels and numbers. No colour. Waste area is a 5% grey fill. Single chart, single reading panel, four buttons \u2014 no cards, no badges, no dashboard chrome.",
+      "nextMove": "Custom distribution mode \u2014 let a teacher drag the twenty-five dots to model their own class and watch the waste area respond in real time. Would move the instrument from diagnostic ('read about my class') to prescriptive ('model my class') and would push the promotion read from 'maybe' to 'strong'.",
+      "promotionRead": "Maybe \u2014 solid. New mathematical shape in the Night Lab catalog (cumulative-distribution-with-max-gate). Education is a fresh domain for Night Lab \u2014 no prior build touched classrooms. The form-to-problem fit is mathematically native and the counterfactual mechanism is honest. Held back from 'strong' only because v1.0 is diagnostic-only; custom input would unlock it."
+    }
   }
 ];
 
