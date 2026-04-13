@@ -806,6 +806,31 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Custom distribution mode \u2014 let a teacher drag the twenty-five dots to model their own class and watch the waste area respond in real time. Would move the instrument from diagnostic ('read about my class') to prescriptive ('model my class') and would push the promotion read from 'maybe' to 'strong'.",
       "promotionRead": "Maybe \u2014 solid. New mathematical shape in the Night Lab catalog (cumulative-distribution-with-max-gate). Education is a fresh domain for Night Lab \u2014 no prior build touched classrooms. The form-to-problem fit is mathematically native and the counterfactual mechanism is honest. Held back from 'strong' only because v1.0 is diagnostic-only; custom input would unlock it."
     }
+  },
+  {
+    "id": "034",
+    "number": 34,
+    "title": "Swing Circle",
+    "date": "2026-04-13",
+    "tagline": "The invisible collision geometry of anchored boats.",
+    "summary": "A spatial instrument that makes swing circles visible. Scope, depth, and tide determine each boat's radius. Wind shifts rotate every hull simultaneously. Where circles overlap, collisions happen.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Anchored boats swing in circles whose radii depend on rode length and water depth. Boats that anchored at different tidal states have dramatically different rode lengths \u2014 and therefore different swing circles \u2014 even if they used the same scope ratio. None of this geometry is visible to the boater. Collisions happen at 3 AM when the wind shifts.",
+      "whatChanged": [
+        "v1.1: Revised physical model \u2014 each boat has fixed rode set at anchor time, not recalculated from current depth",
+        "Added anchor-time depth tracking, effective scope display, and anchor-drag detection",
+        "Tidal Trap preset shows boats with same scope ratio but different arrival times producing dramatically different circles",
+        "Improved wind compass with cardinal directions and preset descriptions"
+      ],
+      "artDirection": "Default Night Lab editorial direction. Light theme, monochrome-first. Red used structurally for collision zones only. Geist for body, JetBrains Mono for data and labels.",
+      "nextMove": "Add a drop-anchor interaction: click to place a new boat at current depth with chosen scope, experiencing the anchoring decision against existing neighbors.",
+      "promotionRead": "Maybe. The spatial collision geometry is a genuine insight with native form. The Tidal Trap preset is a real revelation. Multi-object spatial interaction is new to the catalog. But the instrument is diagnostic-only \u2014 needs the drop-anchor workflow to become actionable."
+    }
   }
 ];
 
