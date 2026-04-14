@@ -831,6 +831,30 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Add a drop-anchor interaction: click to place a new boat at current depth with chosen scope, experiencing the anchoring decision against existing neighbors.",
       "promotionRead": "Maybe. The spatial collision geometry is a genuine insight with native form. The Tidal Trap preset is a real revelation. Multi-object spatial interaction is new to the catalog. But the instrument is diagnostic-only \u2014 needs the drop-anchor workflow to become actionable."
     }
+  },
+  {
+    "id": "035",
+    "number": 35,
+    "title": "Mite Reservoir",
+    "date": "2026-04-14",
+    "tagline": "What the alcohol wash cannot see.",
+    "summary": "A colony-year timeline that renders the hidden varroa-mite reservoir alongside what the beekeeper's alcohol wash actually measures. The same oxalic acid applied mid-summer kills 31% of the true load; applied after a brood break, 99%. Same drug. Same dose. Different moment of exposure.",
+    "principles": [
+      "make invisible processes legible",
+      "compress complexity while preserving essence",
+      "prefer verification over vague trust"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "A beekeeper samples 300 bees, washes them, reads 'mites per 100 bees' and decides whether to treat. During brood season, 60\u201385% of the colony's mites are sealed inside capped cells \u2014 invisible to the wash and unreachable by most chemical treatments. The diagnostic systematically under-counts the real state, and every timing decision inherits the error. The reservoir is the part that lives only in the beekeeper's head. Making it visible alongside the wash reading, across the full colony-year, is the move.",
+      "whatChanged": [
+        "v1.0: daily discrete simulation with 12-day worker sealed cycle and seasonal capped-brood curve. Added density-dependent colony-collapse dynamics to cap runaway growth.",
+        "v1.1: tuned invasion rate to 0.18 daily to produce ~57% hidden fraction at peak brood, matching published literature. Offspring coefficient reduced to 0.7 net to account for invasion loss and foundress mortality."
+      ],
+      "artDirection": "Default Night Lab direction held. Editorial monochrome, Geist body, JetBrains-style mono for labels and tabular numbers, thin borders, no gradients. One restrained accent color (oxidized orange #c77700) for the alcohol-wash curve, justified because it must read as 'the one channel the beekeeper sees' and must be immediately distinguishable from the grey reservoir and the black truth line. A pale blue band marks the queen-cage broodless window.",
+      "nextMove": "v2.0: editable wash reading \u2014 the beekeeper enters this morning's wash result and a calendar date, and the instrument back-solves the likely true population. That turns the instrument from diagnostic into decision support. Adjacent: let the user drop their own treatment dates onto the timeline and compare side-by-side against a canonical strategy.",
+      "promotionRead": "Maybe \u2014 leaning strong. The form-to-problem fit is genuinely native: a hidden reservoir shown alongside the visible measurement. The 'same drug, different timing, very different kill' revelation passes the north-star 'new legibility' test cleanly. Introduces a new instrument class (hidden-reservoir) generalizable to any domain where the diagnostic systematically under-counts the real state. Holds at 'maybe' because v1.0 is preset-only; custom input would push it to strong. First Night Lab build in apiculture."
+    }
   }
 ];
 
