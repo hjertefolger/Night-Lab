@@ -855,6 +855,31 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "v2.0: editable wash reading \u2014 the beekeeper enters this morning's wash result and a calendar date, and the instrument back-solves the likely true population. That turns the instrument from diagnostic into decision support. Adjacent: let the user drop their own treatment dates onto the timeline and compare side-by-side against a canonical strategy.",
       "promotionRead": "Maybe \u2014 leaning strong. The form-to-problem fit is genuinely native: a hidden reservoir shown alongside the visible measurement. The 'same drug, different timing, very different kill' revelation passes the north-star 'new legibility' test cleanly. Introduces a new instrument class (hidden-reservoir) generalizable to any domain where the diagnostic systematically under-counts the real state. Holds at 'maybe' because v1.0 is preset-only; custom input would push it to strong. First Night Lab build in apiculture."
     }
+  },
+  {
+    "id": "036",
+    "number": 36,
+    "title": "Fire Margin",
+    "date": "2026-04-16",
+    "tagline": "When does the safety margin run out? A temporal instrument for wildfire crew leaders.",
+    "summary": "Fireline intensity compounds non-linearly from wind, slope, and fuel. This instrument projects the intensity trajectory forward through a typical afternoon and shows the exact time the direct-attack threshold will be crossed \u2014 a countdown, not a dashboard.",
+    "principles": [
+      "Make invisible processes legible",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Wildfire crew leaders decide when to transition from direct to indirect attack based on fireline intensity thresholds. But the compound interaction between wind, slope, and fuel is non-linear \u2014 conditions can cross the safety threshold faster than intuition predicts. Current tools are static single-factor lookup charts. This instrument projects the trajectory forward in time and shows when the margin runs out, making the compound effect visceral.",
+      "whatChanged": [
+        "v1.1: Added what-if wind projection line (+10 km/h dashed overlay) to show margin fragility",
+        "v1.1: Dynamic y-axis scaling adapts to scenario intensity range",
+        "v1.1: Chart legend distinguishes current wind from what-if projection",
+        "v1.1: JetBrains Mono font for technical readouts"
+      ],
+      "artDirection": "Dark theme chosen for subject matter resonance (fire, smoke, night operations). Warm amber accent for BFI curve, red reserved for threshold/danger. Follows Night Lab editorial restraint with monochrome background zones.",
+      "nextMove": "Connect what-if to slider interaction \u2014 drag wind and watch crossing time animate in real time. Or integrate real weather forecast data into the diurnal model.",
+      "promotionRead": "Maybe. Compound multiplier breakdown is genuinely revelatory. Temporal projection framing differentiates from parameter-space family. What-if line is the strongest visual device. Needs real-world data connection to graduate."
+    }
   }
 ];
 
