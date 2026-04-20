@@ -880,6 +880,30 @@ export const liveBuilds: BuildMeta[] = [
       "nextMove": "Connect what-if to slider interaction \u2014 drag wind and watch crossing time animate in real time. Or integrate real weather forecast data into the diurnal model.",
       "promotionRead": "Maybe. Compound multiplier breakdown is genuinely revelatory. Temporal projection framing differentiates from parameter-space family. What-if line is the strongest visual device. Needs real-world data connection to graduate."
     }
+  },
+  {
+    "id": "037",
+    "number": 37,
+    "title": "Peak drift",
+    "date": "2026-04-20",
+    "tagline": "Sourdough starter peaks drift by three hours across a normal range of kitchen temperatures \u2014 the clock is the wrong instrument.",
+    "summary": "Five starter rise curves on one time axis, each peaking at a different temperature. The recipe's fixed 'use at 4h' window catches the peak only near its tuning temperature; every other kitchen produces an under-risen or past-peak starter while the clock says everything is fine.",
+    "principles": [
+      "Make invisible processes legible",
+      "Prefer verification over vague trust",
+      "Compress complexity while preserving essence"
+    ],
+    "status": "live",
+    "fieldNotes": {
+      "whyThisExists": "Most home sourdough recipes assume a fixed 'room temperature' that bakers rarely measure. Yeast fermentation rate roughly doubles every 10\u00b0C, so the same starter at the same feed ratio peaks at 6h 35m in a 62\u00b0F kitchen and 3h 14m in an 82\u00b0F one. A recipe tuned for 76\u00b0F catches the peak only by coincidence \u2014 every cooler kitchen produces under-risen dough, and every warmer kitchen produces starter already on the descent, with the clock on the wall advancing exactly as the recipe says it should.",
+      "whatChanged": [
+        "v1.0: Five rise curves on one time axis, peak markers per temperature, recipe window band, right-column readout with per-state interpretation (Under-risen, Just past peak, Near peak).",
+        "Copy refinement: distinguished 'Near peak' (approaching from below) from 'Just past peak' (volume right, activity declining) to make the 82\u00b0F case honest \u2014 the volume looks right but the yeast activity is already falling."
+      ],
+      "artDirection": "Default Night Lab direction applied: editorial light monochrome, Geist sans with monospace for labels and technical values, generous whitespace, minimal surfaces. Selected curve rendered in black; other curves in light gray with their peak dots and temperature labels kept quiet. No accent color \u2014 the drama lives in the horizontal spread of peaks around the fixed recipe band, not in any hue.",
+      "nextMove": "A volume-triggered use mode: replace the 'use at 4h' vertical band with a horizontal band at 2.8\u00d7 volume and show where the volume-triggered use point lands on each temperature curve. This would operationalize the 'read the starter, not the clock' advice directly inside the instrument. A continuous temperature slider would add resolution for kitchens between the presets.",
+      "promotionRead": "Maybe. The form is cleanly native and the drift is viscerally legible; the 'Just past peak' state surfaces a genuine subtlety (volume right, activity falling) that 'use at volume' advice alone does not capture. Holds at Maybe rather than Strong because v1.0 is a static read \u2014 the user selects a preset and sees the consequence rather than placing their own peak or window. The volume-trigger variant would push toward Strong."
+    }
   }
 ];
 
